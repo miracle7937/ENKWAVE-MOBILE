@@ -1,6 +1,8 @@
+import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class EPPageStateWidget extends StatelessWidget {
   final PageState? pageState;
@@ -29,17 +31,24 @@ class EPPageStateWidget extends StatelessWidget {
     Widget pageBody = const SizedBox.shrink();
     switch ((pageState ?? PageState.loaded)) {
       case PageState.loading:
-
-        //miracle add this
-        // pageBody = loadingWidget ??
-        //     Image.asset(
-        //       CPImages.loader,
-        //       scale: 3.0,
-        //     );
+        pageBody = loadingWidget ??
+            Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: Lottie.asset(EPImages.loader),
+              ),
+            );
 
         break;
       case PageState.loaded:
-        if (builder != null) pageBody = Builder(builder: builder!);
+        if (builder != null) {
+          pageBody = Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Builder(builder: builder!),
+          );
+        }
         break;
       case PageState.error:
         pageBody = ErrorSwitcher(

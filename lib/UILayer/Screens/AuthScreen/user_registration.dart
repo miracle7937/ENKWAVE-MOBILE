@@ -1,25 +1,27 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/DataLayer/controllers/auth_controller.dart';
+import 'package:enk_pay_project/DataLayer/model/registration_response.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/otp_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/sign_in.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/terms_and_condition.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class PersonalRegistration extends StatefulWidget {
-  const PersonalRegistration({Key? key}) : super(key: key);
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
-  State<PersonalRegistration> createState() => _PersonalRegistrationState();
+  State<RegistrationScreen> createState() => _PersonalRegistrationState();
 }
 
-class _PersonalRegistrationState extends State<PersonalRegistration> {
-  bool checkedTermsCondition = false;
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _PersonalRegistrationState extends State<RegistrationScreen>
+    with AuthView {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -27,21 +29,24 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
     super.initState();
   }
 
+  late AuthController authController;
   @override
   Widget build(BuildContext context) {
+    authController = Provider.of<AuthController>(context)..view = this;
     return Stack(
       children: [
         Opacity(
-          opacity: 0.01,
+          opacity: 0.9,
           child: Image.asset(
-            EPImages.authBg,
+            EPImages.bgShadow,
             fit: BoxFit.cover,
             width: MediaQuery.of(context).size.width,
           ),
         ),
         EPScaffold(
             scaffoldKey: _scaffoldKey,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
+            state: AppState(pageState: authController.pageState),
             builder: (context) {
               return SingleChildScrollView(
                 child: SafeArea(
@@ -57,12 +62,12 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * .5,
+                                // width: MediaQuery.of(context).size.width * .5,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 12.0),
                                   child: Text(
                                     "Get started on ENKPAY ",
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline2!
@@ -81,72 +86,66 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
                                     .copyWith(fontWeight: FontWeight.w500),
                               ),
                               const SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
                             ],
                           ),
                         ],
                       ),
                       EPForm(
-                        controller: _emailController,
                         onChange: (v) {
-                          // registrationController.registerUserContent.email = v;
+                          authController.registrationModel.firstName = v;
                         },
                         hintText: "First Name",
                         enabledBorderColor: EPColors.appGreyColor,
                       ),
                       EPForm(
-                        controller: _emailController,
                         onChange: (v) {
-                          // registrationController.registerUserContent.email = v;
+                          authController.registrationModel.middleName = v;
                         },
                         enabledBorderColor: EPColors.appGreyColor,
                         hintText: "Middle Name",
                       ),
                       EPForm(
-                        controller: _emailController,
                         onChange: (v) {
-                          // registrationController.registerUserContent.email = v;
+                          authController.registrationModel.lastName = v;
                         },
                         enabledBorderColor: EPColors.appGreyColor,
                         hintText: "Last Name",
                       ),
                       EPForm(
-                        controller: _emailController,
-                        onChange: (v) {
-                          // registrationController.registerUserContent.email = v;
-                        },
+                        hintText: "Enter email address",
                         enabledBorderColor: EPColors.appGreyColor,
-                        hintText: "Enter Email",
+                        onChange: (v) {
+                          authController.registrationModel.email = v;
+                        },
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       EPForm(
-                        controller: _phoneController,
                         hintText: "Enter phone number",
                         enabledBorderColor: EPColors.appGreyColor,
-                        onChange: (v) {},
+                        onChange: (v) {
+                          authController.registrationModel.phone = v;
+                        },
                         keyboardType: TextInputType.phone,
                       ),
                       EPForm(
-                        controller: _passwordController,
                         hintText: "Enter password",
                         enabledBorderColor: EPColors.appGreyColor,
                         forPassword: true,
-                        onChange: (v) {},
+                        onChange: (v) {
+                          authController.registrationModel.password = v;
+                        },
                       ),
                       EPForm(
-                        controller: _passwordController,
                         hintText: "Confirm password",
                         enabledBorderColor: EPColors.appGreyColor,
                         forPassword: true,
-                        onChange: (v) {},
+                        onChange: (v) {
+                          authController
+                              .registrationModel.passwordConfirmation = v;
+                        },
                       ),
-                      // CXForm(
-                      //   labelText: "Referral ID",
-                      //   hintText: "Enter referral ID",
-                      //   onChange: (v) {
-                      //     registrationController.registerUserContent.referralId = v;
-                      //   },
-                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Row(
@@ -160,39 +159,56 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
                                     unselectedWidgetColor:
                                         EPColors.appGreyColor),
                                 child: Checkbox(
-                                  value: checkedTermsCondition,
-                                  onChanged: (v) {},
-                                  activeColor: EPColors.appGreyColor,
+                                  value: authController.checkedTermsCondition,
+                                  onChanged: (v) {
+                                    authController.setTermsCondition(v!);
+                                  },
+                                  activeColor: EPColors.appMainColor,
                                 ),
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "I have read and agreed to Terms and Privacy policy",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline3!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                            )
+                            Row(
+                              children: [
+                                Text(
+                                  "I have read and agreed to ",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline3!
+                                      .copyWith(fontWeight: FontWeight.w500),
+                                ),
+                                InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const TermsAndCondition())),
+                                  child: Text(
+                                    "Terms and Privacy policy",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.blue),
+                                  ),
+                                )
+                              ],
+                            ),
                           ],
                         ),
                       ),
                       const SizedBox(
-                        height: 21,
+                        height: 10,
                       ),
                       EPButton(
                         title: "Create Account".toUpperCase(),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const OTPScreen()));
+                          authController.validateRegistrationForm();
                         },
                       ),
                       const SizedBox(
-                        height: 61,
+                        height: 11,
                       ),
                       TextClickButton(
                         onTap: () {
@@ -204,8 +220,11 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
                             .textTheme
                             .headline3!
                             .copyWith(
-                                color: Colors.white,
+                                color: Colors.green,
                                 fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                     ],
                   ),
@@ -214,5 +233,29 @@ class _PersonalRegistrationState extends State<PersonalRegistration> {
             }),
       ],
     );
+  }
+
+  @override
+  void onError(String message) {
+    showEPStatusDialog(context, success: false, message: message, callback: () {
+      Navigator.pop(context);
+    });
+  }
+
+  @override
+  void onSuccess(RegistrationResponse? response) {
+    if (response!.data != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => OTPScreen(
+                    response: response,
+                  )));
+    }
+  }
+
+  @override
+  void onValidate() {
+    authController.register();
   }
 }

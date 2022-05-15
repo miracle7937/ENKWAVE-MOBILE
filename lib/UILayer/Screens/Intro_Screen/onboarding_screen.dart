@@ -2,10 +2,10 @@ import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/personal_registration.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/sign_in.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   });
                 },
                 itemCount: ConstantString.introItems.length,
-                itemBuilder: (context, i) => SvgPicture.asset(
+                itemBuilder: (context, i) => Lottie.asset(
                   ConstantString.introItems[i].image,
                 ),
               ),
@@ -76,7 +76,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   .headline3!
                   .copyWith(fontWeight: FontWeight.w400),
             ),
-            const Spacer(),
+            const Spacer(
+              flex: 2,
+            ),
             EPButton(
                 title: "LOGIN",
                 onTap: () {
@@ -92,13 +94,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const PersonalRegistration()));
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (_) => const RegistrationTypeScreen()));
+                        builder: (_) => const RegistrationScreen()));
               },
-            )
+            ),
+            const Spacer(
+              flex: 1,
+            ),
           ],
         ),
       ),

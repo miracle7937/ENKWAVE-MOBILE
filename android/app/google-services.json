@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "231630805464",
+    "project_id": "enkwave-a4a69",
+    "storage_bucket": "enkwave-a4a69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231630805464:android:bb295d4c4b8d05caf67aad",
+        "android_client_info": {
+          "package_name": "com.example.enk_pay_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231630805464-rapsqr3qj05sha10c9ufhjikkkq480vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmCN4mnPowEcNI97Wk880dm0v_lv5bkYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231630805464-rapsqr3qj05sha10c9ufhjikkkq480vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

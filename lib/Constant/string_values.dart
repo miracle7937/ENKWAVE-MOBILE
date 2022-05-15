@@ -1,6 +1,15 @@
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 
+String listOfStringToFormattedString(List data) {
+  return data[0].toString();
+  // return data.join("\n\n");
+}
+
+String removeAllWhitespace(String value) {
+  return value.replaceAll(' ', '');
+}
+
 class ConstantString {
   static List<IntroModel> introItems = [
     IntroModel(
@@ -59,4 +68,15 @@ class ConstantString {
         subTitle: "Exchange your currency seamsley ",
         image: EPImages.forex),
   ];
+
+  static String userDataKey = "user-data-key";
+  static String hideBalance = "hideBalance";
+  static String enableBiometric = "enableBiometric";
+  static String credential = "user-data-credential";
 }
+
+/// Returns [true] if [s] is either null or empty.
+bool isEmpty(String? s) => s == null || s == 'null' || s.trim().isEmpty;
+
+/// Returns [true] if [s] is a not null or empty string.
+bool isNotEmpty(String? s) => s != null && s != 'null' && s.trim().isNotEmpty;
