@@ -16,12 +16,13 @@ class EPForm extends StatefulWidget {
       labelColor,
       border;
   final EdgeInsetsGeometry? contentPadding;
-  final Widget? suffixIcon, suffixWidget;
+  final Widget? suffixIcon, suffixWidget, peffixIcon;
   final Function(String)? onChange;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final TextStyle? hintStyle;
+  final VoidCallback? callback;
 
   const EPForm(
       {Key? key,
@@ -45,7 +46,9 @@ class EPForm extends StatefulWidget {
       this.disabledBorderColor,
       this.suffixText,
       this.border,
-      this.suffixWidget})
+      this.suffixWidget,
+      this.peffixIcon,
+      this.callback})
       : super(key: key);
 
   @override
@@ -57,72 +60,76 @@ class _SYFormState extends State<EPForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: widget.padding ??
-          const EdgeInsets.symmetric(
-            vertical: 10,
+        padding: widget.padding ??
+            const EdgeInsets.symmetric(
+              vertical: 10,
+            ),
+        child: InkWell(
+          onTap: widget.callback,
+          child: SizedBox(
+            height: 50,
+            child: TextFormField(
+              inputFormatters: widget.inputFormatters,
+              keyboardType: widget.keyboardType,
+              controller: widget.controller,
+              enabled: widget.enable,
+              onChanged: widget.onChange,
+              cursorColor: EPColors.appMainColor,
+              obscureText: widget.forPassword! && showPassword,
+              style: Theme.of(context).textTheme.headline6!.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: EPColors.appBlackColor),
+              decoration: InputDecoration(
+                  prefixIcon: widget.peffixIcon,
+                  suffixIcon: widget.suffixWidget,
+                  suffixText: widget.suffixText,
+                  contentPadding:
+                      widget.contentPadding ?? const EdgeInsets.all(15),
+                  fillColor: widget.fillColor ?? EPColors.appWhiteColor,
+                  filled: true,
+                  suffix: widget.forPassword!
+                      ? InkWell(
+                          onTap: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                          child: showPassword
+                              ? Icon(
+                                  Icons.visibility_off,
+                                  color: EPColors.appMainColor,
+                                  size: 15,
+                                )
+                              : Icon(
+                                  Icons.visibility,
+                                  color: EPColors.appMainColor,
+                                  size: 15,
+                                ))
+                      : (widget.suffixIcon),
+                  labelText: widget.labelText,
+                  hintText: widget.hintText,
+                  labelStyle: TextStyle(
+                      color: widget.labelColor ?? EPColors.appMainColor),
+                  hintStyle:
+                      widget.hintStyle ?? const TextStyle(color: Colors.grey),
+                  disabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: widget.disabledBorderColor ??
+                              EPColors.appGreyColor)),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: widget.enabledBorderColor ??
+                              const Color(0xffbfc9da))),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: EPColors.appGreyColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: widget.focusedBorderColor ??
+                              EPColors.appMainColor))),
+            ),
           ),
-      child: SizedBox(
-        height: 49,
-        child: TextFormField(
-          inputFormatters: widget.inputFormatters,
-          keyboardType: widget.keyboardType,
-          controller: widget.controller,
-          enabled: widget.enable,
-          onChanged: widget.onChange,
-          cursorColor: EPColors.appMainColor,
-          obscureText: widget.forPassword! && showPassword,
-          style: TextStyle(
-              color: widget.inputTextColor ?? EPColors.appGreyColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w500),
-          decoration: InputDecoration(
-              suffixIcon: widget.suffixWidget,
-              suffixText: widget.suffixText,
-              contentPadding: widget.contentPadding ?? const EdgeInsets.all(8),
-              fillColor: widget.fillColor,
-              filled: true,
-              suffix: widget.forPassword!
-                  ? InkWell(
-                      onTap: () {
-                        setState(() {
-                          showPassword = !showPassword;
-                        });
-                      },
-                      child: showPassword
-                          ? Icon(
-                              Icons.visibility_off,
-                              color: EPColors.appMainColor,
-                              size: 15,
-                            )
-                          : Icon(
-                              Icons.visibility,
-                              color: EPColors.appMainColor,
-                              size: 15,
-                            ))
-                  : (widget.suffixIcon),
-              labelText: widget.labelText,
-              hintText: widget.hintText,
-              labelStyle:
-                  TextStyle(color: widget.labelColor ?? EPColors.appMainColor),
-              hintStyle:
-                  widget.hintStyle ?? const TextStyle(color: Colors.grey),
-              disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color:
-                          widget.disabledBorderColor ?? EPColors.appGreyColor)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: widget.enabledBorderColor ??
-                          const Color(0xffbfc9da))),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: EPColors.appGreyColor)),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color:
-                          widget.focusedBorderColor ?? EPColors.appMainColor))),
-        ),
-      ),
-    );
+        ));
   }
 }
 

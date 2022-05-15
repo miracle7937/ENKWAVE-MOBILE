@@ -1,10 +1,16 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/DataLayer/controllers/auth_controller.dart';
+import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration.dart';
+import 'package:enk_pay_project/UILayer/Screens/main_screens/main_dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -13,28 +19,42 @@ class SignInScreen extends StatefulWidget {
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  bool forEmail = true;
-
+class _SignInScreenState extends State<SignInScreen> with AuthView {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  late AuthController authController;
+  bool isBiometricEnable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkBiometric();
+  }
+
+  checkBiometric() async {
+    isBiometricEnable = await BiometricController.isBiometricEnable();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    authController = Provider.of<AuthController>(context)..view = this;
     return Stack(
       children: [
-        // Container(
-        //   child: Image.asset(
-        //     // Images.auth_Bg,
-        //     fit: BoxFit.cover,
-        //     width: MediaQuery.of(context).size.width,
-        //   ),
-        // ),
+        Opacity(
+          opacity: 1,
+          child: Image.asset(
+            EPImages.bgShadow,
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+          ),
+        ),
         EPScaffold(
+            backgroundColor: Colors.transparent,
+            state: AppState(pageState: authController.pageState),
             scaffoldKey: _scaffoldKey,
-            // backgroundColor: Colors.white,
-            // backgroundColor: Colors.transparent,
             builder: (context) {
               return SingleChildScrollView(
                 child: Column(
@@ -79,12 +99,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(
                       height: 35,
                     ),
-                    forEmail
+                    authController.loginWithEmail
                         ? EPForm(
                             controller: _emailController,
                             enabledBorderColor: EPColors.appGreyColor,
                             hintText: "Enter email e.g. enkwave@email.com",
-                            onChange: (v) {},
+                            onChange: (v) {
+                              authController.setEmail(v);
+                            },
                           )
                         : Row(
                             children: [
@@ -93,7 +115,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   controller: _phoneController,
                                   enabledBorderColor: EPColors.appGreyColor,
                                   hintText: "Enter phone number",
-                                  onChange: (v) {},
+                                  onChange: (v) {
+                                    authController.setPhoneConfirmation(v);
+                                  },
                                   keyboardType: TextInputType.phone,
                                 ),
                               ),
@@ -107,14 +131,18 @@ class _SignInScreenState extends State<SignInScreen> {
                       hintText: "Enter password",
                       enabledBorderColor: EPColors.appGreyColor,
                       forPassword: true,
-                      onChange: (v) {},
+                      onChange: (v) {
+                        authController.setPassword(v);
+                      },
                     ),
                     const SizedBox(
                       height: 30,
                     ),
                     EPButton(
                       title: "LOG IN",
-                      onTap: () {},
+                      onTap: () {
+                        authController.validateSIGNInForm();
+                      },
                     ),
                     const SizedBox(
                       height: 30,
@@ -125,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextClickButton(
-                            title: !forEmail
+                            title: !authController.loginWithEmail
                                 ? "Login with email"
                                 : "Login with phone number",
                             textStyle: Theme.of(context)
@@ -135,15 +163,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                     color: EPColors.appGreyColor,
                                     fontWeight: FontWeight.w500),
                             onTap: () {
-                              setState(() {
-                                forEmail = !forEmail;
-                              });
+                              authController.setLoginType =
+                                  !authController.loginWithEmail;
                             },
                           ),
-                          InkWell(
-                              splashColor: EPColors.appMainColor,
-                              onTap: () {},
-                              child: Image.asset(EPImages.fingerPrint)),
+                          isBiometricEnable
+                              ? InkWell(
+                                  splashColor: EPColors.appMainColor,
+                                  onTap: () async {
+                                    authController.biometricLogin();
+                                  },
+                                  child: Image.asset(EPImages.fingerPrint))
+                              : Container(),
                           TextClickButton(
                             title: "Forgot password?",
                             textStyle: Theme.of(context)
@@ -166,7 +197,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           .textTheme
                           .headline3!
                           .copyWith(fontWeight: FontWeight.w500),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const RegistrationScreen()));
+                      },
                     ),
                     const SizedBox(
                       height: 50,
@@ -177,5 +213,23 @@ class _SignInScreenState extends State<SignInScreen> {
             }),
       ],
     );
+  }
+
+  @override
+  void onError(String message) {
+    showEPStatusDialog(context, success: false, message: message, callback: () {
+      Navigator.pop(context);
+    });
+  }
+
+  @override
+  void onSuccess(v) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const MainScreen()));
+  }
+
+  @override
+  void onValidate() {
+    authController.logIn();
   }
 }

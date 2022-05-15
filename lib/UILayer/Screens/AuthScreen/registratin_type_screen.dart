@@ -1,6 +1,5 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/personal_registration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -40,9 +39,7 @@ class RegistrationTypeScreen extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          _selectRegistrationTYpe(context, "Personal", () {
-
-          }),
+          _selectRegistrationTYpe(context, "Personal", () {}),
           _selectRegistrationTYpe(context, "Business", () {})
         ],
       );

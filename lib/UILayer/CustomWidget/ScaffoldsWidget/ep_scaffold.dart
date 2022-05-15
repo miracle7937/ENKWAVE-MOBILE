@@ -1,10 +1,15 @@
 import 'dart:ui';
 
+import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/multi_floating_action.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state_widget_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class EPScaffold extends StatefulWidget {
   /// Extras:
@@ -231,49 +236,98 @@ class EPScaffoldState extends State<EPScaffold> {
   //   return List.from(actions)..add(searchButton);
   // }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget scaffold = Theme(
-      data: Theme.of(context),
-      child: Scaffold(
-        key: widget.scaffoldKey,
-        appBar: _buildAppBar(context) as PreferredSizeWidget,
-        body: Padding(
-          padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 20),
-          child: AbsorbPointer(
-            absorbing: widget.disablePointer!,
-            child: Stack(
-              children: [
-                SizedBox.expand(
-                    child: EPPageStateWidget(
-                  pageState: widget.state.pageState,
-                  loadingWidget: widget.loadingWidget,
-                  builder: widget.builder,
-                  noDataBuilder: widget.noDataBuilder,
-                  textUnderLoader: widget.textUnderLoader,
-                  onRetry: widget.state.onRetry,
-                  error: widget.error,
-                  noDataMessage: widget.state.noDataMessage,
-                )),
-                _buildBlur(),
+  _networkErrorWidget() {
+    return Column(
+      children: [
+        const Spacer(),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * .5,
+          width: MediaQuery.of(context).size.width * .8,
+          child: Container(
+            height: MediaQuery.of(context).size.height * .5,
+            width: MediaQuery.of(context).size.width * .8,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Something went wrong ......",
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.grey),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "No internet connection",
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  Lottie.asset(EPImages.errorLottie),
+                  EPButton(
+                    bgColor: EPColors.appMainLightColor,
+                    title: "Retry",
+                  )
+                ],
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: EPColors.appWhiteColor,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
               ],
             ),
           ),
         ),
-        floatingActionButton: widget.floatingActionButton,
-        floatingActionButtonLocation: widget.floatingActionButtonLocation,
-        floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
-        persistentFooterButtons: widget.persistentFooterButtons,
-        drawer: widget.drawer,
-        endDrawer: widget.endDrawer,
-        bottomNavigationBar: widget.bottomNavigationBar,
-        bottomSheet: widget.bottomSheet,
-        backgroundColor: widget.backgroundColor ?? Colors.white,
-        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-        primary: widget.primary ?? false,
-        extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
-      ),
+        const Spacer(),
+      ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget scaffold = Theme(
+        data: Theme.of(context),
+        child: Scaffold(
+          key: widget.scaffoldKey,
+          appBar: _buildAppBar(context) as PreferredSizeWidget,
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: EPPageStateWidget(
+              pageState: widget.state.pageState,
+              loadingWidget: widget.loadingWidget,
+              builder: widget.builder,
+              noDataBuilder: widget.noDataBuilder,
+              textUnderLoader: widget.textUnderLoader,
+              onRetry: widget.state.onRetry,
+              error: widget.error,
+              noDataMessage: widget.state.noDataMessage,
+            ),
+          ),
+          floatingActionButton: widget.floatingActionButton,
+          floatingActionButtonLocation: widget.floatingActionButtonLocation,
+          floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
+          persistentFooterButtons: widget.persistentFooterButtons,
+          drawer: widget.drawer,
+          endDrawer: widget.endDrawer,
+          bottomNavigationBar: widget.bottomNavigationBar,
+          bottomSheet: widget.bottomSheet,
+          backgroundColor: widget.backgroundColor ?? Colors.white,
+          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+          primary: widget.primary ?? false,
+          extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
+        ));
 
     if (isSearching)
       return WillPopScope(

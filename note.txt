@@ -1,0 +1,14 @@
+
+0 #add contact permission  for ios
+1 change buy data permission that was hardcoded
+2 add type of data in description screen
+
+==> status code for expiration(1000)
+
+Printer need
+**education
+**pos
+**electricity
+
+
+note enable biometric

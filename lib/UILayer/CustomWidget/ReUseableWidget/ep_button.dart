@@ -3,11 +3,16 @@ import 'package:flutter/material.dart';
 
 class EPButton extends StatefulWidget {
   final VoidCallback? onTap;
-  final bool? loading;
+  final bool? loading, active;
   final String? title;
   final Color? bgColor;
   const EPButton(
-      {Key? key, this.onTap, this.title, this.loading = false, this.bgColor})
+      {Key? key,
+      this.onTap,
+      this.title,
+      this.loading = false,
+      this.bgColor,
+      this.active = true})
       : super(key: key);
 
   @override
@@ -30,7 +35,10 @@ class _DXButtonState extends State<EPButton> {
             if (states.contains(MaterialState.pressed)) {
               return EPColors.appGreyColor;
             }
-            return widget.bgColor ?? EPColors.appMainColor;
+            return widget.bgColor ??
+                (widget.active!
+                    ? EPColors.appMainColor
+                    : EPColors.appGreyColor);
           }),
         ),
         // splashColor: Colors.red,
@@ -40,8 +48,8 @@ class _DXButtonState extends State<EPButton> {
           child: Center(
               child: (widget.loading ?? false)
                   ? const CircularProgressIndicator(
-                      backgroundColor: Colors.black,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black45),
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
                     )
                   : Text(
                       widget.title ?? "",
@@ -96,17 +104,20 @@ class ContainButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: child),
-      decoration: BoxDecoration(
-        color: EPColors.appWhiteColor,
-        boxShadow: const [
-          BoxShadow(
-              offset: Offset(4, 4),
-              color: Color.fromRGBO(0, 0, 0, 0.1),
-              blurRadius: 15)
-        ],
-        borderRadius: borderRadius ?? BorderRadius.circular(5.0),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        child: Center(child: child),
+        decoration: BoxDecoration(
+          color: EPColors.appWhiteColor,
+          boxShadow: const [
+            BoxShadow(
+                offset: Offset(4, 4),
+                color: Color.fromRGBO(0, 0, 0, 0.1),
+                blurRadius: 15)
+          ],
+          borderRadius: borderRadius ?? BorderRadius.circular(5.0),
+        ),
       ),
     );
   }
