@@ -171,6 +171,9 @@ class _SignInScreenState extends State<SignInScreen> with AuthView {
                               ? InkWell(
                                   splashColor: EPColors.appMainColor,
                                   onTap: () async {
+                                    // final fcmToken = await FirebaseMessaging.instance.getToken();
+                                    //
+                                    // debugPrint(fcmToken);
                                     authController.biometricLogin();
                                   },
                                   child: Image.asset(EPImages.fingerPrint))
