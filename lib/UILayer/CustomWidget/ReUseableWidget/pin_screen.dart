@@ -71,8 +71,8 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
           height: 10,
         ),
         Text(
-          widget.title ?? 'Enter Your Transaction Pin',
-          style: Theme.of(context).textTheme.headline1!.copyWith(
+          widget.title ?? 'Enter Your Transaction Pin'.toUpperCase(),
+          style: Theme.of(context).textTheme.headline5!.copyWith(
               fontWeight: FontWeight.w600, color: EPColors.appMainColor),
         ),
         const SizedBox(
@@ -125,7 +125,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                           widthFactor: 1 / 3,
                           child: AspectRatio(
                             aspectRatio: 1,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 ("clear").toString(),
                                 style: TextStyle(
@@ -157,7 +157,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                           widthFactor: 1 / 3,
                           child: AspectRatio(
                             aspectRatio: 1,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 (values[9]).toString(),
                                 style: TextStyle(
@@ -181,7 +181,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                           widthFactor: 1 / 3,
                           child: AspectRatio(
                             aspectRatio: 1,
-                            child: FlatButton(
+                            child: TextButton(
                               child: SizedBox(
                                 height: 50,
                                 width: 50,
@@ -206,7 +206,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                           widthFactor: 1 / 3,
                           child: AspectRatio(
                             aspectRatio: 1,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 (values[e.toInt()]).toString(),
                                 style: TextStyle(

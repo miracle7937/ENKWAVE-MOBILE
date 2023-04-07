@@ -4,4 +4,8 @@ class GetAllPackage {
   Future<Map> getProduct() async {
     return await PackageRepository().getPackage();
   }
+
+  Future<Map> getCableProduct() async {
+    return await PackageRepository().getCablePackage();
+  }
 }

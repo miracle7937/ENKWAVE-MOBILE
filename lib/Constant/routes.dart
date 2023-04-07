@@ -1,33 +1,73 @@
 class AppRoute {
-  static String baseRoute = "https://auth.enkwave.com/public/api";
+  static String baseRoute = "https://enkpayapp.enkwave.com/api";
 
-  static String signUp = "$baseRoute/auth/register";
-  static String logIN = "$baseRoute/auth/login";
+  static String signUp = "$baseRoute/register";
+  static String logINPhone = "$baseRoute/phone-login";
+  static String logINEmail = "$baseRoute/email-login";
 
   //oTP
-  static String sendOTP = "$baseRoute/auth/register/send-verification";
-  static String otpVerification = "$baseRoute/register/verify";
+  static String sendOTPPhone = "$baseRoute/verify-phone";
+  static String sendOTPEmil = "$baseRoute/verify-email";
 
-  static String listOfBank = "$baseRoute/account/banks";
-  static String transferOfBank = "$baseRoute/account/transaction/transfer";
-  static String inAppWalletTransfer =
-      "$baseRoute/account/transaction/wallet/transfer";
-  static String inAppVerifyUser =
-      "$baseRoute/account/transaction/wallet/verify-user";
+  static String reSendOTPPhone = "$baseRoute/resend-phone-otp";
+  static String resSendOTPEmil = "$baseRoute/resend-email-otp";
+
+  static String otpVerificationPhone = "$baseRoute/verify-phone-otp";
+  static String otpVerificationEmail = "$baseRoute/verify-email-otp";
+
+  static String getAllState = "$baseRoute/get-states";
+  static String getLga = "$baseRoute/get-lga";
+  static String transferProperties = "$baseRoute/transfer-properties";
+  static String verifyAccount = "$baseRoute/resolve-bank";
+  static String verifyBillAccount = "$baseRoute/verify-account";
+
+  static String transferOfBank = "$baseRoute/bank-transfer";
+  static String getWallet = "$baseRoute/get-wallet";
+  static String selfCashoutProperties = "$baseRoute/selfcashout-properties";
+
+  static String inAppWalletTransfer = "$baseRoute/enkpay-transfer";
+
+  static String inAppVerifyUserAccount = "$baseRoute/resolve-enkpay-account";
   static String createdPin = "$baseRoute/account/create-pin";
-  static String verifyPin = "$baseRoute/account/verify-pin";
-  static String getProfile = "$baseRoute/account/profile";
+  static String verifyPin = "$baseRoute/verify-pin";
+  static String logout = "$baseRoute/logout";
+  static String forgotPin = "$baseRoute/forgot-pin";
+  static String updateBusiness = "$baseRoute/update-business";
+  static String orderDevice = "$baseRoute/order-device";
+  static String verifyIdentity = "$baseRoute/verify-identity";
+  static String uploadIdentity = "$baseRoute/upload-identity";
+  static String updateBankInfo = "$baseRoute/update-bank-info";
+  static String orderDeviceComplete = "$baseRoute/order-device-complete";
+  static String getProfile = "$baseRoute/user-info";
+  static String createAccount = "$baseRoute/create-account";
+  static String cashOutRout = "$baseRoute/self-cash-out";
+  static String getHistory = "$baseRoute/all-transaction";
+  static String contact = "$baseRoute/contact";
+
   static String termsAndCondition = "https://enkwave.com/terms-and-condition";
 
   //data buying and bill
+
+  static String billingProducts = "$baseRoute/get-data-plan";
+  static String getCablePlan = "$baseRoute/get-cable-plan";
+  static String buyData = "$baseRoute/buy-data";
+  static String buyAirtime = "$baseRoute/buy-airtime";
+  static String lookUp = "$baseRoute/verify-account";
+  static String electricCompany = "$baseRoute/electric-company";
+  static String buyPower = "$baseRoute/buy-power";
+
   static String billBaseRoute = "https://app.enkwave.com/api";
   static String featuresPermission = "$billBaseRoute/features";
-  static String billingProducts = "$billBaseRoute/billingProducts";
 
   static String mtnData = "$billBaseRoute/mtndata";
   static String gloData = "$billBaseRoute/glodata";
   static String airtelData = "$billBaseRoute/airteldata";
   static String etisalatData = "$billBaseRoute/etisalatdata";
+
+  //cableTV
+  static String dstv = "$billBaseRoute/dstv";
+  static String goTV = "$billBaseRoute/gotv";
+  static String starTimes = "$billBaseRoute/startimes";
 
   static String getAirtimeRoute(String route) {
     return "$billBaseRoute/$route";

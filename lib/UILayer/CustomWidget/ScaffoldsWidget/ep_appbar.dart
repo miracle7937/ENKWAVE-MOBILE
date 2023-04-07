@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../Constant/colors.dart';
+
 class EPAppBar extends AppBar {
   EPAppBar({
     Key? key,
@@ -29,20 +31,20 @@ class EPAppBar extends AppBar {
               SafeArea(
                 child: Container(
                   // height: 100,
-                  decoration:
-                      BoxDecoration(color: backgroundColor ?? Colors.white
-                          // image: DecorationImage(
-                          //   image: AssetImage(Images.appBarBanner),
-                          //   fit: BoxFit.cover,
-                          // ),
-                          ),
+                  decoration: BoxDecoration(
+                    color: backgroundColor ?? EPColors.appMainColor,
+                    // image: DecorationImage(
+                    //   image: AssetImage(Images.appBarBanner),
+                    //   fit: BoxFit.cover,
+                    // ),
+                  ),
                 ),
               ),
           bottom: bottom,
           elevation: elevation,
           backgroundColor: backgroundColor,
           brightness: brightness,
-          iconTheme: iconTheme ?? IconThemeData(),
+          iconTheme: iconTheme ?? IconThemeData(color: EPColors.appWhiteColor),
           textTheme: textTheme ?? TextTheme(),
           primary: primary,
           centerTitle: centerTitle,

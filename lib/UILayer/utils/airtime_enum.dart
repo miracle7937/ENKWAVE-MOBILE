@@ -1,15 +1,15 @@
 enum NetworkSelector { mtn, glo, airtel, n9Mobile, none }
 
-String getAirtelRoute(NetworkSelector non) {
+String getServiceId(NetworkSelector non) {
   switch (non) {
     case NetworkSelector.mtn:
-      return "mtnAirtime";
+      return "mtn";
     case NetworkSelector.glo:
-      return "gloAirtime";
+      return "glo";
     case NetworkSelector.airtel:
-      return "airtelAirtime";
+      return "airtel";
     default:
-      return "etisalatAirtime";
+      return "etisalat";
   }
 }
 

@@ -142,7 +142,7 @@ class _AmountScreenState extends State<AmountScreen> {
                             widthFactor: 1 / 3,
                             child: AspectRatio(
                               aspectRatio: 1,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Text(
                                   ("clear").toString(),
                                   style: TextStyle(
@@ -174,7 +174,7 @@ class _AmountScreenState extends State<AmountScreen> {
                             widthFactor: 1 / 3,
                             child: AspectRatio(
                               aspectRatio: 1,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Text(
                                   (values[9]).toString(),
                                   style: TextStyle(
@@ -198,7 +198,7 @@ class _AmountScreenState extends State<AmountScreen> {
                             widthFactor: 1 / 3,
                             child: AspectRatio(
                               aspectRatio: 1,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: SizedBox(
                                   height: 50,
                                   width: 50,
@@ -223,7 +223,7 @@ class _AmountScreenState extends State<AmountScreen> {
                             widthFactor: 1 / 3,
                             child: AspectRatio(
                               aspectRatio: 1,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Text(
                                   (values[e.toInt()]).toString(),
                                   style: TextStyle(

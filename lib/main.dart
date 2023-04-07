@@ -1,17 +1,37 @@
 import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import 'DataLayer/LocalData/local_data_storage.dart';
+import 'DataLayer/controllers/account_verification_controller.dart';
 import 'DataLayer/controllers/auth_controller.dart';
+import 'DataLayer/controllers/business_controller.dart';
 import 'DataLayer/controllers/buy_airtime_controller.dart';
+import 'DataLayer/controllers/cable_tv_controller.dart';
+import 'DataLayer/controllers/contact_us_controller.dart';
 import 'DataLayer/controllers/dashboard_controller.dart';
+import 'DataLayer/controllers/electric_company_controller.dart';
 import 'DataLayer/controllers/in_app_transfer_controller.dart';
 import 'DataLayer/controllers/mobile_data_controller.dart';
 import 'DataLayer/controllers/network_data_controller.dart';
+import 'DataLayer/controllers/pin_controller.dart';
+import 'DataLayer/controllers/profile_controller.dart';
+import 'DataLayer/controllers/request_device_controller.dart';
 import 'DataLayer/controllers/set_pin_controller.dart';
+import 'DataLayer/controllers/signup_controller.dart';
+import 'DataLayer/controllers/update_account_controller.dart';
+import 'DataLayer/model/login_response_model.dart';
+import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
+import 'UILayer/Screens/main_screens/splash_screen.dart';
+import 'UILayer/utils/loader_widget.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +52,7 @@ class MyApp extends StatelessWidget {
           designSize: const Size(360, 690),
           minTextAdapt: true,
           splitScreenMode: true,
-          builder: () => const ThemeWidget()),
+          builder: (context, w) => const ThemeWidget()),
     );
   }
   // // This widget is the root of your application.
@@ -68,10 +88,36 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => AirtimeController()),
         ChangeNotifierProvider<MobileDataController>(
             create: (_) => MobileDataController()),
+        ChangeNotifierProvider<CableTVController>(
+            create: (_) => CableTVController()),
+        ChangeNotifierProvider<SignUpController>(
+            create: (_) => SignUpController()),
+        ChangeNotifierProvider<PinVerificationController>(
+            create: (_) => PinVerificationController()),
+        ChangeNotifierProvider<ElectricCompanyController>(
+            create: (_) => ElectricCompanyController()),
+        ChangeNotifierProvider<ProfileController>(
+            create: (_) => ProfileController()),
+        ChangeNotifierProvider<BusinessController>(
+            create: (_) => BusinessController()),
+        ChangeNotifierProvider<ContactUsController>(
+            create: (_) => ContactUsController()),
+        ChangeNotifierProvider<RequestDeviceController>(
+            create: (_) => RequestDeviceController()),
+        ChangeNotifierProvider<UpdateAccountController>(
+            create: (_) => UpdateAccountController()),
+        ChangeNotifierProvider<AccountVerificationController>(
+            create: (_) => AccountVerificationController()),
+        ChangeNotifierProvider<CashOutController>(
+            create: (_) => CashOutController()),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
+        routes: {
+          '/signInScreen': (context) => const SignInScreen(),
+        },
         builder: (context, widget) {
-          ScreenUtil.setContext(context);
+          ScreenUtil.init(context);
           return widget!;
         },
         title: 'EnkPay',
@@ -91,7 +137,7 @@ class ThemeWidget extends StatelessWidget {
           toggleableActiveColor: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const MyHomePage(title: 'Enkpay'),
+        home: const SplashScreen(),
       ),
     );
   }
@@ -108,10 +154,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.bottom]);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // return OTPScreen();
-    // return TransfersMainScreen();
-    return const OnBoardingScreen();
+    // return const NavUI();
+
+    return FutureBuilder<UserData?>(
+        future: LocalDataStorage.getUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return EPScaffold(
+              builder: (_) => const LoaderWidget(),
+            );
+          }
+          if (snapshot.data == null) {
+            return const OnBoardingScreen();
+          } else {
+            return const SignInScreen();
+          }
+        });
   }
 }
 

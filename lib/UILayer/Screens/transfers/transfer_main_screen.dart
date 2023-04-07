@@ -15,10 +15,8 @@ class TransfersMainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return EPScaffold(
       appBar: EPAppBar(
-        title: Text(
+        title: const Text(
           "Transfer",
-          style: Theme.of(context).textTheme.headline5!.copyWith(
-              fontWeight: FontWeight.w600, color: EPColors.appBlackColor),
         ),
       ),
       builder: (_) {
@@ -45,7 +43,7 @@ class TransfersMainScreen extends StatelessWidget {
             ),
             CardSelectCard(
               image: EPImages.inAppTransfer,
-              title: "Transfer to ENKPAY users",
+              title: "Transfer to Enkpay users",
               onTap: () {
                 pushToNextScreen(context, const TransferInApp());
               },

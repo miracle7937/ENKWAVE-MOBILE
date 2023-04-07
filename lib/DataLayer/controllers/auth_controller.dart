@@ -1,44 +1,57 @@
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/Constant/validation.dart';
-import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_model.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_response.dart';
-import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
 import 'package:enk_pay_project/DataLayer/repository/auth_repository.dart';
 import 'package:enk_pay_project/DataLayer/request.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import 'package:enk_pay_project/UILayer/utils/format_phone_number.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'biomertic_controller.dart';
+import '../model/lga_response.dart';
+import '../model/location_response.dart';
 
-class AuthController extends ChangeNotifier {
+class AuthController extends ChangeNotifier with RegView {
+  BasicPhoneEmailVerification basicPhoneEmailVerification =
+      BasicPhoneEmailVerification.forRegistration;
   RegistrationModel registrationModel = RegistrationModel();
-  UserCredentialModel userCredentialModel = UserCredentialModel();
-
   late AuthView _view;
   late OTPView _otpView;
-  late bool loginWithEmail = false;
+  late RequestOTPView _requestOTPView;
   String otp = "";
   bool checkedTermsCondition = false;
   PageState pageState = PageState.loaded;
-  late String _identifier;
-  late RegistrationResponse _registrationResponse;
+  bool isSelectPhoneVerification = true;
+  REGView? _regView;
+  List<LocationData>? locationData;
+  List<String>? allLgaData;
+  LocationData? location;
+  String? lgaData;
+
+  setBasicPhoneEmailVerification(v) {
+    basicPhoneEmailVerification = v;
+  }
+
+  setIsVerificationPhone(bool v) {
+    isSelectPhoneVerification = v;
+    notifyListeners();
+  }
+
+  set setGender(v) {
+    registrationModel.gender = v;
+    notifyListeners();
+  }
+
+  set requestOTPView(v) {
+    _requestOTPView = v;
+  }
 
   set view(AuthView v) {
     _view = v;
   }
 
-  setIdentifier(String identifier) {
-    _identifier = identifier;
-  }
-
   set otpView(OTPView v) {
     _otpView = v;
-  }
-
-  set setLoginType(bool v) {
-    loginWithEmail = v;
-    notifyListeners();
   }
 
   setFirstName(String v) {
@@ -53,27 +66,21 @@ class AuthController extends ChangeNotifier {
     registrationModel.lastName = v;
   }
 
-  setMiddleName(String v) {
-    registrationModel.middleName = v;
-  }
-
   setPassword(String v) {
     registrationModel.password = v;
-    userCredentialModel.password = v;
   }
 
   setPasswordConfirmation(String v) {
     registrationModel.passwordConfirmation = v;
   }
 
-  setPhoneConfirmation(String v) {
-    registrationModel.phone = v;
-    userCredentialModel.phone = v;
+  setPhone(String v) {
+    registrationModel.phone = PhoneNumber.format(v);
+    print(registrationModel.phone);
   }
 
   setEmail(String v) {
     registrationModel.email = v;
-    userCredentialModel.email = v;
   }
 
   setTermsCondition(bool v) {
@@ -81,101 +88,109 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setNGState(LocationData v) {
+    location = v;
+    registrationModel.state = v.name;
+    getAllLGA(v.name!);
+    notifyListeners();
+  }
+
+  set setLga(String v) {
+    lgaData = v;
+    registrationModel.lgaG = v;
+    notifyListeners();
+  }
+
+  clearFormAfterRegistration() {
+    registrationModel = RegistrationModel();
+    location = null;
+    lgaData = null;
+  }
+
+  getAllLGA(String state) async {
+    try {
+      pageState = PageState.loading;
+      LGAResponse lgaResponse = await AuthRepository.getAllGA({"state": state});
+
+      if (lgaResponse.status == true) {
+        allLgaData = lgaResponse.data;
+      }
+      if (allLgaData == null) {
+        regAddressView?.onError("Get LGA failed");
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    } catch (e) {
+      regAddressView?.onError(e.toString());
+      pageState = PageState.loaded;
+      notifyListeners();
+    }
+  }
+
+  getAllLocation() async {
+    if (locationData == null) {
+      try {
+        pageState = PageState.loading;
+        LocationResponse locationResponse = await AuthRepository.getAllState();
+        if (locationResponse.status == true) {
+          locationData = locationResponse.data;
+        } else {
+          regAddressView?.onError("Get State failed");
+        }
+
+        pageState = PageState.loaded;
+        notifyListeners();
+      } catch (e) {
+        regAddressView?.onError(e.toString());
+        pageState = PageState.loaded;
+        notifyListeners();
+      }
+    }
+  }
+
   register() async {
+    print(registrationModel.toJson());
     try {
       pageState = PageState.loading;
       notifyListeners();
       var result = await AuthRepository().signUP(registrationModel);
-      if (result.success == true) {
-        _registrationResponse = result;
-        _view.onSuccess(result);
+      if (result.status == true) {
+        regPasswordView?.onSuccess(result.message ?? "");
+      } else {
+        regPasswordView?.onError(result.message!);
       }
-      _view.onError(result.message!);
+
+      //clear form
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {
+      //clear form
+
       pageState = PageState.loaded;
       notifyListeners();
       if (e is HttpException) {
-        _view.onError((e).getMessage);
+        regPasswordView?.onError((e).getMessage);
         return;
       }
-      _view.onError((e).toString());
-    }
-  }
-
-  logIn() async {
-    Map data = {};
-    if (isNotEmpty(registrationModel.phone)) {
-      data["phone"] = registrationModel.phone;
-    }
-    if (isNotEmpty(registrationModel.password)) {
-      data["password"] = registrationModel.password;
-    }
-    if (isNotEmpty(registrationModel.email)) {
-      data["email"] = registrationModel.email;
-    }
-    LocalDataStorage.saveUserCredential(userCredentialModel);
-    loginLogic(data);
-  }
-
-  biometricLogin() async {
-    UserCredentialModel? _credentialModel =
-        await LocalDataStorage.getUserCredential();
-    debugPrint(_credentialModel!.toJson().toString());
-    Map data = {};
-    if (isNotEmpty(_credentialModel.phone)) {
-      data["phone"] = _credentialModel.phone;
-    }
-    if (isNotEmpty(_credentialModel.password)) {
-      data["password"] = _credentialModel.password;
-    }
-    if (isNotEmpty(_credentialModel.email)) {
-      data["email"] = _credentialModel.email;
-    }
-    BiometricController.authenticate().then((value) {
-      if (value == true && data.isNotEmpty) {
-        loginLogic(data);
-      }
-    });
-  }
-
-  loginLogic(Map data) async {
-    try {
-      pageState = PageState.loading;
-      notifyListeners();
-      var result = await AuthRepository().login(data);
-      if (result.success == true) {
-        LocalDataStorage.saveUserData(result.data!);
-        _view.onSuccess(null);
-        return;
-      }
-      _view.onError(result.message!);
-      pageState = PageState.loaded;
-      notifyListeners();
-    } catch (e) {
-      pageState = PageState.loaded;
-      notifyListeners();
-      if (e is HttpException) {
-        _view.onError((e).getMessage);
-        return;
-      }
-      _view.onError((e).toString());
+      regPasswordView?.onError((e).toString());
     }
   }
 
   otpVerification() async {
-    var data = {"identifier": _registrationResponse.data!.id, "token": otp};
+    Map data = isSelectPhoneVerification
+        ? {"phone_no": registrationModel.phone, "code": otp}
+        : {"email": registrationModel.email, "code": otp};
     try {
       pageState = PageState.loading;
       notifyListeners();
-      var result = await AuthRepository.verifyOTP(data);
+      var result =
+          await AuthRepository.verifyOTP(data, isSelectPhoneVerification);
 
-      if (result.success == true) {
+      if (result.status == true) {
         _otpView.onVerify(result.message.toString());
-        return;
+      } else {
+        _otpView.onError(result.message!);
       }
-      _otpView.onError(result.message!);
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {
@@ -190,79 +205,108 @@ class AuthController extends ChangeNotifier {
   }
 
   sendOTP() async {
+    Map data = isSelectPhoneVerification
+        ? {"phone_no": registrationModel.phone}
+        : {"email": registrationModel.email};
+
     pageState = PageState.loading;
     notifyListeners();
-    await Future.delayed(const Duration(seconds: 5));
-    pageState = PageState.loaded;
-    notifyListeners();
-    _otpView.onSuccess("OTP send successfully");
-    // AuthRepository.sendOTP({'identifier': _registrationResponse.data!.id})
-    //     .then((value) {
-    //   if (value.success == true) {
-    //     _otpView.onSuccess(value.message.toString());
-    //     return;
-    //   } else {
-    //     _otpView.onError(value.message.toString());
-    //   }
-    //   pageState = PageState.loaded;
-    //   notifyListeners();
-    // }).onError((error, i) {
-    //   _otpView.onError(error.toString());
-    //   pageState = PageState.loaded;
-    //   notifyListeners();
-    // });
+    AuthRepository.sendOTP(data, isSelectPhoneVerification).then((value) {
+      if (value.status == true) {
+        _requestOTPView.onSuccess(value.message.toString());
+      } else {
+        _requestOTPView.onError(value.message.toString());
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).onError((error, i) {
+      _requestOTPView.onError(error.toString());
+      pageState = PageState.loaded;
+      notifyListeners();
+    });
   }
 
-  void validateRegistrationForm() {
-    if (ValidationController().validateEmail(registrationModel.email ?? "")) {
-      _view.onError("Your email address is not valid");
+  resendOTP() async {
+    Map data = isSelectPhoneVerification
+        ? {"phone_no": PhoneNumber.format(registrationModel.phone!)}
+        : {"email": registrationModel.email};
+
+    pageState = PageState.loading;
+    notifyListeners();
+    AuthRepository.resSendOTP(data, isSelectPhoneVerification).then((value) {
+      if (value.status == true) {
+        _otpView.onSuccess(value.message.toString());
+      } else {
+        _otpView.onError(value.message.toString());
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).onError((error, i) {
+      _otpView.onError(error.toString());
+      pageState = PageState.loaded;
+      notifyListeners();
+    });
+  }
+
+  void validateRegistrationPersonalForm() {
+    if (isEmpty(registrationModel.gender)) {
+      regPersonalView?.onError("Please select your Date of birth");
       return;
-    } else if (registrationModel.phone == null) {
-      _view.onError("Your phone number is not valid");
+    } else if (isEmpty(registrationModel.dob)) {
+      regPersonalView?.onError("Please select your Date of birth");
       return;
-    } else if (registrationModel.firstName == null) {
-      _view.onError("Please Enter your First Name");
+    } else if (isEmpty(registrationModel.firstName)) {
+      regPersonalView?.onError("Please Enter your First Name");
       return;
-    } else if (registrationModel.middleName == null) {
-      _view.onError("Please Enter your Middle Name");
-      return;
-    } else if (!checkedTermsCondition) {
-      _view.onError("Please approve terms and conditions");
-      return;
-    } else if (registrationModel.password == null) {
-      _view.onError("Password field should not be empty");
-      return;
-    } else if (registrationModel.password !=
-        registrationModel.passwordConfirmation) {
-      _view.onError("Password doesn't match");
-      return;
-    } else if (registrationModel.password != null &&
-        (registrationModel.password!.length) < 4) {
-      _view.onError("Password too short");
+    } else if (isEmpty(registrationModel.lastName)) {
+      regPersonalView?.onError("Please Enter your First Name");
       return;
     }
-    _view.onValidate();
+    regPersonalView?.onFormValid();
   }
 
-  validateSIGNInForm() {
-    if (loginWithEmail) {
-      if (ValidationController().validateEmail(registrationModel.email ?? "")) {
-        _view.onError("Your email address is not valid");
+  void validateRegistrationAddressForm() {
+    if (isEmpty(registrationModel.state)) {
+      regAddressView?.onError("Please select  your State");
+      return;
+    } else if (isEmpty(registrationModel.lgaG)) {
+      regAddressView?.onError("Please select your LGA");
+      return;
+    } else if (isEmpty(registrationModel.street)) {
+      regAddressView?.onError("Please Enter your Address");
+      return;
+    }
+    regAddressView?.onFormValid();
+  }
+
+  void validateRegistrationPasswordForm() {
+    if (isEmpty(registrationModel.password)) {
+      regPasswordView?.onError("Please enter your password");
+      return;
+    } else if (isEmpty(registrationModel.passwordConfirmation)) {
+      regPasswordView?.onError("Please confirm your password");
+      return;
+    } else if (registrationModel.passwordConfirmation !=
+        registrationModel.password) {
+      regPasswordView?.onError("Your provided password mis-match");
+      return;
+    }
+    regPasswordView?.onFormValid();
+  }
+
+  validateRequestOTPForm() {
+    if (isSelectPhoneVerification) {
+      if (!ValidationController().isValidPhoneNumber(registrationModel.phone)) {
+        _requestOTPView.onError("Your phone number is not valid");
         return;
       }
     } else {
-      if (registrationModel.phone == null) {
-        _view.onError("Your phone number is not valid");
+      if (ValidationController().validateEmail(registrationModel.email ?? "")) {
+        _requestOTPView.onError("Your email address is not valid");
         return;
       }
     }
-
-    if (registrationModel.password != null &&
-        (registrationModel.password!.length) < 4) {
-      _view.onError("Password too short");
-      return;
-    }
-    _view.onValidate();
+    _requestOTPView.onFormValid();
   }
 }
 
@@ -276,4 +320,46 @@ abstract class OTPView {
   void onSuccess(String message);
   void onError(String message);
   void onVerify(String message);
+}
+
+abstract class RequestOTPView {
+  void onSuccess(String message);
+  void onError(String message);
+  void onFormValid();
+}
+
+abstract class REGView {
+  void onError(String message);
+  void onFormValid();
+}
+
+abstract class REGAddressView with REGView {}
+
+abstract class REGPersonalView extends REGView {}
+
+abstract class REGPasswordView extends REGView {
+  void onRegister();
+  void onSuccess(String message);
+}
+
+class RegView {
+  REGAddressView? regAddressView;
+  REGPersonalView? regPersonalView;
+  REGPasswordView? regPasswordView;
+  set setRegPersonal(v) {
+    regPersonalView = v;
+  }
+
+  set setRegAddress(v) {
+    regAddressView = v;
+  }
+
+  set setRegPassword(v) {
+    regPasswordView = v;
+  }
+}
+
+enum BasicPhoneEmailVerification {
+  forRegistration,
+  forAccountVerification,
 }

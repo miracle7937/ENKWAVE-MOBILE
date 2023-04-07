@@ -43,24 +43,7 @@ class PinController with ChangeNotifier {
     } else {
       pageState = PageState.loading;
       notifyListeners();
-      SettingPinRepository().createPin(createPinModel).then((value) {
-        if (value.status == true) {
-          _onConfirmPinView.onSuccess(value.message!);
-        } else {
-          inputList.clear();
-          _onConfirmPinView.onPinNotConfirmed(value.message!);
-        }
-        pageState = PageState.loaded;
-        notifyListeners();
-      }).catchError((e) {
-        pageState = PageState.loaded;
-        notifyListeners();
-        if (e is HttpException) {
-          _onConfirmPinView.onPinNotConfirmed(e.getMessage);
-          return;
-        }
-        _onConfirmPinView.onPinNotConfirmed(e.toString());
-      });
+      _onConfirmPinView.onSuccess();
     }
   }
 
@@ -97,7 +80,7 @@ abstract class OnSetPin {
 abstract class OnConfirmPinView {
   void onEnterConfirmPin();
   void onPinNotConfirmed(String message);
-  void onSuccess(String message);
+  void onSuccess();
 }
 
 abstract class VerifyPinView {

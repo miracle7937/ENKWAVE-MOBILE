@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class EPForm extends StatefulWidget {
+  final String? setValue;
   final String? labelText, hintText, suffixText;
   final bool? forPassword, enable;
   final EdgeInsetsGeometry? padding;
@@ -48,7 +49,8 @@ class EPForm extends StatefulWidget {
       this.border,
       this.suffixWidget,
       this.peffixIcon,
-      this.callback})
+      this.callback,
+      this.setValue = ""})
       : super(key: key);
 
   @override
@@ -57,6 +59,17 @@ class EPForm extends StatefulWidget {
 
 class _SYFormState extends State<EPForm> {
   bool showPassword = true;
+
+  TextEditingController? controller;
+
+  @override
+  void initState() {
+    controller = widget.controller ?? TextEditingController();
+    controller!.text = widget.setValue!;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -71,15 +84,13 @@ class _SYFormState extends State<EPForm> {
             child: TextFormField(
               inputFormatters: widget.inputFormatters,
               keyboardType: widget.keyboardType,
-              controller: widget.controller,
+              controller: controller,
               enabled: widget.enable,
               onChanged: widget.onChange,
               cursorColor: EPColors.appMainColor,
               obscureText: widget.forPassword! && showPassword,
-              style: Theme.of(context).textTheme.headline6!.copyWith(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  color: EPColors.appBlackColor),
+              style: Theme.of(context).textTheme.headline3!.copyWith(
+                  fontWeight: FontWeight.bold, color: EPColors.appBlackColor),
               decoration: InputDecoration(
                   prefixIcon: widget.peffixIcon,
                   suffixIcon: widget.suffixWidget,
@@ -196,7 +207,9 @@ class _CXDateFormState extends State<EPDateForm> {
 
   _handleText() {
     // do what you want with the text, for example:
-    _controller.text = widget.setValue!;
+    if (widget.setValue != null) {
+      _controller.text = widget.setValue!;
+    }
   }
 
   @override
@@ -205,28 +218,38 @@ class _CXDateFormState extends State<EPDateForm> {
       onTap: () async {
         DateTime date = DateTime(1900);
         date = (await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1900),
-            lastDate: DateTime.now()))!;
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+          builder: (BuildContext context, Widget? child) {
+            return Theme(
+              data: ThemeData.dark().copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: EPColors.appMainColor,
+                  onPrimary: Colors.white,
+                  surface: EPColors.appMainColor,
+                  onSurface: EPColors.appBlackColor,
+                ),
+                dialogBackgroundColor: Colors.white,
+              ),
+              child: child!,
+            );
+          },
+        ))!;
 
         // = date.toIso8601String();
-        _controller.text = DateFormat('dd/MM/yyyy').format(date);
-
+        _controller.text = DateFormat('dd-MM-yyyy').format(date);
         widget.onChange!(_controller.text);
       },
       child: Padding(
         padding: widget.padding ??
             const EdgeInsets.symmetric(
-              vertical: 10,
+              vertical: 1,
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.title ?? "",
-              style: const TextStyle(fontSize: 16),
-            ),
             const SizedBox(
               height: 10,
             ),
@@ -240,8 +263,10 @@ class _CXDateFormState extends State<EPDateForm> {
                 onChanged: widget.onChange,
                 cursorColor: EPColors.appMainColor,
                 obscureText: widget.forPassword!,
-                style: TextStyle(
-                    color: widget.inputTextColor ?? Colors.black, fontSize: 12),
+                style: Theme.of(context).textTheme.headline6!.copyWith(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: widget.inputTextColor ?? EPColors.appBlackColor),
                 decoration: InputDecoration(
                     suffixText: widget.suffixText,
                     contentPadding: widget.contentPadding,

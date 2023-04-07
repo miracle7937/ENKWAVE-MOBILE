@@ -12,3 +12,6 @@ Printer need
 
 
 note enable biometric
+
+https://pub.dev/packages/url_launcher config for ios
+image_picker permission too

@@ -1,6 +1,5 @@
 import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricController {
@@ -12,8 +11,6 @@ class BiometricController {
     final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
     final bool canAuthenticate =
         canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-    debugPrint("device biometric $canAuthenticate");
-
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
     if (availableBiometrics.contains(BiometricType.fingerprint) ||

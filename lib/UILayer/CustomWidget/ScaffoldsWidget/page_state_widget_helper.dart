@@ -37,7 +37,11 @@ class EPPageStateWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(
-                child: Lottie.asset(EPImages.loader),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Lottie.asset(EPImages.loader),
+                ),
               ),
             );
 

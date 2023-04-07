@@ -1,19 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 
+import '../main.dart';
 import 'LocalData/local_data_storage.dart';
 
-final String baseUrl = '';
-
 Future<Map<String, String>> getHeader() async {
-  var token = await LocalDataStorage.getToken() ??
-      "37|V6esZWpEjprIn87Wv2VxtlIajOVYubiRzFbJozTo";
+  var token = await LocalDataStorage.getToken() ?? "";
   print("APP Token  $token");
   var header = {
     'Content-Type': 'application/json',
@@ -35,26 +32,56 @@ class ServerRequest {
     try {
       var response = await http.get(url, headers: header);
       var data = jsonDecode(response.body);
-      print("$data  route: $path");
+      print("$data  route: $path  status: ${response.statusCode}");
 
+      if (data["status_code"] == 401) {
+        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+          '/signInScreen',
+          (route) => false,
+        );
+        //  return  TimeoutException('process time out');
+        // return;
+        throw HttpException({
+          "message": 'Sessions expired',
+        });
+      }
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
       } else {
         return HttpData(data);
       }
     } catch (e) {
-      print('exception get $e');
-      return HttpException('Something wrong happened');
+      debugPrint('exception post ${e.toString()}');
+      if (e is HttpException) {
+        throw HttpException({"message": e.toString(), "error": true});
+      }
+
+      if (e is SocketException) {
+        throw HttpException(
+            {"message": 'No Internet connection', "error": true});
+      }
+      if (e is FormatException) {
+        throw HttpException({"message": 'Bad response format', "error": true});
+      }
+      if (e is HandshakeException) {
+        throw HttpException({"message": 'Handshake exception', "error": true});
+      }
+      if (e is TimeoutException) {
+        throw HttpException(
+            {"message": 'This process has been timed out', "error": true});
+      }
+      throw HttpException(
+          {"message": 'Something wrong happened', "error": true});
     }
   }
 
   Future<HttpResponse> postData(
       {String? path, Map? body, List<Map>? bodyII}) async {
-    debugPrint(path! + body.toString());
+    log("${path}    ${body.toString()}");
     var header = await getHeader();
 
     try {
-      var url = Uri.parse(path);
+      var url = Uri.parse(path!);
 
       var response = await http
           .post(
@@ -70,15 +97,28 @@ class ServerRequest {
       );
       var data = jsonDecode(response.body);
       print("${response.statusCode} status code");
-      print("${response.body} MIMI");
+      print("${response.body}");
+      if (data["status_code"] == 401) {
+        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+          '/signInScreen',
+          (route) => false,
+        );
+        throw HttpException({
+          "message": 'Sessions expired',
+        });
+      }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
       } else {
-        return HttpData(data);
+        return HttpException(
+            {"message": 'something wrong happened', "error": true});
       }
     } catch (e) {
       debugPrint('exception post ${e.toString()}');
+      if (e is HttpException) {
+        throw HttpException({"message": e.toString(), "error": true});
+      }
 
       if (e is SocketException) {
         throw HttpException(
@@ -102,7 +142,7 @@ class ServerRequest {
   Future putData(BuildContext context,
       {String? path, Map? body, List<Map>? bodyII}) async {
     var header = await getHeader();
-    debugPrint(path);
+    log(path.toString());
 
     try {
       var url = Uri.parse(path!);
@@ -114,7 +154,17 @@ class ServerRequest {
       var data = jsonDecode(response.body);
 
       // print("$data  route: $path");
-      debugPrint(response.statusCode.toString());
+      log(response.statusCode.toString());
+
+      if (data["status_code"] == 401) {
+        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+          '/signInScreen',
+          (route) => false,
+        );
+        throw HttpException({
+          "message": 'Sessions expired',
+        });
+      }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
@@ -133,7 +183,7 @@ class ServerRequest {
     Map? body,
   }) async {
     final header = await getHeader();
-    var postUri = Uri.parse('$baseUrl$path');
+    var postUri = Uri.parse('$path');
     var request = http.MultipartRequest(
       "POST",
       postUri,
@@ -162,38 +212,52 @@ class ServerRequest {
   }
   //
 
-  Future uploadFile(BuildContext context,
-      {String? path, Map? body, File? file, imageKey}) async {
-    var stream = http.ByteStream(DelegatingStream.typed(file!.openRead()));
-    var length = await file.length();
+  Future uploadFile(
+      {String? path, Map? body, List<FileKeyValue>? fileKeyValue}) async {
     final header = await getHeader();
-    var postUri = Uri.parse('$baseUrl$path');
+    log("BODY: $body");
+    log("File: $fileKeyValue");
+    var postUri = Uri.parse('$path');
     var request = http.MultipartRequest(
       "POST",
       postUri,
     );
+    if (fileKeyValue != null) {
+      for (var value in fileKeyValue) {
+        request.files.add(
+            await http.MultipartFile.fromPath(value.key!, value.file!.path));
+      }
+    }
+
     request.headers.addAll(header);
 
     body!.forEach((key, value) {
       request.fields['$key'] = value.toString();
     });
-    var multipartFileSign = http.MultipartFile(imageKey, stream, length,
-        filename: basename(file.path));
-    request.files.add(multipartFileSign);
 
     var response = await request.send();
+    print("MIMI ${response.statusCode}");
+    http.Response v = await http.Response.fromStream(response);
+    var data = json.decode(v.body);
+    print("MIMI2 $data");
+    // var data = json.decode(await response.stream.bytesToString());
+    // print("MIMI3 $data}");
 
-    var data = jsonDecode(await response.stream.bytesToString());
-    if (response.statusCode == 401) {}
-
-    print(response);
+    if (data["status_code"] == 401) {
+      Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+        '/signInScreen',
+        (route) => false,
+      );
+      throw HttpException({"message": 'Sessions expired', "error": true});
+    }
+    print(data);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      debugPrint('successful');
-      return HttpData(data["data"]);
+      print('successful');
+      return HttpData(data);
       // return true;
     } else {
-      debugPrint('fails');
-      return HttpException(null);
+      print('fails');
+      throw HttpException(data["message"]);
     }
   }
 
@@ -222,7 +286,11 @@ class ServerRequest {
   }
 }
 
-//request  http request
+class FileKeyValue {
+  final String? key;
+  final File? file;
+  FileKeyValue(this.key, this.file);
+}
 
 abstract class HttpResponse {
   dynamic data;
@@ -233,6 +301,9 @@ class HttpException extends HttpResponse {
 
   HttpException(this.data);
   get getMessage => data["message"];
+
+  @override
+  toString() => data["message"];
 }
 
 class HttpData extends HttpResponse {

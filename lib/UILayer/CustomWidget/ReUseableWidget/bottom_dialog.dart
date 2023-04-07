@@ -12,6 +12,8 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_multi_formatter/formatters/formatter_extension_methods.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../utils/money_formatter.dart';
+
 _createDialogWidget(
   BuildContext context,
   String title,
@@ -63,7 +65,8 @@ _createDialogWidget(
           Center(
             child: Text(
               title,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline6!.copyWith(
+                  color: EPColors.appBlackColor, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(
@@ -77,7 +80,7 @@ _createDialogWidget(
               key: Key(message),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: EPColors.appMainLightColor,
+                    color: EPColors.appBlackColor,
                   ),
             ),
           )),
@@ -244,8 +247,10 @@ void showListOFDataPackage(BuildContext context, List<BasePackage>? recipients,
       //${r.phones.first.number.toString()}
       return DropdownMenuItem(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FittedBox(
+            Expanded(
+              flex: 4,
               child: Text(
                 "${r.getDesc} ",
                 style: Theme.of(context).textTheme.headline4,
@@ -253,10 +258,16 @@ void showListOFDataPackage(BuildContext context, List<BasePackage>? recipients,
                 maxLines: 2,
               ),
             ),
-            const Spacer(),
-            Text(
-              "NGN${double.parse(r.getAmount!).toCurrencyString(mantissaLength: 0).toString()} ",
-              style: Theme.of(context).textTheme.button,
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "NGN${double.parse(r.getAmount!).toCurrencyString(mantissaLength: 0).toString()} ",
+                  style: Theme.of(context).textTheme.button,
+                ),
+              ],
             ),
           ],
         ),
@@ -298,16 +309,48 @@ void showBankList(BuildContext context, List<Bank> listOfBanks,
     searchMatcher: (Bank bank, String b) {
       return [
         bank.bankName,
-      ].any((String? it) => it!.contains(b));
+      ].any((String? it) => it!.toLowerCase().contains(b.toLowerCase()));
     },
     title: "Mobile Number",
     context: context,
     items: listOfBanks,
     itemBuilder: (Bank r) {
       return DropdownMenuItem(
-        child: Text(
-          "${r.bankName} ",
-          style: Theme.of(context).textTheme.bodyText1,
+        child: Text("${r.bankName} ",
+            style: Theme.of(context).textTheme.headline3!.copyWith(
+                fontWeight: FontWeight.bold, color: EPColors.appBlackColor)),
+      );
+    },
+    onItemSelected: valueChanged,
+  );
+}
+
+void showWalletList(BuildContext context, List<UserWallet> listOfBanks,
+    ValueChanged<UserWallet> valueChanged) {
+  showIVBottomSheetList<UserWallet>(
+    hasSearch: true,
+    searchMatcher: (UserWallet bank, String b) {
+      return [
+        bank.title,
+      ].any((String? it) => it!.toLowerCase().contains(b.toLowerCase()));
+    },
+    title: "Mobile Number",
+    context: context,
+    items: listOfBanks,
+    itemBuilder: (UserWallet wallet) {
+      return DropdownMenuItem(
+        child: Row(
+          children: [
+            Text(wallet.title.toString(),
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: EPColors.appBlackColor)),
+            const Spacer(),
+            Text(amountFormatter(wallet.amount.toString()),
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: EPColors.appBlackColor)),
+          ],
         ),
       );
     },
@@ -346,6 +389,57 @@ Future<T?>? showIVModalBottomSheet<T>({
       return Material(
         child: body,
         //use  controller: ModalScrollController.of(context), in the body for closing while scrolling
+      );
+    },
+  );
+}
+
+pinDialog(BuildContext context,
+    {required Widget body, String? message, VoidCallback? onTap}) {
+  return showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      ),
+    ),
+    isScrollControlled: true,
+    context: context,
+    builder: (context) {
+      return _createExtensibleDialogWidget(
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: Container(
+                  height: 5,
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(50)),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              body,
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: const SizedBox(
+                  height: 15,
+                ),
+              )
+            ],
+          ),
+        ),
+        padding: const EdgeInsets.all(10),
       );
     },
   );

@@ -1,22 +1,26 @@
 import 'package:enk_pay_project/Constant/colors.dart';
-import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/DataLayer/controllers/buy_airtime_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selector_widget/airtime_selector.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/airtime_screen/airtime_transaction_preview.dart';
-import 'package:enk_pay_project/UILayer/helper/verify_pin.dart';
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../../DataLayer/model/bank_list_response.dart';
+import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
+import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
+import '../../utils/format_phone_number.dart';
+import '../../utils/money_formatter.dart';
+import '../transfers/widget/pin_verification_dialog.dart';
 
 class BuyAirtimeScreen extends StatefulWidget {
   const BuyAirtimeScreen({Key? key}) : super(key: key);
@@ -54,14 +58,14 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   late AirtimeController _airtimeController;
   @override
   Widget build(BuildContext context) {
-    _airtimeController = Provider.of<AirtimeController>(context)..setView(this);
+    _airtimeController = Provider.of<AirtimeController>(context)
+      ..setView(this)
+      ..getWallet();
     return EPScaffold(
-        state: AppState(pageState: _airtimeController.pageState),
+        // state: AppState(pageState: _airtimeController.pageState),
         appBar: EPAppBar(
-          title: Text(
+          title: const Text(
             "Airtime",
-            style: Theme.of(context).textTheme.headline5!.copyWith(
-                fontWeight: FontWeight.w600, color: EPColors.appBlackColor),
           ),
         ),
         builder: (_) => SingleChildScrollView(
@@ -83,13 +87,56 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                         _airtimeController.setAirtimeType = value;
                       },
                     ),
-                    height: MediaQuery.of(context).size.height * 0.2,
                   ),
+                  EPDropdownButton<UserWallet>(
+                      itemsListTitle: "Select Account",
+                      iconSize: 22,
+                      value: _airtimeController.selectedUserWallet,
+                      hint: const Text(""),
+                      isExpanded: true,
+                      underline: const Divider(),
+                      searchMatcher: (item, text) {
+                        return item.title!
+                            .toLowerCase()
+                            .contains(text.toLowerCase());
+                      },
+                      onChanged: (v) {
+                        _airtimeController.selectWallet = v;
+                        setState(() {});
+                      },
+                      items: (_airtimeController.userWallet ?? [])
+                          .map(
+                            (e) => DropdownMenuItem(
+                                value: e,
+                                child: Row(
+                                  children: [
+                                    Text(e.title.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline3!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: EPColors.appBlackColor)),
+                                    const Spacer(),
+                                    Text(amountFormatter(e.amount.toString()),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline3!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: EPColors.appBlackColor)),
+                                  ],
+                                )),
+                          )
+                          .toList()),
                   Row(
                     children: [
                       Expanded(
                         child: EPForm(
                           controller: phoneNumberController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           hintText: "Enter  phone number",
                           enabledBorderColor: EPColors.appGreyColor,
                           keyboardType: TextInputType.phone,
@@ -105,7 +152,9 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                         onTap: () {
                           selectContact();
                         },
-                        child: Image.asset(EPImages.contactIcon),
+                        child: const FaIcon(
+                          FontAwesomeIcons.addressBook,
+                        ),
                       )
                     ],
                   ),
@@ -133,8 +182,7 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                         width: 5,
                       ),
                       const FaIcon(
-                        FontAwesomeIcons.user,
-                        size: 10,
+                        Icons.person,
                       )
                     ],
                   ),
@@ -163,6 +211,7 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                     height: 20,
                   ),
                   EPButton(
+                    loading: PageState.loading == _airtimeController.pageState,
                     title: "Continue",
                     onTap: () {
                       _airtimeController.onSummit();
@@ -175,34 +224,44 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
 
   void selectContact() async {
     showPhoneList(context, contacts, (v) {
-      phoneNumberController.text = v.phones.first.number;
+      phoneNumberController.text = PhoneNumber.format(v.phones.first.number);
     });
   }
 
   @override
   void onError(String message) {
-    snackBar(context, message: message);
+    if (mounted) {
+      showEPStatusDialog(context, success: false, message: message,
+          callback: () {
+        Navigator.pop(context);
+      });
+    }
   }
 
   @override
   void onSuccess(String message) {
-    snackBar(context, message: message);
-  }
-
-  @override
-  void onPInVerify() {
-    verifyPin(context, onSuccess: () {
-      _airtimeController.buyAirtel();
+    showEPStatusDialog(context, success: true, message: message, callback: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 
   @override
-  void onPreView() async {
-    bool? isPop = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const AirtimeTransactionPreview()));
-    if (isPop != null) {
-      onPInVerify();
-    }
+  void onPInVerify() {
+    showPinDialog(context, onVerification: (status, message, pin) async {
+      Navigator.pop(context);
+      if (status == true) {
+        _airtimeController.setPin = pin;
+        onBuyAirtime();
+      } else {
+        onError(message);
+      }
+    });
+  }
+
+  @override
+  void onBuyAirtime() {
+    _airtimeController.buyAirtel();
   }
 }
 

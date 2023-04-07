@@ -9,6 +9,7 @@ class EPImages {
   static String bgShadow = "$root/bg_shadow.png";
   static String homeIcon = "$root/home.png";
   static String female = "$root/female.png";
+  static String successJson = "$root/success.json";
   static String successAnimation = "$root/success.flr";
   static String errorAnimation = "$root/error.flr";
 
@@ -23,6 +24,8 @@ class EPImages {
   static String payBill = "$root/pay_bill.png";
   static String transferIcon = "$root/transferIcon.png";
   static String pinLock = "$root/pin_lock.png";
+  static String bgImage = "$root/bg_image.png";
+  static String splashScreenLogo = "$root/spalshscreen_logo.png";
 
   static String errorLottie = "$root/error-lottie.json";
   static String loader = "$root/loader.json";
@@ -34,6 +37,7 @@ class EPImages {
   static String educationIcon = "$root/education.png";
   static String electricityIcon = "$root/electricity.png";
   static String bettingIcon = "$root/betting.png";
+  static String selectableIcon = "$root/selectable_icon.png";
   static String immigrationIcon = "$root/immigration.png";
 
   //airtime
@@ -41,6 +45,19 @@ class EPImages {
   static String gloIcon = "$root/glo.png";
   static String airtelIcon = "$root/airtel.png";
   static String i9mobileIcon = "$root/9mobile.png";
+  static String cloudImageUpload = "$root/cloud_image_upload.png";
+  static String posRealDevice = "$root/pos_real_device.png";
+  static String changePinIcon = "$root/change_pin-icon.png";
+  static String settingsBg = "$root/settings_bg.png";
+  static String userMale = "$root/user_male.png";
+  static String logOut = "$root/log_out.png";
+  static String customerCare = "$root/customer_care.png";
+  static String updateBankAccount = "$root/update_bank_account.png";
+  static String requestDevice = "$root/request_device.png";
+  static String businessInfoIcon = "$root/business_info_icon.png";
+  static String inwardTransaction = "$root/inward_transaction.png";
+  static String outwardIcon = "$root/outward_icon.png";
+  static String billsIcon = "$root/bills_icon.png";
 
   static String simCard = "$root/sim_card.png";
   static String mobilePhone = "$root/mobile_phone.png";
@@ -55,4 +72,5 @@ class EPImages {
   static String dsTv = "$root/dstv.png";
   static String goTV = "$root/gotv.png";
   static String starTime = "$root/star_time.png";
+  static String showMax = "$root/show_max.png";
 }

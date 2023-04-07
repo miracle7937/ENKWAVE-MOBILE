@@ -5,19 +5,23 @@ import 'package:enk_pay_project/DataLayer/model/generic_model_response.dart';
 import 'package:enk_pay_project/DataLayer/model/in_app_transfer_model.dart';
 import 'package:enk_pay_project/DataLayer/model/in_app_user_response_model.dart';
 
+import '../model/account_verification_model.dart';
+import '../model/wallet_model_response.dart';
 import '../request.dart';
 
 class TransferRepository {
   //get List of banks
-  Future<ListOfBanks> fetchListOfBanks() async {
-    var responseData = await ServerRequest().getData(path: AppRoute.listOfBank);
-    return ListOfBanks.fromJson(responseData.data);
+  Future<TransferProperties> fetchTransferProperties() async {
+    var responseData =
+        await ServerRequest().getData(path: AppRoute.transferProperties);
+    return TransferProperties.fromJson(responseData.data);
   }
 
-  Future bankTransfer(BankTransferModel bankTransferModel) async {
+  Future<GenericResponse> bankTransfer(
+      BankTransferModel bankTransferModel) async {
     var responseData = await ServerRequest().postData(
         path: AppRoute.transferOfBank, body: bankTransferModel.toJson());
-    return;
+    return GenericResponse.fromJson(responseData.data);
   }
 
   Future<GenericResponse2> inAppTransfer(InAppModelData inAppModelData) async {
@@ -28,7 +32,22 @@ class TransferRepository {
 
   Future<InAppUserResponseModel> inAppVerifyUser(Map map) async {
     var responseData = await ServerRequest()
-        .postData(path: AppRoute.inAppVerifyUser, body: map);
+        .postData(path: AppRoute.inAppVerifyUserAccount, body: map);
     return InAppUserResponseModel.fromJson(responseData.data);
+  }
+
+  static Future<AccountVerificationResponse> verifyBankAccount(
+      Map<String, dynamic> map) async {
+    var response =
+        await ServerRequest().postData(path: AppRoute.verifyAccount, body: map);
+    return AccountVerificationResponse.fromJson(response.data);
+  }
+
+  Future<UserWalletResponse> getWallet() async {
+    var responseData = await ServerRequest().getData(
+      path: AppRoute.getWallet,
+    );
+
+    return UserWalletResponse.fromJson(responseData.data);
   }
 }

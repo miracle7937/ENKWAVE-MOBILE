@@ -2,20 +2,23 @@ import 'dart:async';
 
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/auth_controller.dart';
-import 'package:enk_pay_project/DataLayer/model/registration_response.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/sign_in.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration_personal.dart';
 import 'package:enk_pay_project/UILayer/utils/otp_verification_countdown.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 
+import '../../CustomWidget/ReUseableWidget/bottom_dialog.dart';
+import '../../CustomWidget/ScaffoldsWidget/ep_appbar.dart';
+
 class OTPScreen extends StatefulWidget {
-  final RegistrationResponse? response;
-  const OTPScreen({Key? key, this.response}) : super(key: key);
+  const OTPScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
@@ -48,13 +51,15 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
     super.dispose();
   }
 
-  // snackBar Widget
-
+  late AuthController authController;
   @override
   Widget build(BuildContext context) {
-    AuthController authController = Provider.of<AuthController>(context)
-      ..otpView = this;
+    authController = Provider.of<AuthController>(context)..otpView = this;
     return EPScaffold(
+      appBar: EPAppBar(
+        iconTheme: IconThemeData(color: EPColors.appWhiteColor),
+        title: const Text('Verification'),
+      ),
       builder: (_) => GestureDetector(
         onTap: () {},
         child: SizedBox(
@@ -66,7 +71,9 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Phone Number Verification',
+                  authController.isSelectPhoneVerification
+                      ? 'Phone Number Verification'
+                      : 'Email Verification',
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
                       color: Colors.black, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
@@ -80,7 +87,9 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
                     text: "Enter the code sent to  ",
                     children: [
                       TextSpan(
-                        text: "widget.response!.data!.phoneNumber",
+                        text: authController.isSelectPhoneVerification
+                            ? "${authController.registrationModel.phone}"
+                            : "${authController.registrationModel.email}",
                         style: Theme.of(context).textTheme.headline1!.copyWith(
                             color: Colors.black, fontWeight: FontWeight.bold),
                       ),
@@ -101,6 +110,7 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
                         vertical: 8.0, horizontal: 30),
                     child: PinCodeTextField(
                       appContext: context,
+
                       pastedTextStyle: Theme.of(context)
                           .textTheme
                           .headline3!
@@ -108,14 +118,15 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
                               color: Colors.green.shade600,
                               fontWeight: FontWeight.bold),
 
-                      length: 6,
+                      length: 4,
                       obscureText: true,
                       obscuringCharacter: '*',
                       blinkWhenObscuring: true,
                       animationType: AnimationType.fade,
+
                       validator: (v) {
                         if (v!.length < 3) {
-                          return "Fill all form";
+                          return null;
                         } else {
                           return null;
                         }
@@ -177,7 +188,7 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
                       stream: _countdownOTP.timerStream,
                       builder: (_, snap) => TextButton(
                           onPressed: () {
-                            snap.hasData ? null : authController.sendOTP();
+                            snap.hasData ? null : authController.resendOTP();
                           },
                           child: Text(
                             snap.hasData ? (snap.data.toString()) : "SEND CODE",
@@ -201,7 +212,7 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
                 onTap: () {
                   formKey.currentState!.validate();
                   // conditions for validating
-                  if (currentText.length != 4 || currentText != "1234") {
+                  if (currentText.length < 4) {
                     errorController!.add(ErrorAnimationType
                         .shake); // Triggering error shake animation
                     setState(() => hasError = true);
@@ -227,7 +238,8 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
 
   @override
   void onError(String message) {
-    snackBar(context, message: message);
+    errorController!.add(ErrorAnimationType.shake);
+    snackBar(context, message: message, forError: true);
   }
 
   @override
@@ -238,9 +250,21 @@ class _OTPScreenState extends State<OTPScreen> with OTPView {
 
   @override
   void onVerify(String message) async {
-    snackBar(context, message: message);
-    await Future.delayed(const Duration(seconds: 2));
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const SignInScreen()));
+    if (authController.basicPhoneEmailVerification ==
+        BasicPhoneEmailVerification.forRegistration) {
+      snackBar(context, message: message);
+      await Future.delayed(const Duration(seconds: 2));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => const RegistrationScreenPersonalInfo()));
+    } else {
+      showEPStatusDialog(context, success: true, message: message,
+          callback: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
+    }
   }
 }

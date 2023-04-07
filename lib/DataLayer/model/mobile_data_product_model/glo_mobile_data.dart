@@ -2,26 +2,27 @@ import 'base_package.dart';
 
 class GloMobileDataModel extends BasePackage {
   String? amount;
-  String? data;
+  String? dataCode;
   String? dataName;
   String? description;
 
-  GloMobileDataModel({this.data, this.amount, this.dataName, this.description});
+  GloMobileDataModel(
+      {this.dataCode, this.amount, this.dataName, this.description});
 
   GloMobileDataModel.fromJson(Map<String, dynamic> json) {
-    amount = json['glo_data_amount'];
-    data = json['glo_data'];
-    dataName = json['glo_data_name'];
-    description = json['glo_data_description'];
-    super.setValue(amount!, description!);
+    amount = json['variation_amount'];
+    dataCode = json['variation_code'];
+    dataName = json['name'];
+    description = json['name'];
+    super.setValue(amount!, description!, dataCode!, "glo-data");
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['glo_data_amount'] = amount;
-    data['glo_data'] = this.data;
-    data['glo_data_name'] = dataName;
-    data['glo_data_description'] = description;
+    data['variation_amount'] = amount;
+    data['variation_code'] = dataCode;
+    data['name'] = dataName;
+    data['name'] = description;
     return data;
   }
 }

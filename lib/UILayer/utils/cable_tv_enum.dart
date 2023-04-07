@@ -1,1 +1,1 @@
-enum CableEnum { dsTv, goTv, startTimes }
+enum CableEnum { dsTv, goTv, startTimes, showMax }
