@@ -101,20 +101,25 @@ class _MainScreenState extends State<MainScreen> with MainView {
                   const SizedBox(
                     width: 15,
                   ),
-                  Text(
-                    greetingMessage(),
-                    style: Theme.of(context).textTheme.headline1!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: EPColors.appBlackColor),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        greetingMessage(),
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: EPColors.appBlackColor),
+                      ),
+                      Text(
+                        _dashBoardController.fullName.toUpperCase(),
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: EPColors.appBlackColor),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     width: 5,
-                  ),
-                  Text(
-                    _dashBoardController.fullName,
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: EPColors.appBlackColor),
                   ),
                 ],
               ),

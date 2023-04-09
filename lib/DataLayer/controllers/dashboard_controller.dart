@@ -29,7 +29,7 @@ class DashBoardController with ChangeNotifier {
     _mainView = mainView;
   }
 
-  get fullName => "${userData.firstName}";
+  String get fullName => "${userData.firstName}";
   get getAccountBalance => "${userData.mainWallet}";
   get getAccountBonusBalance => "${userData.bonusWallet}";
   get getVAccountNumber => "${userData.vAccountNo}";
@@ -47,10 +47,14 @@ class DashBoardController with ChangeNotifier {
           notifyListeners();
         }
         LoginResponseModel result = await DashboardRepository().fetch();
+
+        if (result.data != null) {
+          userData = result.data!;
+          print("SAAAAAAAAAAAAAAAAA===========>");
+          LocalDataStorage.saveUserData(userData);
+        }
         pageState = PageState.loaded;
         notifyListeners();
-        userData = result.data!;
-
         appSettings = await LocalDataStorage.getUserAppSettings();
         log(">>>>>>>>>>>>>>>>>>>feature>>>>>>>>>>>>>>>>>");
         if (appSettings?.version != PackageInfo().getVersion()) {
@@ -143,6 +147,10 @@ class DashBoardController with ChangeNotifier {
     } else {
       _mainView.onShowTransferAccount();
     }
+  }
+
+  clearAll() {
+    userData = UserData();
   }
 }
 

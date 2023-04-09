@@ -264,7 +264,7 @@ class UserData {
     return isNotEmpty(vAccountNo);
   }
 
-  get isMale => gender?.toUpperCase() == "MALE";
+ bool get isMale => gender?.toUpperCase() == "MALE";
 }
 
 class APPPermission {

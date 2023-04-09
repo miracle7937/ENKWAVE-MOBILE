@@ -12,8 +12,6 @@ import '../model/lga_response.dart';
 import '../model/location_response.dart';
 
 class AuthController extends ChangeNotifier with RegView {
-  BasicPhoneEmailVerification basicPhoneEmailVerification =
-      BasicPhoneEmailVerification.forRegistration;
   RegistrationModel registrationModel = RegistrationModel();
   late AuthView _view;
   late OTPView _otpView;
@@ -27,10 +25,6 @@ class AuthController extends ChangeNotifier with RegView {
   List<String>? allLgaData;
   LocationData? location;
   String? lgaData;
-
-  setBasicPhoneEmailVerification(v) {
-    basicPhoneEmailVerification = v;
-  }
 
   setIsVerificationPhone(bool v) {
     isSelectPhoneVerification = v;
@@ -97,7 +91,7 @@ class AuthController extends ChangeNotifier with RegView {
 
   set setLga(String v) {
     lgaData = v;
-    registrationModel.lgaG = v;
+    registrationModel.lga = v;
     notifyListeners();
   }
 
@@ -269,7 +263,7 @@ class AuthController extends ChangeNotifier with RegView {
     if (isEmpty(registrationModel.state)) {
       regAddressView?.onError("Please select  your State");
       return;
-    } else if (isEmpty(registrationModel.lgaG)) {
+    } else if (isEmpty(registrationModel.lga)) {
       regAddressView?.onError("Please select your LGA");
       return;
     } else if (isEmpty(registrationModel.street)) {
@@ -357,9 +351,4 @@ class RegView {
   set setRegPassword(v) {
     regPasswordView = v;
   }
-}
-
-enum BasicPhoneEmailVerification {
-  forRegistration,
-  forAccountVerification,
 }

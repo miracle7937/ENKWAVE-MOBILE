@@ -15,6 +15,9 @@ class AppRoute {
   static String otpVerificationPhone = "$baseRoute/verify-phone-otp";
   static String otpVerificationEmail = "$baseRoute/verify-email-otp";
 
+  static String sendOTPEmailAuthUser = "$baseRoute/auth-verify-email";
+  static String sendOTPPhoneAuthUser = "$baseRoute/auth-verify-phone";
+
   static String getAllState = "$baseRoute/get-states";
   static String getLga = "$baseRoute/get-lga";
   static String transferProperties = "$baseRoute/transfer-properties";

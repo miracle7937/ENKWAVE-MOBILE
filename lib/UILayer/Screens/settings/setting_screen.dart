@@ -1,4 +1,5 @@
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
 import 'package:enk_pay_project/UILayer/Screens/request_device/request_device_main_page.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_bank_info/update_account_information.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_pin_screen.dart';
@@ -7,6 +8,7 @@ import 'package:enk_pay_project/UILayer/Screens/settings/widget/setting_tabs.dar
 import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_widget.dart';
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Constant/colors.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
@@ -109,7 +111,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      snapshot.data?.isMale
+                                      snapshot.data?.isMale == true
                                           ? Image.asset(EPImages.userMale)
                                           : Image.asset(
                                               EPImages.female,
@@ -192,11 +194,14 @@ class _SettingScreenState extends State<SettingScreen> {
                             VerificationWidget(
                               isVerifyCompleted:
                                   snapshot.data?.isStatusCompleted(),
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const VerificationMainScreen())),
+                              onTap: () async {
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const VerificationMainScreen()));
+                                widget.onRefresh!();
+                              },
                             )
                           ],
                         )
@@ -256,9 +261,15 @@ class _SettingScreenState extends State<SettingScreen> {
                           setState(() => isLogout = false);
                           LocalDataStorage.clearUser();
                           Navigator.pushNamed(context, "/");
+                          //dispose dashboard controller to clear a valeus
+                          Provider.of<DashBoardController>(context,
+                                  listen: false)
+                              .clearAll();
                         }).onError((error, stackTrace) {
                           setState(() => isLogout = false);
-
+                          Provider.of<DashBoardController>(context,
+                                  listen: false)
+                              .clearAll();
                           LocalDataStorage.clearUser();
                           Navigator.pushNamed(context, "/");
                         });

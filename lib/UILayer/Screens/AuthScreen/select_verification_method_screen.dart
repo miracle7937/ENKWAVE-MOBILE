@@ -12,12 +12,9 @@ import '../../CustomWidget/ReUseableWidget/ep_button.dart';
 import 'otp_screen.dart';
 
 class SelectVerificationMethodScreen extends StatefulWidget {
-  final BasicPhoneEmailVerification? basicPhoneEmailVerification;
-  final bool? forPhone;
-
-  const SelectVerificationMethodScreen(
-      {Key? key, this.basicPhoneEmailVerification, this.forPhone})
-      : super(key: key);
+  const SelectVerificationMethodScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SelectVerificationMethodScreen> createState() =>
@@ -32,80 +29,106 @@ class _SelectVerificationMethodScreenState
   Widget build(BuildContext context) {
     authController = Provider.of<AuthController>(context)
       ..requestOTPView = this;
-    if (BasicPhoneEmailVerification.forAccountVerification ==
-        widget.basicPhoneEmailVerification) {
-      authController
-          ?.setBasicPhoneEmailVerification(widget.basicPhoneEmailVerification);
-      authController?.isSelectPhoneVerification = widget.forPhone!;
-    }
-    return EPScaffold(
-      state: AppState(pageState: authController!.pageState),
-      appBar: EPAppBar(
-        iconTheme: IconThemeData(color: EPColors.appWhiteColor),
-        title: const Text("VERIFICATION"),
-      ),
-      builder: (_) => Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          BasicPhoneEmailVerification.forAccountVerification ==
-                  authController?.basicPhoneEmailVerification
-              ? Container()
-              : Row(
-                  children: [
-                    Expanded(
-                      child: EPButton(
-                        title: "USE PHONE",
-                        onTap: () {
-                          authController?.setIsVerificationPhone(true);
-                        },
-                      ),
+    return DefaultTabController(
+      length: 2,
+      child: EPScaffold(
+        padding: EdgeInsets.zero,
+        state: AppState(
+          pageState: authController!.pageState,
+        ),
+        appBar: EPAppBar(
+          iconTheme: IconThemeData(color: EPColors.appWhiteColor),
+          title: const Text("VERIFICATION"),
+        ),
+        builder: (_) => SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                color: EPColors.appMainColor,
+                child: TabBar(
+                  onTap: (i) {
+                    authController?.setIsVerificationPhone(
+                        !authController!.isSelectPhoneVerification);
+                  },
+                  indicatorColor: EPColors.appMainLightColor,
+                  tabs: const [
+                    Tab(
+                      text: "Phone Verification",
                     ),
-                    Expanded(
-                      child: EPButtonWithBoarder(
-                        title: "USE EMAIL",
-                        onTap: () {
-                          authController?.setIsVerificationPhone(false);
-                        },
-                      ),
+                    Tab(
+                      text: "Email Verification",
                     ),
                   ],
                 ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          authController!.isSelectPhoneVerification
-              ? EPForm(
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  keyboardType: TextInputType.phone,
-                  key: const ValueKey("Enter Phone  Number"),
-                  hintText: "Enter Phone  Number",
-                  onChange: (v) {
-                    authController?.setPhone(v);
-                  },
-                )
-              : EPForm(
-                  key: const ValueKey("Enter Email"),
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: "Enter Email",
-                  onChange: (v) {
-                    authController?.setEmail(v);
-                  },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: EPButton(
+                    //         title: "USE PHONE",
+                    //         onTap: () {
+                    //           authController?.setIsVerificationPhone(true);
+                    //         },
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       child: EPButtonWithBoarder(
+                    //         title: "USE EMAIL",
+                    //         onTap: () {
+                    //           authController?.setIsVerificationPhone(false);
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    authController!.isSelectPhoneVerification
+                        ? EPForm(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            keyboardType: TextInputType.phone,
+                            key: const ValueKey("Enter Phone  Number"),
+                            hintText: "Enter Phone  Number",
+                            onChange: (v) {
+                              authController?.setPhone(v);
+                            },
+                          )
+                        : EPForm(
+                            key: const ValueKey("Enter Email"),
+                            keyboardType: TextInputType.emailAddress,
+                            hintText: "Enter Email",
+                            onChange: (v) {
+                              authController?.setEmail(v);
+                            },
+                          ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                    ),
+                    EPButton(
+                      title: "Continue",
+                      onTap: () {
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (_) => const OTPScreen()));
+                        // return;
+                        authController?.validateRequestOTPForm();
+                      },
+                    )
+                  ],
                 ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.2,
+              )
+            ],
           ),
-          EPButton(
-            title: "Continue",
-            onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (_) => const OTPScreen()));
-              // return;
-              authController?.validateRequestOTPForm();
-            },
-          )
-        ],
+        ),
       ),
     );
   }

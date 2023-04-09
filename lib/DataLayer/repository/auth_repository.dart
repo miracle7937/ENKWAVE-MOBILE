@@ -38,7 +38,17 @@ class AuthRepository {
     var responseData = await ServerRequest().postData(
         path: isSelectPhoneVerification
             ? AppRoute.reSendOTPPhone
-            : AppRoute.reSendOTPPhone,
+            : AppRoute.sendOTPEmil,
+        body: map);
+    return LoginResponseModel.fromJson(responseData.data);
+  }
+
+  static Future<LoginResponseModel> sendOTPAuthenticatedUser(
+      Map map, bool isSelectPhoneVerification) async {
+    var responseData = await ServerRequest().postData(
+        path: isSelectPhoneVerification
+            ? AppRoute.sendOTPPhoneAuthUser
+            : AppRoute.sendOTPEmailAuthUser,
         body: map);
     return LoginResponseModel.fromJson(responseData.data);
   }

@@ -9,7 +9,7 @@ class RegistrationModel {
   String? pin;
   String? passwordConfirmation;
   String? email;
-  String? lgaG;
+  String? lga;
   String? state;
   String? street;
   String? dob;
@@ -24,14 +24,14 @@ class RegistrationModel {
       this.password,
       this.passwordConfirmation,
       this.email,
-      this.lgaG,
+      this.lga,
       this.state,
       this.pin,
       this.dob,
       this.street});
 
   RegistrationModel.fromJson(Map<String, dynamic> json) {
-    lgaG = json['lgaG'];
+    lga = json['lga'];
     state = json['state'];
     street = json['street'];
     lastName = json['last_name'];
@@ -60,7 +60,7 @@ class RegistrationModel {
     data['gender'] = gender;
     data['street'] = street;
     data['state'] = state;
-    data['lgaG'] = lgaG;
+    data['lga'] = lga;
     data['pin'] = pin;
     data['dob'] = dob;
     return data;

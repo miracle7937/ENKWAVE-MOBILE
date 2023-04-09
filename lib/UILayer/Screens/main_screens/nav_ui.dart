@@ -45,6 +45,7 @@ class _NavUIState extends State<NavUI> with DashboardView {
     "Settings",
     "Home",
   ];
+
   @override
   Widget build(BuildContext context) {
     _dashBoardController =

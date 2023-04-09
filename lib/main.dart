@@ -16,6 +16,7 @@ import 'DataLayer/controllers/cable_tv_controller.dart';
 import 'DataLayer/controllers/contact_us_controller.dart';
 import 'DataLayer/controllers/dashboard_controller.dart';
 import 'DataLayer/controllers/electric_company_controller.dart';
+import 'DataLayer/controllers/email_phone_verification_controller.dart';
 import 'DataLayer/controllers/in_app_transfer_controller.dart';
 import 'DataLayer/controllers/mobile_data_controller.dart';
 import 'DataLayer/controllers/network_data_controller.dart';
@@ -110,6 +111,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => AccountVerificationController()),
         ChangeNotifierProvider<CashOutController>(
             create: (_) => CashOutController()),
+        ChangeNotifierProvider<EmailPhoneVerificationController>(
+            create: (_) => EmailPhoneVerificationController()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
