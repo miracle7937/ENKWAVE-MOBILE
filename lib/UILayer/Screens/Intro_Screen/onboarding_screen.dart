@@ -3,9 +3,10 @@ import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/sign_in.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../AuthScreen/select_verification_method_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
@@ -94,7 +95,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const RegistrationScreen()));
+                        builder: (_) =>
+                            const SelectVerificationMethodScreen()));
               },
             ),
             const Spacer(

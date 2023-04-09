@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class GreyBGCard extends StatelessWidget {
   final Widget child;
-  const GreyBGCard({Key? key, required this.child}) : super(key: key);
+  final Color? color;
+  const GreyBGCard({Key? key, required this.child, this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class GreyBGCard extends StatelessWidget {
         child: child,
       ),
       decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.3),
+          color: color ?? Colors.grey.withOpacity(0.3),
           borderRadius: BorderRadius.circular(8)),
     );
   }

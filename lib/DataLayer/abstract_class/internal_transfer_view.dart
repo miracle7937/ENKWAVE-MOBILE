@@ -3,4 +3,6 @@ abstract class InternalTransferView {
   onError(String message);
   onPinVerification();
   onPreview();
+  onTransfer();
+  onFailNumberVerify(String message);
 }

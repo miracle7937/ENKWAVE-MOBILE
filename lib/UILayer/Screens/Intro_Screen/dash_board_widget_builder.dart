@@ -2,20 +2,20 @@ import 'dart:io';
 
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
-import 'package:enk_pay_project/DataLayer/model/feature_permission_model.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/pos_screens/pos_amount_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../DataLayer/model/login_response_model.dart';
 
 class DashBoardBuilder {
   static List<IntroModel> builder(
-      PermissionModelData permissionModelData, BuildContext context) {
+      APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if (Platform.isAndroid && permissionModelData.pos == true) {
+    if (Platform.isAndroid && appPermission?.pos == 1) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",
@@ -26,7 +26,7 @@ class DashBoardBuilder {
         },
       ));
     }
-    if (permissionModelData.transfer == true) {
+    if (appPermission?.bankTransfer == 1) {
       dashBoardData.add(
         IntroModel(
             title: "Transfer",
@@ -41,7 +41,7 @@ class DashBoardBuilder {
       );
     }
 
-    if (permissionModelData.payBills == true) {
+    if (appPermission?.bills == 1) {
       dashBoardData.add(
         IntroModel(
             onTap: () {
@@ -55,21 +55,19 @@ class DashBoardBuilder {
             image: EPImages.payBill),
       );
     }
-    if (true) {
+    if (appPermission?.mobileData == 1) {
       dashBoardData.add(
         IntroModel(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const BuyDataScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const BuyDataScreen()));
             },
             title: "Buy Data",
             subTitle: "Buy data instantly all network available",
             image: EPImages.byData),
       );
     }
-    if (permissionModelData.buyAirtime == true) {
+    if (appPermission?.airtime == 1) {
       dashBoardData.add(
         IntroModel(
             onTap: () {
@@ -81,7 +79,7 @@ class DashBoardBuilder {
             image: EPImages.byAirtime),
       );
     }
-    if (permissionModelData.insurance == true) {
+    if (appPermission?.insurance == 1) {
       dashBoardData.add(
         IntroModel(
             title: "Insurance",
@@ -89,7 +87,7 @@ class DashBoardBuilder {
             image: EPImages.insurance),
       );
     }
-    if (permissionModelData.examCard == true) {
+    if (appPermission?.education == 1) {
       dashBoardData.add(
         IntroModel(
             title: "Exam Cards",
@@ -97,7 +95,7 @@ class DashBoardBuilder {
             image: EPImages.examCard),
       );
     }
-    if (permissionModelData.flight == true) {
+    if (appPermission?.ticket == 1) {
       dashBoardData.add(
         IntroModel(
             title: "Buy Ticket",
@@ -105,7 +103,7 @@ class DashBoardBuilder {
             image: EPImages.flightTicket),
       );
     }
-    if (permissionModelData.exchange == true) {
+    if (appPermission?.exchange == 1) {
       dashBoardData.add(IntroModel(
           title: "Exchange",
           subTitle: "Exchange your currency seamless ",

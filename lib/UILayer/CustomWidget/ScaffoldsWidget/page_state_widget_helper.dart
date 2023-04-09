@@ -13,6 +13,7 @@ class EPPageStateWidget extends StatelessWidget {
   final VoidCallback? onRetry;
   final dynamic error;
   final String? noDataMessage;
+  final EdgeInsetsGeometry? padding;
 
   const EPPageStateWidget({
     Key? key,
@@ -24,6 +25,7 @@ class EPPageStateWidget extends StatelessWidget {
     this.onRetry,
     this.error,
     this.noDataMessage,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -37,7 +39,11 @@ class EPPageStateWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(
-                child: Lottie.asset(EPImages.loader),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Lottie.asset(EPImages.loader),
+                ),
               ),
             );
 
@@ -45,7 +51,7 @@ class EPPageStateWidget extends StatelessWidget {
       case PageState.loaded:
         if (builder != null) {
           pageBody = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
             child: Builder(builder: builder!),
           );
         }

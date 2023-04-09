@@ -1,70 +1,118 @@
 import 'package:enk_pay_project/Constant/string_values.dart';
-import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
-import 'package:enk_pay_project/DataLayer/model/airtime_model.dart';
+import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
 import 'package:enk_pay_project/DataLayer/repository/airtime_repository.dart';
 import 'package:enk_pay_project/DataLayer/request.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../Constant/validation.dart';
+import '../../UILayer/utils/format_phone_number.dart';
+import '../model/airtime_model.dart';
+import '../model/buy_airtime_model.dart';
+
 class AirtimeController with ChangeNotifier {
-  late AirtimeView _view;
-  PageState pageState = PageState.loaded;
+  AirtimeView? _view;
+  PageState? pageState;
   late NetworkSelector airTimeRouteSelector;
   AirtimeModel airtimeModel = AirtimeModel();
+  BuyAirtimeModel buyAirtimeModel = BuyAirtimeModel();
+  List<UserWallet>? userWallet;
+  UserWallet? selectedUserWallet;
+
+  set setPin(String v) {
+    buyAirtimeModel.pin = v;
+  }
+
   setView(AirtimeView view) async {
     _view = view;
-    airtimeModel.token = await LocalDataStorage.getToken();
-    airtimeModel.uuid = await LocalDataStorage.getUserUUID();
+  }
+
+  set selectWallet(UserWallet v) {
+    selectedUserWallet = v;
+    buyAirtimeModel.wallet = v.key;
+    notifyListeners();
   }
 
   set setPhone(String v) {
-    airtimeModel.phone = v;
+    buyAirtimeModel.phone = PhoneNumber.format(v);
   }
 
   set setAirtimeType(NetworkSelector value) {
     airTimeRouteSelector = value;
+    buyAirtimeModel.serviceId = getServiceId(value);
   }
 
   set setAmount(String v) {
-    airtimeModel.amount = v;
+    buyAirtimeModel.amount = v;
+  }
+
+  getWallet() {
+    if (pageState != null) {
+      return;
+    }
+    pageState = PageState.loading;
+    AirTimeRepository().getWallet().then((value) {
+      userWallet = value;
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).onError((error, stack) {
+      print(stack);
+      pageState = PageState.loaded;
+      notifyListeners();
+      _view!.onError(error.toString());
+    });
   }
 
   onSummit() {
-    if (isNotEmpty(airtimeModel.phone)) {
-      _view.onPreView();
-    } else {
-      _view.onError("All fields  must be selected");
-    }
+    validateDataForm();
   }
 
   buyAirtel() {
     pageState = PageState.loading;
     notifyListeners();
-    AirTimeRepository()
-        .byAirTime(airtimeModel, airTimeRouteSelector)
-        .then((value) {
+    AirTimeRepository().byAirTime(buyAirtimeModel.toJson()).then((value) {
       pageState = PageState.loaded;
       notifyListeners();
       if (value.status != true) {
-        _view.onError(value.message!);
+        _view!.onError(value.message!);
       } else {
-        _view.onSuccess(value.message!);
+        _view!.onSuccess(value.message!);
       }
     }).catchError((error) {
       pageState = PageState.loaded;
       notifyListeners();
 
       if (error is HttpException) {
-        _view.onError(error.getMessage);
+        _view!.onError(error.getMessage);
         return;
       }
-      _view.onError(error.toString());
+      _view!.onError(error.toString());
     });
   }
 
+  validateDataForm() {
+    if (isEmpty(buyAirtimeModel.serviceId)) {
+      _view!.onError("Please select a provider");
+      return;
+    }
+    if (!ValidationController().isValidPhoneNumber(buyAirtimeModel.phone) ==
+        false) {
+      _view!.onError("Please provide a valid number");
+      return;
+    }
+    if (isEmpty(buyAirtimeModel.wallet)) {
+      _view!.onError("Please select account");
+      return;
+    }
+
+    _view!.onPInVerify();
+  }
+
   clearData() {
-    airtimeModel = AirtimeModel();
+    buyAirtimeModel = BuyAirtimeModel();
+    pageState = null;
+    selectedUserWallet = null;
   }
 }
 
@@ -72,5 +120,5 @@ abstract class AirtimeView {
   void onSuccess(String message);
   void onError(String message);
   void onPInVerify();
-  void onPreView();
+  void onBuyAirtime();
 }

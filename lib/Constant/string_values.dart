@@ -71,8 +71,11 @@ class ConstantString {
 
   static String userDataKey = "user-data-key";
   static String hideBalance = "hideBalance";
+  static String hideBonus = "hideBonus";
   static String enableBiometric = "enableBiometric";
   static String credential = "user-data-credential";
+  static String userPermission = "userPermission";
+  static String appSettings = "Settings";
 }
 
 /// Returns [true] if [s] is either null or empty.

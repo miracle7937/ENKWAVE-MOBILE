@@ -1,21 +1,27 @@
 class InAppModelData {
-  String? phoneNumber;
+  String? phone;
   String? amount;
-  String? description;
+  String? wallet;
+  String? pin;
+  String? narration;
 
-  InAppModelData({this.phoneNumber, this.amount, this.description});
+  InAppModelData({phone, amount, wallet, pin, narration});
 
   InAppModelData.fromJson(Map<String, dynamic> json) {
-    phoneNumber = json['phone_number'];
+    phone = json['phone'];
     amount = json['amount'];
-    description = json['description'] ?? "";
+    wallet = json['wallet'];
+    pin = json['pin'];
+    narration = json['narration'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['phone_number'] = this.phoneNumber;
-    data['amount'] = this.amount;
-    data['description'] = this.description;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['phone'] = phone;
+    data['amount'] = amount;
+    data['wallet'] = wallet;
+    data['pin'] = pin;
+    data['narration'] = narration ?? "";
     return data;
   }
 }

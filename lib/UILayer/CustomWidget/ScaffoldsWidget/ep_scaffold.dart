@@ -313,6 +313,7 @@ class EPScaffoldState extends State<EPScaffold> {
               onRetry: widget.state.onRetry,
               error: widget.error,
               noDataMessage: widget.state.noDataMessage,
+              padding: widget.padding,
             ),
           ),
           floatingActionButton: widget.floatingActionButton,
