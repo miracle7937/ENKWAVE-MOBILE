@@ -82,6 +82,7 @@ class DashBoardController with ChangeNotifier {
       notifyListeners();
       log(userData.toJson().toString());
     }).onError((onError, trace) {
+      print("$trace trace");
       pageState = PageState.loaded;
       notifyListeners();
       _dashboardView.onError(onError.toString());

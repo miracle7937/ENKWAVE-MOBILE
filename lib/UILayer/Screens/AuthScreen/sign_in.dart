@@ -39,6 +39,7 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
 
   checkBiometric() async {
     isBiometricEnable = await BiometricController.isBiometricEnable();
+    setState(() {});
   }
 
   @override

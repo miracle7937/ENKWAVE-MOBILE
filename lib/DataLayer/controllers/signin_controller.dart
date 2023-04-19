@@ -87,9 +87,12 @@ class SignInController extends ChangeNotifier {
     Map data = {};
     if (isNotEmpty(_credentialModel.phone)) {
       data["phone"] = _credentialModel.phone;
+      loginWithPhoneNumber = true;
     } else if (isNotEmpty(_credentialModel.email)) {
       data["email"] = _credentialModel.email;
+      loginWithPhoneNumber = false;
     }
+    // loginWithPhoneNumber  determine the route to push the auth data ;
 
     if (isNotEmpty(_credentialModel.password)) {
       data["password"] = _credentialModel.password;
