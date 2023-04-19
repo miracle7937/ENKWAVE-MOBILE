@@ -42,7 +42,15 @@ class _DXButtonState extends State<EPButton> {
           }),
         ),
         // splashColor: Colors.red,
-        onPressed: () => (widget.loading ?? false) ? null : widget.onTap!(),
+        onPressed: (widget.loading ?? false)
+            ? null
+            : () {
+                if ((WidgetsBinding.instance?.window.viewInsets.bottom ?? 0.0) >
+                    0) {
+                  FocusScope.of(context).unfocus();
+                }
+                widget.onTap!();
+              },
         child: SizedBox(
           height: 55,
           child: Center(

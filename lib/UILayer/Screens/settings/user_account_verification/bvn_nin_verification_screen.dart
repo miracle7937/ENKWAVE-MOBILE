@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import '../../../../Constant/colors.dart';
 import '../../../../DataLayer/controllers/account_verification_controller.dart';
 import '../../../CustomWidget/ReUseableWidget/bottom_dialog.dart';
-import '../../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
 import '../../../CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 
 class BVNandNINVerificationScreen extends StatefulWidget {
@@ -38,7 +37,7 @@ class _BVNandNINVerificationScreenState
       ..setView(this);
     return EPScaffold(
       appBar: EPAppBar(
-        title: const Text("VERIFY NIN or BVN"),
+        title: const Text("VERIFY BVN"),
       ),
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +46,7 @@ class _BVNandNINVerificationScreenState
             height: 20,
           ),
           Text(
-            "Verify your BVN / NIN",
+            "Verify your BVN",
             style: TextStyle(
               color: EPColors.appBlackColor,
               fontSize: 15.0,
@@ -57,39 +56,36 @@ class _BVNandNINVerificationScreenState
           const SizedBox(
             height: 10,
           ),
-          EPDropdownButton<VerificationType>(
-              itemsListTitle: "Select Mode of Verification",
-              iconSize: 22,
-              value: verificationController?.verificationType,
-              hint: const Text(""),
-              isExpanded: true,
-              underline: const Divider(),
-              searchMatcher: (item, text) {
-                return item.name.toLowerCase().contains(text.toLowerCase());
-              },
-              onChanged: (v) {
-                verificationController?.setVerificationType(v);
-                setState(() {});
-              },
-              items: (VerificationType.values)
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e.name.toUpperCase().toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: EPColors.appBlackColor)),
-                    ),
-                  )
-                  .toList()),
+          // EPDropdownButton<VerificationType>(
+          //     itemsListTitle: "Select Mode of Verification",
+          //     iconSize: 22,
+          //     value: verificationController?.verificationType,
+          //     hint: const Text(""),
+          //     isExpanded: true,
+          //     underline: const Divider(),
+          //     searchMatcher: (item, text) {
+          //       return item.name.toLowerCase().contains(text.toLowerCase());
+          //     },
+          //     onChanged: (v) {
+          //       verificationController?.setVerificationType(v);
+          //       setState(() {});
+          //     },
+          //     items: (VerificationType.values)
+          //         .map(
+          //           (e) => DropdownMenuItem(
+          //             value: e,
+          //             child: Text(e.name.toUpperCase().toString(),
+          //                 style: Theme.of(context)
+          //                     .textTheme
+          //                     .headline3!
+          //                     .copyWith(
+          //                         fontWeight: FontWeight.bold,
+          //                         color: EPColors.appBlackColor)),
+          //           ),
+          //         )
+          //         .toList()),
           EPForm(
-            hintText:
-                verificationController?.verificationType == VerificationType.bvn
-                    ? "Enter your BVN"
-                    : "Enter your NIN",
+            hintText: "Enter your BVN",
             enabledBorderColor: EPColors.appGreyColor,
             keyboardType: TextInputType.number,
             inputFormatters: [

@@ -1,6 +1,7 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration_personal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -68,26 +69,6 @@ class _SelectVerificationMethodScreenState
                     const SizedBox(
                       height: 10,
                     ),
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       child: EPButton(
-                    //         title: "USE PHONE",
-                    //         onTap: () {
-                    //           authController?.setIsVerificationPhone(true);
-                    //         },
-                    //       ),
-                    //     ),
-                    //     Expanded(
-                    //       child: EPButtonWithBoarder(
-                    //         title: "USE EMAIL",
-                    //         onTap: () {
-                    //           authController?.setIsVerificationPhone(false);
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.02,
                     ),
@@ -148,6 +129,14 @@ class _SelectVerificationMethodScreenState
 
   @override
   void onFormValid() {
-    authController?.sendOTP();
+    if (authController!.isSelectPhoneVerification == true) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => const RegistrationScreenPersonalInfo()));
+    } else {
+      authController?.sendOTP();
+    }
+    //when phone otp is done it can now be change  to only authController?.sendOTP(); for both phone and email
   }
 }

@@ -85,4 +85,10 @@ class AuthRepository {
         await ServerRequest().postData(path: AppRoute.logout, body: {});
     return GenericResponse.fromJson(response.data);
   }
+
+  Future<GenericResponse> forgetPassword(Map map) async {
+    var responseData =
+        await ServerRequest().postData(path: AppRoute.forgotForgot, body: map);
+    return GenericResponse.fromJson(responseData.data);
+  }
 }

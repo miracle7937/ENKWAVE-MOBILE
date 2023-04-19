@@ -33,6 +33,7 @@ class TransactionData {
   String? type;
   num? debit;
   num? credit;
+  num? amount;
   num? balance;
   num? fee;
   num? fromUserId;
@@ -63,6 +64,7 @@ class TransactionData {
       type,
       debit,
       credit,
+      amount,
       balance,
       fee,
       fromUserId,
@@ -93,6 +95,7 @@ class TransactionData {
     type = json['type'];
     debit = json['debit'];
     credit = json['credit'];
+    amount = json['amount'];
     balance = json['balance'];
     fee = json['fee'];
     fromUserId = json['from_user_id'];
@@ -125,6 +128,7 @@ class TransactionData {
     data['type'] = type;
     data['debit'] = debit;
     data['credit'] = credit;
+    data['amount'] = amount;
     data['balance'] = balance;
     data['fee'] = fee;
     data['from_user_id'] = fromUserId;

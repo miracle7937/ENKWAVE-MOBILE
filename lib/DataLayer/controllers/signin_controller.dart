@@ -9,11 +9,17 @@ import '../model/user_credential_model.dart';
 import '../repository/auth_repository.dart';
 import 'biomertic_controller.dart';
 
-class SignUpController extends ChangeNotifier {
+class SignInController extends ChangeNotifier {
   UserCredentialModel userCredentialModel = UserCredentialModel();
   PageState pageState = PageState.loaded;
   LOGINView? _view;
+  ForgetPasswordView? _forgetPasswordView;
+
   late bool loginWithPhoneNumber = true;
+
+  set forgetView(ForgetPasswordView forgetPasswordView) {
+    _forgetPasswordView = forgetPasswordView;
+  }
 
   set view(LOGINView v) {
     _view = v;
@@ -132,10 +138,38 @@ class SignUpController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  forgetPassword() {
+    if (ValidationController().validateEmail(userCredentialModel.email ?? "")) {
+      _forgetPasswordView?.onError("Please enter a valid email");
+      return;
+    }
+    pageState = PageState.loading;
+    notifyListeners();
+    AuthRepository()
+        .forgetPassword({"email": userCredentialModel.email}).then((value) {
+      if (value.status == true) {
+        _forgetPasswordView?.onSuccess(value.message ?? "");
+      } else {
+        _forgetPasswordView?.onError(value.message ?? "");
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).catchError((onError) {
+      _forgetPasswordView?.onError(onError.toString() ?? "");
+      pageState = PageState.loaded;
+      notifyListeners();
+    });
+  }
 }
 
 abstract class LOGINView {
   void onSuccess(String message);
   void onError(String message);
   void onValidate();
+}
+
+abstract class ForgetPasswordView {
+  void onSuccess(String message);
+  void onError(String message);
 }

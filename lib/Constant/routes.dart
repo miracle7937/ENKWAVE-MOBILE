@@ -27,6 +27,7 @@ class AppRoute {
   static String transferOfBank = "$baseRoute/bank-transfer";
   static String getWallet = "$baseRoute/get-wallet";
   static String selfCashoutProperties = "$baseRoute/selfcashout-properties";
+  static String transactionStatus = "$baseRoute/transaction-status";
 
   static String inAppWalletTransfer = "$baseRoute/enkpay-transfer";
 
@@ -35,6 +36,7 @@ class AppRoute {
   static String verifyPin = "$baseRoute/verify-pin";
   static String logout = "$baseRoute/logout";
   static String forgotPin = "$baseRoute/forgot-pin";
+  static String forgotForgot = "$baseRoute/forgot-password";
   static String updateBusiness = "$baseRoute/update-business";
   static String orderDevice = "$baseRoute/order-device";
   static String verifyIdentity = "$baseRoute/verify-identity";

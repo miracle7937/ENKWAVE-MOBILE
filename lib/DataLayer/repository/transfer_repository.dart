@@ -6,6 +6,7 @@ import 'package:enk_pay_project/DataLayer/model/in_app_transfer_model.dart';
 import 'package:enk_pay_project/DataLayer/model/in_app_user_response_model.dart';
 
 import '../model/account_verification_model.dart';
+import '../model/transaction_status_model.dart';
 import '../model/wallet_model_response.dart';
 import '../request.dart';
 
@@ -24,10 +25,10 @@ class TransferRepository {
     return GenericResponse.fromJson(responseData.data);
   }
 
-  Future<GenericResponse2> inAppTransfer(InAppModelData inAppModelData) async {
+  Future<GenericResponse> inAppTransfer(InAppModelData inAppModelData) async {
     var responseData = await ServerRequest().postData(
         path: AppRoute.inAppWalletTransfer, body: inAppModelData.toJson());
-    return GenericResponse2.fromJson(responseData.data);
+    return GenericResponse.fromJson(responseData.data);
   }
 
   Future<InAppUserResponseModel> inAppVerifyUser(Map map) async {
@@ -49,5 +50,12 @@ class TransferRepository {
     );
 
     return UserWalletResponse.fromJson(responseData.data);
+  }
+
+  Future<TransactionStatusModel> getTransactionStatus(Map map) async {
+    var responseData = await ServerRequest()
+        .postData(path: AppRoute.transactionStatus, body: map);
+
+    return TransactionStatusModel.fromJson(responseData.data);
   }
 }

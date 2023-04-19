@@ -92,12 +92,12 @@ class AirtimeController with ChangeNotifier {
   }
 
   validateDataForm() {
+    print(buyAirtimeModel.toJson());
     if (isEmpty(buyAirtimeModel.serviceId)) {
       _view!.onError("Please select a provider");
       return;
     }
-    if (!ValidationController().isValidPhoneNumber(buyAirtimeModel.phone) ==
-        false) {
+    if (!ValidationController().isValidPhoneNumber(buyAirtimeModel.phone)) {
       _view!.onError("Please provide a valid number");
       return;
     }

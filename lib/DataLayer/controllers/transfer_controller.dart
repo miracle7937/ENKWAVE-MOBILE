@@ -18,7 +18,7 @@ class TransferController with ChangeNotifier {
   int getTransferCharge() => int.parse(_transferCharge ?? "0");
 
   UserWallet? selectedUserWallet;
-  PageState pageState = PageState.loading;
+  PageState? pageState;
   late OnBankTransfer _onBankTransfer;
 
   disposeAll() {
@@ -26,8 +26,11 @@ class TransferController with ChangeNotifier {
     selectedUserWallet = null;
     selectedBank = null;
     accountName = null;
+    pageState = null;
     listOfBank.clear();
     userWallet.clear();
+
+    print("Clear trasnfer");
   }
 
   set onSetTransferView(OnBankTransfer v) {
@@ -41,6 +44,7 @@ class TransferController with ChangeNotifier {
   set setBank(Bank bank) {
     selectedBank = bank;
     bankTransferModel.bankCode = bank.bankCbnCode;
+    bankTransferModel.receiverBank = bank.bankName;
   }
 
   set selectWallet(UserWallet value) {
@@ -101,7 +105,7 @@ class TransferController with ChangeNotifier {
   }
 
   getListOFBank() {
-    if (listOfBank.isEmpty) {
+    if (pageState == null) {
       pageState = PageState.loading;
       TransferRepository().fetchTransferProperties().then((value) {
         if (value.data != null) {

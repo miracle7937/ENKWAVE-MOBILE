@@ -127,7 +127,6 @@ class _DashBoardCardState extends State<DashBoardCard> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ContainButton(
                   bgColor: Colors.pink,
@@ -225,7 +224,6 @@ class _DashBoardCardState extends State<DashBoardCard> {
           ],
         ),
       ),
-      width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.2,
       decoration: BoxDecoration(
           image: DecorationImage(

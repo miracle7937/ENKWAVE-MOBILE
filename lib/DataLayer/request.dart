@@ -11,7 +11,7 @@ import 'LocalData/local_data_storage.dart';
 
 Future<Map<String, String>> getHeader() async {
   var token = await LocalDataStorage.getToken() ?? "";
-  print("APP Token  $token");
+  log("APP Token  $token");
   var header = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -32,7 +32,7 @@ class ServerRequest {
     try {
       var response = await http.get(url, headers: header);
       var data = jsonDecode(response.body);
-      print("$data  route: $path  status: ${response.statusCode}");
+      log("$data  route: $path  status: ${response.statusCode}");
 
       if (data["status_code"] == 401) {
         Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
@@ -96,8 +96,8 @@ class ServerRequest {
         },
       );
       var data = jsonDecode(response.body);
-      print("${response.statusCode} status code");
-      print("${response.body}");
+      log("${response.statusCode} status code");
+      log("${response.body}");
       if (data["status_code"] == 401) {
         Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
           '/signInScreen',
@@ -111,8 +111,10 @@ class ServerRequest {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
       } else {
-        return HttpException(
-            {"message": 'something wrong happened', "error": true});
+        return HttpException({
+          "message": data["message"] ?? 'something wrong happened',
+          "error": true
+        });
       }
     } catch (e) {
       debugPrint('exception post ${e.toString()}');
@@ -236,10 +238,10 @@ class ServerRequest {
     });
 
     var response = await request.send();
-    print("MIMI ${response.statusCode}");
+    log("MIMI ${response.statusCode}");
     http.Response v = await http.Response.fromStream(response);
     var data = json.decode(v.body);
-    print("MIMI2 $data");
+    log("MIMI2 $data");
     // var data = json.decode(await response.stream.bytesToString());
     // print("MIMI3 $data}");
 
@@ -250,13 +252,13 @@ class ServerRequest {
       );
       throw HttpException({"message": 'Sessions expired', "error": true});
     }
-    print(data);
+    log(data);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print('successful');
+      log('successful');
       return HttpData(data);
       // return true;
     } else {
-      print('fails');
+      log('fails');
       throw HttpException(data["message"]);
     }
   }

@@ -6,6 +6,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/cards/cards
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/utils/greeting_util.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/LocalData/local_data_storage.dart';
@@ -16,6 +17,7 @@ import '../../utils/linear_progress_bar.dart';
 import '../../utils/screen_navigation.dart';
 import '../Intro_Screen/dash_board_widget_builder.dart';
 import '../cash_out/cash_out_screen.dart';
+import '../settings/user_account_verification/verification_main_screen.dart';
 import '../transfers/transfer_in_app.dart';
 
 class MainScreen extends StatefulWidget {
@@ -62,30 +64,48 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 loading: _dashBoardController.isAccountCreationLoading,
               ),
               const SizedBox(
-                height: 2,
+                height: 5,
               ),
               _dashBoardController.completeKYC
                   ? Container()
-                  : Container(
-                      decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Text(
-                              "Verify your account to enjoy our full services",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: EPColors.appWhiteColor),
-                            ),
-                          )
-                        ],
+                  : InkWell(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const VerificationMainScreen())),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 5),
+                              child: Row(
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.exclamationTriangle,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Please verify your account for full service access. \u26A1",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: EPColors.appBlackColor),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
               const SizedBox(

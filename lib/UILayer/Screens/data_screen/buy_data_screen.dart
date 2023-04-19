@@ -14,6 +14,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_multi_formatter/formatters/formatter_extension_methods.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -131,6 +132,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
                 children: [
                   Expanded(
                     child: EPForm(
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       controller: phoneNumberController,
                       hintText: "Enter  phone number",
                       enabledBorderColor: EPColors.appGreyColor,

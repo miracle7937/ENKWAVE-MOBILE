@@ -1,12 +1,13 @@
 import 'package:enk_pay_project/UILayer/Screens/history/widget/history_list_tile.dart';
 import 'package:enk_pay_project/UILayer/Screens/history/widget/history_selectable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/controllers/dashboard_controller.dart';
 import '../../CustomWidget/ReUseableWidget/custom_form.dart';
+import '../../CustomWidget/ReUseableWidget/transfer_status_page.dart';
 import '../../utils/loader_widget.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -56,10 +57,16 @@ class HistoryScreen extends StatelessWidget {
                               .map((e) => HistoryListTile(
                                     transactionData: e,
                                     onTap: () {
-                                      // Navigator.of(context).push(
-                                      //     MaterialPageRoute(
-                                      //         builder: (builder) =>
-                                      //             const HistoryDetail()));
+                                      if (getTransactionEnum(
+                                              e.transactionType!) ==
+                                          TransactionEnum.bankTransfer) {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (builder) =>
+                                                    TransferStatusPage(
+                                                      refTransId: e.refTransId,
+                                                    )));
+                                      }
                                     },
                                   ))
                               .toList(),

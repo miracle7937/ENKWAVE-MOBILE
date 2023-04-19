@@ -1,5 +1,5 @@
 class PackageInfo {
-  String version = "1.0.0";
+  String version = "1.2.0";
   getVersion() {
     return version;
   }

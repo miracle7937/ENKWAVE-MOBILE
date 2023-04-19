@@ -72,9 +72,7 @@ class AccountVerificationController with ChangeNotifier {
 
   onSummit() {
     if (isEmpty(setVerificationValue)) {
-      _view?.onError("Data is not valid");
-    } else if (verificationType == null) {
-      _view?.onError("Select verification mode");
+      _view?.onError("Please provide a valid data");
     } else {
       _view?.onFormVerify();
     }
@@ -82,11 +80,8 @@ class AccountVerificationController with ChangeNotifier {
 
   verifyData() {
     Map data = {};
-    if (verificationType == VerificationType.bvn) {
-      data["identity_type"] = "bvn";
-    } else {
-      data["identity_type"] = "nin";
-    }
+
+    data["identity_type"] = "bvn";
     data["identity_number"] = setVerificationValue;
 
     pageState = PageState.loading;

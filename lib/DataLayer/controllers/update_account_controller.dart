@@ -80,6 +80,7 @@ class UpdateAccountController extends ChangeNotifier {
     map["account_number"] = accountNumber;
     map["account_name"] = accountName;
     map["bank_code"] = selectedBank?.bankCbnCode;
+    map["bank_name"] = selectedBank?.bankName;
 
     SettingRepository().updateAccountInfo(map).then((value) {
       if (value.status == true) {

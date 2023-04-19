@@ -32,6 +32,9 @@ class _HistoryIconState extends State<HistoryIcon> {
       case TransactionEnum.enkPayTransfer:
         image = EPImages.outwardIcon;
         break;
+      case TransactionEnum.virtualFundWallet:
+        image = EPImages.inwardTransaction;
+        break;
       default:
         image = EPImages.billsIcon;
     }

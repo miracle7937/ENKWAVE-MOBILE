@@ -1,11 +1,11 @@
 enum TransactionEnum {
   all,
-  enkPayTransfer,
-  cashOut,
+  billsPayment,
   bankTransfer,
+  enkPayTransfer,
   selfCashOutTransfer,
   virtualFundWallet,
-  bills
+  cashOut,
 }
 
 // POS Transaction - CashOut
@@ -35,8 +35,8 @@ TransactionEnum getTransactionEnum(String transactionType) {
       TransactionEnum.bankTransfer.name.toLowerCase()) {
     value = TransactionEnum.bankTransfer;
   } else if (transactionType.toLowerCase() ==
-      TransactionEnum.bills.name.toLowerCase()) {
-    value = TransactionEnum.bills;
+      TransactionEnum.billsPayment.name.toLowerCase()) {
+    value = TransactionEnum.billsPayment;
   } else if (transactionType.toLowerCase() ==
       TransactionEnum.virtualFundWallet.name.toLowerCase()) {
     value = TransactionEnum.virtualFundWallet;
@@ -52,7 +52,7 @@ String getEnumName(TransactionEnum transactionType) {
     case TransactionEnum.cashOut:
       value = "POS TRANSACTION";
       break;
-    case TransactionEnum.bills:
+    case TransactionEnum.billsPayment:
       value = "BILLS";
       break;
     case TransactionEnum.virtualFundWallet:

@@ -24,13 +24,15 @@ import 'DataLayer/controllers/pin_controller.dart';
 import 'DataLayer/controllers/profile_controller.dart';
 import 'DataLayer/controllers/request_device_controller.dart';
 import 'DataLayer/controllers/set_pin_controller.dart';
-import 'DataLayer/controllers/signup_controller.dart';
+import 'DataLayer/controllers/signin_controller.dart';
+import 'DataLayer/controllers/transfer_status_controller.dart';
 import 'DataLayer/controllers/update_account_controller.dart';
 import 'DataLayer/model/login_response_model.dart';
 import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
 import 'UILayer/Screens/main_screens/splash_screen.dart';
 import 'UILayer/utils/loader_widget.dart';
+import 'UILayer/utils/primary_swatch_color.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -91,8 +93,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => MobileDataController()),
         ChangeNotifierProvider<CableTVController>(
             create: (_) => CableTVController()),
-        ChangeNotifierProvider<SignUpController>(
-            create: (_) => SignUpController()),
+        ChangeNotifierProvider<SignInController>(
+            create: (_) => SignInController()),
         ChangeNotifierProvider<PinVerificationController>(
             create: (_) => PinVerificationController()),
         ChangeNotifierProvider<ElectricCompanyController>(
@@ -113,6 +115,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => CashOutController()),
         ChangeNotifierProvider<EmailPhoneVerificationController>(
             create: (_) => EmailPhoneVerificationController()),
+        ChangeNotifierProvider<TransferStatusController>(
+            create: (_) => TransferStatusController()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
@@ -135,9 +139,9 @@ class ThemeWidget extends StatelessWidget {
               return EPColors.appMainColor;
             }),
           )),
-          primarySwatch: Colors.red,
+          primarySwatch: PrimarySwatchColor.get(),
           textTheme: getTextTheme(),
-          toggleableActiveColor: Colors.red,
+          toggleableActiveColor: EPColors.appMainColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: const SplashScreen(),

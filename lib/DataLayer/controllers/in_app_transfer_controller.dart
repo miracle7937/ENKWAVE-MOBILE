@@ -69,7 +69,7 @@ class InAppTransferController with ChangeNotifier {
     pageState = PageState.loading;
     notifyListeners();
     TransferRepository().inAppTransfer(inAppModelData).then((value) {
-      if (value.success == true) {
+      if (value.status == true) {
         _view.onSuccess(value.message!);
       } else {
         _view.onError(value.message!);

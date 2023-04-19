@@ -50,7 +50,6 @@ class DashBoardController with ChangeNotifier {
 
         if (result.data != null) {
           userData = result.data!;
-          print("SAAAAAAAAAAAAAAAAA===========>");
           LocalDataStorage.saveUserData(userData);
         }
         pageState = PageState.loaded;
@@ -107,10 +106,11 @@ class DashBoardController with ChangeNotifier {
     }
     if (query == TransactionEnum.all) {
       queryTransactionData = transactionData;
-    } else if (query == TransactionEnum.bills) {
+    } else if (query == TransactionEnum.billsPayment) {
       queryTransactionData = transactionData
-          .where((item) =>
-              item.transactionType!.toLowerCase().contains("vas".toLowerCase()))
+          .where((item) => item.transactionType!
+              .toLowerCase()
+              .contains("billsPayment".toLowerCase()))
           .toList();
     } else {
       queryTransactionData = transactionData

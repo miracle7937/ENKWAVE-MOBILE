@@ -12,8 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Constant/package_info.dart';
-import '../../../DataLayer/controllers/signup_controller.dart';
+import '../../../DataLayer/controllers/signin_controller.dart';
 import '../main_screens/nav_ui.dart';
+import 'forget_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  late SignUpController authController;
+  late SignInController authController;
   bool isBiometricEnable = false;
 
   @override
@@ -42,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
 
   @override
   Widget build(BuildContext context) {
-    authController = Provider.of<SignUpController>(context)..view = this;
+    authController = Provider.of<SignInController>(context)..view = this;
     return EPScaffold(
         backgroundColor: Colors.white,
         state: AppState(pageState: authController.pageState),
@@ -126,6 +127,26 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                   onChange: (v) {
                     authController.setPassword(v);
                   },
+                ),
+                Row(
+                  children: [
+                    const Spacer(),
+                    TextClickButton(
+                      title: "Forget Password",
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .headline3!
+                          .copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: EPColors.appMainColor),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ForgetPasswordScreen()));
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 30,

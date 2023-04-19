@@ -44,7 +44,7 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
             height: 20,
           ),
           Text(
-            "Verify your BVN / NIN",
+            "Verify Document",
             style: TextStyle(
               color: EPColors.appBlackColor,
               fontSize: 15.0,

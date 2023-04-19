@@ -1,4 +1,5 @@
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
 import 'package:enk_pay_project/UILayer/Screens/request_device/request_device_main_page.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_bank_info/update_account_information.dart';
@@ -12,7 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../Constant/colors.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
-import '../../../DataLayer/controllers/signup_controller.dart';
+import '../../../DataLayer/controllers/signin_controller.dart';
 import '../../../DataLayer/model/login_response_model.dart';
 import '../../utils/show_alert_dialog.dart';
 import 'business_info_screen.dart';
@@ -48,162 +49,151 @@ class _SettingScreenState extends State<SettingScreen> {
                   }
                   return RefreshIndicator(
                     onRefresh: () async {},
-                    child: Stack(
+                    child: Column(
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.25,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(EPImages.settingsBg),
-                                  fit: BoxFit.cover)),
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        const Spacer(),
-                                        // Container(
-                                        //     decoration: BoxDecoration(
-                                        //         color: Colors.white,
-                                        //         borderRadius:
-                                        //             BorderRadius.circular(8)),
-                                        //     child: InkWell(
-                                        //       onTap: () {
-                                        //         print(snapshot.data
-                                        //             ?.isUserKycCompleted());
-                                        //       },
-                                        //       child: Padding(
-                                        //         padding: const EdgeInsets.all(3.0),
-                                        //         child: Row(
-                                        //           children: [
-                                        //             Text(
-                                        //               "Edit",
-                                        //               style: Theme.of(context)
-                                        //                   .textTheme
-                                        //                   .headline1!
-                                        //                   .copyWith(
-                                        //                       fontWeight:
-                                        //                           FontWeight.w400,
-                                        //                       color: EPColors
-                                        //                           .appGreyColor),
-                                        //             ),
-                                        //             const Icon(Icons.edit)
-                                        //           ],
-                                        //         ),
-                                        //       ),
-                                        //     )),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Container(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0, vertical: 15),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      snapshot.data?.isMale == true
-                                          ? Image.asset(EPImages.userMale)
-                                          : Image.asset(
-                                              EPImages.female,
-                                            ),
                                       const SizedBox(
-                                        width: 10,
+                                        height: 20,
                                       ),
-                                      Column(
+                                      Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            snapshot.data?.firstName ?? "",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1!
-                                                .copyWith(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 12,
-                                                    color:
-                                                        EPColors.appWhiteColor),
-                                          ),
-                                          Text(
-                                            snapshot.data?.addressLine1 ?? "",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1!
-                                                .copyWith(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color:
-                                                        EPColors.appWhiteColor),
-                                          ),
+                                          snapshot.data?.isMale == true
+                                              ? Image.asset(EPImages.userMale)
+                                              : Image.asset(
+                                                  EPImages.female,
+                                                ),
                                           const SizedBox(
-                                            height: 10,
+                                            width: 10,
                                           ),
-                                          Row(
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                snapshot.data?.email ?? "",
+                                                "${snapshot.data?.firstName ?? ""}  ${snapshot.data?.lastName ?? ""} ",
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline4!
+                                                    .headline1!
                                                     .copyWith(
-                                                        fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.w400,
+                                                        fontSize: 12,
                                                         color: EPColors
                                                             .appWhiteColor),
+                                              ),
+                                              snapshot.data?.addressLine1 !=
+                                                      null
+                                                  ? Text(
+                                                      snapshot.data
+                                                              ?.addressLine1 ??
+                                                          "",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline1!
+                                                          .copyWith(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: EPColors
+                                                                  .appWhiteColor),
+                                                    )
+                                                  : Container(),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    snapshot.data?.email ?? "",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline4!
+                                                        .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: EPColors
+                                                                .appWhiteColor),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    snapshot.data?.phone ?? "",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline4!
+                                                        .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: EPColors
+                                                                .appWhiteColor),
+                                                  ),
+                                                ],
                                               ),
                                               const SizedBox(
-                                                width: 10,
+                                                height: 10,
                                               ),
-                                              Text(
-                                                snapshot.data?.phone ?? "",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline4!
-                                                    .copyWith(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: EPColors
-                                                            .appWhiteColor),
-                                              ),
+                                              isNotEmpty(
+                                                      snapshot.data?.serialNo)
+                                                  ? Text(
+                                                      "Terminal NO: ${snapshot.data?.serialNo ?? ""}",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline4!
+                                                          .copyWith(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: EPColors
+                                                                  .appWhiteColor),
+                                                    )
+                                                  : Container(),
                                             ],
                                           )
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            VerificationWidget(
-                              isVerifyCompleted:
-                                  snapshot.data?.isStatusCompleted(),
-                              onTap: () async {
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            const VerificationMainScreen()));
-                                widget.onRefresh!();
-                              },
-                            )
-                          ],
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                        VerificationWidget(
+                          isVerifyCompleted: snapshot.data?.isStatusCompleted(),
+                          onTap: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const VerificationMainScreen()));
+                            widget.onRefresh!();
+                          },
                         )
                       ],
                     ),
@@ -231,7 +221,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingTabs(
               image: EPImages.updateBankAccount,
-              title: "Update Account information",
+              title: "Update Bank Account information",
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -257,7 +247,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           onTap: () {
                         Navigator.pop(context);
                         setState(() => isLogout = true);
-                        SignUpController().logOut().whenComplete(() {
+                        SignInController().logOut().whenComplete(() {
                           setState(() => isLogout = false);
                           LocalDataStorage.clearUser();
                           Navigator.pushNamed(context, "/");

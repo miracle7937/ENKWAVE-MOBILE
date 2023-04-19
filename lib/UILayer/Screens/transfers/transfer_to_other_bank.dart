@@ -139,8 +139,15 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                     hintText: "Account number",
                     enabledBorderColor: EPColors.appGreyColor,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
+                    ],
                     onChange: (v) {
                       transferController?.selectAccount = v;
+                      if (v.length >= 10) {
+                        transferController?.bankAccountVerification();
+                      }
                     },
                   ),
                 ),
