@@ -3,7 +3,7 @@ class TransactionStatusModel {
   String? eRef;
   int? amount;
   String? receiverBank, receiverAccountNo, receiverName;
-  String? message;
+  String? message, date, note;
 
   TransactionStatusModel(
       {this.status, this.eRef, this.amount, this.receiverBank, this.message});
@@ -16,17 +16,19 @@ class TransactionStatusModel {
     message = json['message'];
     receiverAccountNo = json['receiver_account_no'];
     receiverName = json['receiver_name'];
+    note = json['note'];
+    date = json['date'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['e_ref'] = this.eRef;
-    data['amount'] = this.amount;
-    data['receiver_bank'] = this.receiverBank;
-    data['message'] = this.message;
-    data['receiver_account_no'] = this.receiverAccountNo;
-    data['receiver_name'] = this.receiverName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['e_ref'] = eRef;
+    data['amount'] = amount;
+    data['receiver_bank'] = receiverBank;
+    data['message'] = message;
+    data['receiver_account_no'] = receiverAccountNo;
+    data['receiver_name'] = receiverName;
     return data;
   }
 }

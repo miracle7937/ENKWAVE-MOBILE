@@ -2,6 +2,7 @@ import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
 import 'package:enk_pay_project/DataLayer/model/bank_transfer_model.dart';
 import 'package:enk_pay_project/DataLayer/repository/transfer_repository.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../Constant/string_values.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
@@ -35,6 +36,13 @@ class TransferController with ChangeNotifier {
 
   set onSetTransferView(OnBankTransfer v) {
     _onBankTransfer = v;
+  }
+
+  getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    bankTransferModel.longitude = position.longitude.toString();
+    bankTransferModel.latitude = position.latitude.toString();
   }
 
   set setPin(String v) {
@@ -151,6 +159,7 @@ class TransferController with ChangeNotifier {
   }
 
   validateTransferForm() {
+    print(bankTransferModel.toJson());
     if (isEmpty(bankTransferModel.bankCode)) {
       _onBankTransfer.onError("Please select bank");
       return;

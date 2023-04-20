@@ -25,4 +25,8 @@ class TransferStatusController with ChangeNotifier {
       notifyListeners();
     });
   }
+
+  clearAll() {
+    pageState = null;
+  }
 }

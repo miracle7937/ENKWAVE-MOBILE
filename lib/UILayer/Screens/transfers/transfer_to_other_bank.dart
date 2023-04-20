@@ -34,6 +34,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
   void dispose() {
     super.dispose();
     transferController?.disposeAll();
+    Provider.of<TransferController>(context, listen: false).getLocation();
   }
 
   @override
@@ -291,7 +292,8 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
 
   @override
   onTransferSuccess(String message) {
-    showEPStatusDialog(context, success: false, message: message, callback: () {
+    showEPStatusDialog(context, success: true, message: message, callback: () {
+      Navigator.pop(context);
       Navigator.pop(context);
     });
   }

@@ -4,6 +4,7 @@ class EPImages {
   static String bg2 = "$root/2.json";
   static String bg3 = "$root/3.json";
   static String bg4 = "$root/4.json";
+  static String errorIcons = "$root/error_icons.json";
   static String fingerPrint = "$root/finger_print.png";
   static String authBg = "$root/backgroundImage.jpg";
   static String bgShadow = "$root/bg_shadow.png";
@@ -15,6 +16,7 @@ class EPImages {
 
   //dashboardIcon
   static String posIcon = "$root/posIcon.png";
+  static String appIcon = "$root/app_icon.png";
   static String forex = "$root/forex.png";
   static String byAirtime = "$root/byAirtime.png";
   static String byData = "$root/byData.png";

@@ -1,5 +1,14 @@
+import 'dart:math';
+
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+
+String generateRandomString(int length) {
+  var rand = Random();
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  return String.fromCharCodes(Iterable.generate(
+      length, (_) => chars.codeUnitAt(rand.nextInt(chars.length))));
+}
 
 String listOfStringToFormattedString(List data) {
   return data[0].toString();

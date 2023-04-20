@@ -121,9 +121,9 @@ class ErrorSwitcher extends StatelessWidget {
 
   Widget _buildBody() {
     return _ErrorWidget(
-      message: message!,
-      onRetry: onRetry!,
-      subMessage: subMessage!,
+      message: message,
+      onRetry: onRetry,
+      subMessage: subMessage,
     );
   }
 }
@@ -156,28 +156,22 @@ class _ErrorWidget extends StatelessWidget {
           Text(
             "Something went wrong",
             style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 18,
                 ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "connection error",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-          ),
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: Lottie.asset(
+                EPImages.errorIcons,
+              )),
           const Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               EPButton(
                 title: "Retry",
-                onTap: onRetry,
+                onTap: onRetry ?? () {},
               ),
             ],
           ),
