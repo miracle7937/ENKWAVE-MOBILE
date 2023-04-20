@@ -14,4 +14,11 @@ class TimeUtilAgo {
     String formattedDate = formatter.format(now);
     return formattedDate;
   }
+
+  static String format2(time) {
+    var now = DateTime.parse(time);
+    var formatter = DateFormat('MMM y, d h:mm a');
+    String formattedDate = formatter.format(now);
+    return formattedDate;
+  }
 }

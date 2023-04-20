@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
       myProvider.getTransaction(widget.refTransId!);
       controller = myProvider;
       return EPScaffold(
+        appBar: EPAppBar(),
         state: AppState(
             pageState: myProvider.pageState,
             noDataMessage: myProvider.transactionStatusModel?.message),
@@ -129,7 +131,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                     ),
                     rowView(
                       "Date",
-                      TimeUtilAgo.format(
+                      TimeUtilAgo.format2(
                           myProvider.transactionStatusModel!.date!),
                     ),
                     const SizedBox(
