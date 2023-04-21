@@ -252,14 +252,14 @@ class ServerRequest {
       );
       throw HttpException({"message": 'Sessions expired', "error": true});
     }
-    log(data);
+    log(data.toString());
     if (response.statusCode == 200 || response.statusCode == 201) {
       log('successful');
       return HttpData(data);
       // return true;
     } else {
       log('fails');
-      throw HttpException(data["message"]);
+      throw HttpException(data);
     }
   }
 

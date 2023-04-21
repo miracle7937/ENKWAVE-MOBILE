@@ -63,7 +63,7 @@ class AccountVerificationController with ChangeNotifier {
       }
       pageState = PageState.loaded;
       notifyListeners();
-    }).catchError((onError) {
+    }).onError((onError, trace) {
       _identityView?.onError(onError.toString() ?? "");
       pageState = PageState.loaded;
       notifyListeners();
@@ -108,7 +108,9 @@ class AccountVerificationController with ChangeNotifier {
     if (image?.path == null) {
       return null;
     }
-    return compressImage(File(image!.path));
+    return Platform.isAndroid
+        ? compressImage(File(image!.path))
+        : Future.value(File(image!.path));
   }
 
   Future<File> compressImage(File file) async {

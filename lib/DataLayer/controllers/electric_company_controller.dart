@@ -107,6 +107,7 @@ class ElectricCompanyController with ChangeNotifier {
 
   validateTransferForm() {
     print(buyElectricityModel.toJson());
+
     if (!ValidationController().isValidPhoneNumber(buyElectricityModel.phone)) {
       _view?.onError("Please provide beneficiary phone number");
       return;
