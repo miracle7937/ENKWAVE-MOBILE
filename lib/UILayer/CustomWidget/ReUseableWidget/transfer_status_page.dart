@@ -49,122 +49,132 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
         state: AppState(
             pageState: myProvider.pageState,
             noDataMessage: myProvider.transactionStatusModel?.message),
-        builder: (_) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Column(
-            children: [
-              Screenshot(
-                controller: screenshotController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // SizedBox(
-                    //   width: MediaQuery.of(context).size.width * 0.5,
-                    //   height: MediaQuery.of(context).size.height * 0.1,
-                    //   child: Lottie.asset(
-                    //     EPImages.successJson,
-                    //     alignment: Alignment.center,
-                    //     fit: BoxFit.contain,
-                    //   ),
-                    // ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      child: Image.asset(EPImages.appIcon),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Successful",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "${amountFormatter(myProvider.transactionStatusModel?.amount.toString()) ?? ""}",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Transfer successful. Actual credit time subject to recipient's bank.",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          fontWeight: FontWeight.w500, color: Colors.grey),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    rowView(
-                      "Recipient",
-                      myProvider.transactionStatusModel?.receiverName,
-                    ),
-                    rowView(
-                      "Recipient Bank",
-                      myProvider.transactionStatusModel?.receiverBank,
-                    ),
-                    rowView(
-                      "Recipient Bank",
-                      myProvider.transactionStatusModel?.receiverBank,
-                    ),
-                    rowView(
-                      "Recipient Number",
-                      myProvider.transactionStatusModel?.receiverAccountNo,
-                    ),
-                    rowView("Reference ID",
-                        myProvider.transactionStatusModel?.eRef ?? "",
-                        copy: true),
-                    rowView(
-                      "Note",
-                      myProvider.transactionStatusModel?.note ?? "",
-                    ),
-                    rowView(
-                      "Date",
-                      TimeUtilAgo.format2(
-                          myProvider.transactionStatusModel!.date!),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
+        builder: (_) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: Column(
+              children: [
+                Screenshot(
+                  controller: screenshotController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width * 0.5,
+                      //   height: MediaQuery.of(context).size.height * 0.1,
+                      //   child: Lottie.asset(
+                      //     EPImages.successJson,
+                      //     alignment: Alignment.center,
+                      //     fit: BoxFit.contain,
+                      //   ),
+                      // ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        child: Image.asset(EPImages.appIcon),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      myProvider.transactionStatusModel?.status == 1
+                          ? Text(
+                              "Successful",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green),
+                            )
+                          : Text(
+                              "Pending",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.orange),
+                            ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Transfer successful. Actual credit time subject to recipient's bank.",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.grey),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      rowView(
+                        "Recipient",
+                        myProvider.transactionStatusModel?.receiverName,
+                      ),
+                      rowView(
+                        "Recipient Bank",
+                        myProvider.transactionStatusModel?.receiverBank,
+                      ),
+                      rowView(
+                        "Recipient Bank",
+                        myProvider.transactionStatusModel?.receiverBank,
+                      ),
+                      rowView(
+                        "Recipient Account Number",
+                        myProvider.transactionStatusModel?.receiverAccountNo,
+                      ),
+                      rowView(
+                        "Transaction Amount",
+                        amountFormatter(myProvider
+                            .transactionStatusModel?.amount
+                            .toString()),
+                      ),
+                      rowView("Reference ID",
+                          myProvider.transactionStatusModel?.eRef ?? "",
+                          copy: true),
+                      rowView(
+                        "Note",
+                        myProvider.transactionStatusModel?.note ?? "",
+                      ),
+                      rowView(
+                        "Date",
+                        TimeUtilAgo.format2(
+                            myProvider.transactionStatusModel!.date!),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Spacer(),
-              Text(
-                myProvider.transactionStatusModel?.message ?? "",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline1!.copyWith(
-                    fontWeight: FontWeight.w300, color: Colors.black87),
-              ),
-              EPButton(
-                title: "Share",
-                onTap: () {
-                  screenshotController
-                      .capture(delay: const Duration(milliseconds: 3))
-                      .then((capturedImage) async {
-                    if (capturedImage != null) {
-                      await saveImage(capturedImage);
-                      Share.shareXFiles([file!], text: "Receipt");
-                    }
-                    print(capturedImage);
-                  }).catchError((onError) {
-                    print(onError);
-                  });
-                },
-              ),
-              const Spacer(),
-            ],
+                Text(
+                  myProvider.transactionStatusModel?.message ?? "",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                      fontWeight: FontWeight.w300, color: Colors.black87),
+                ),
+                EPButton(
+                  title: "Share",
+                  onTap: () {
+                    screenshotController
+                        .capture(delay: const Duration(milliseconds: 3))
+                        .then((capturedImage) async {
+                      if (capturedImage != null) {
+                        await saveImage(capturedImage);
+                        Share.shareXFiles([file!], text: "Receipt");
+                      }
+                      print(capturedImage);
+                    }).catchError((onError) {
+                      print(onError);
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -178,9 +188,9 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "$title:",
@@ -189,33 +199,38 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                   .headline1!
                   .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
             ),
-            const Spacer(),
-            Expanded(
-                flex: 2,
-                child: Text(
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: [
+                Text(
                   value!,
                   maxLines: 2,
                   style: Theme.of(context).textTheme.headline3!.copyWith(
                       fontWeight: FontWeight.w200, color: Colors.black87),
-                )),
-            copy
-                ? InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: value ?? ""))
-                          .then((value) {
-                        snackBar(context, message: "copied");
-                      });
-                    },
-                    child: Row(
-                      children: const [
-                        SizedBox(
-                          width: 10,
+                ),
+                const Spacer(),
+                copy
+                    ? InkWell(
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: value ?? ""))
+                              .then((value) {
+                            snackBar(context, message: "copied");
+                          });
+                        },
+                        child: Row(
+                          children: const [
+                            SizedBox(
+                              width: 10,
+                            ),
+                            FaIcon(FontAwesomeIcons.copy),
+                          ],
                         ),
-                        FaIcon(FontAwesomeIcons.copy),
-                      ],
-                    ),
-                  )
-                : Container()
+                      )
+                    : Container()
+              ],
+            )
           ],
         ),
       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
@@ -184,7 +186,9 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                                 // debugPrint(fcmToken);
                                 authController.biometricLogin();
                               },
-                              child: Image.asset(EPImages.fingerPrint))
+                              child: Image.asset(Platform.isAndroid
+                                  ? EPImages.fingerPrint
+                                  : EPImages.faceID))
                           : Container(),
                     ],
                   ),

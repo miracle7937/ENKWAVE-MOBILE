@@ -6,6 +6,7 @@ class EPImages {
   static String bg4 = "$root/4.json";
   static String errorIcons = "$root/error_icons.json";
   static String fingerPrint = "$root/finger_print.png";
+  static String faceID = "$root/face.jpg";
   static String authBg = "$root/backgroundImage.jpg";
   static String bgShadow = "$root/bg_shadow.png";
   static String homeIcon = "$root/home.png";
