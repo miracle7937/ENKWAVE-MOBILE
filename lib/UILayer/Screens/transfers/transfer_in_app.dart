@@ -258,7 +258,10 @@ class _TransferInAppState extends State<TransferInApp>
 
   @override
   onSuccess(String message) {
-    snackBar(context, message: message);
+    showEPStatusDialog(context, success: true, message: message, callback: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    });
   }
 
   @override

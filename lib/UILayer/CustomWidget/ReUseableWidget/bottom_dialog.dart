@@ -8,7 +8,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selection_l
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_multi_formatter/formatters/formatter_extension_methods.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -265,7 +264,7 @@ void showListOFDataPackage(BuildContext context, List<BasePackage>? recipients,
                   width: 10,
                 ),
                 Text(
-                  "NGN${double.parse(r.getAmount!).toCurrencyString(mantissaLength: 0).toString()} ",
+                  amountFormatterWithoutDecimal(r.getAmount),
                   style: Theme.of(context).textTheme.button,
                 ),
               ],

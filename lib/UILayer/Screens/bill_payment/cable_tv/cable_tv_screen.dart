@@ -233,7 +233,8 @@ class _CableTVScreenState extends State<CableTVScreen> with OnCableTV {
                                                 color: EPColors.appBlackColor)),
                                     const Spacer(),
                                     Text(
-                                        amountFormatter(e.getAmount.toString()),
+                                        amountFormatterWithoutDecimal(
+                                            e.getAmount.toString()),
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline3!
