@@ -41,7 +41,7 @@ Future<void> _launchUrl(url) async {
   }
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {
-    await launchUrl(uri);
+    await launchUrl(uri, mode: LaunchMode.externalNonBrowserApplication);
   } else {
     throw Exception('Could not launch $url');
   }

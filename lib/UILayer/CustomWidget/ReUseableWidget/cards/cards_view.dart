@@ -131,12 +131,12 @@ class _DashBoardCardState extends State<DashBoardCard> {
                 ContainButton(
                   bgColor: Colors.pink,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(7.0),
                     child: Row(
                       children: [
                         const Icon(Icons.wallet, color: Colors.white),
                         const SizedBox(
-                          width: 5,
+                          width: 3,
                         ),
                         Text(
                           "CASH OUT",
@@ -147,27 +147,24 @@ class _DashBoardCardState extends State<DashBoardCard> {
                                   fontWeight: FontWeight.w600,
                                   color: EPColors.appWhiteColor),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
                       ],
                     ),
                   ),
                   onTap: widget.cashOut,
                 ),
                 const SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
                 ContainButton(
                   bgColor: Colors.green,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(7.0),
                     child: Row(
                       children: [
-                        const Icon(Icons.arrow_downward_rounded,
+                        const Icon(Icons.arrow_downward_outlined,
                             color: Colors.white),
                         const SizedBox(
-                          width: 5,
+                          width: 3,
                         ),
                         Text(
                           "CASH IN",
@@ -178,21 +175,18 @@ class _DashBoardCardState extends State<DashBoardCard> {
                                   fontWeight: FontWeight.w600,
                                   color: EPColors.appWhiteColor),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
                       ],
                     ),
                   ),
                   onTap: widget.cashIn,
                 ),
                 const SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
                 ContainButton(
                   bgColor: Colors.purpleAccent,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(7.0),
                     child: Row(
                       children: [
                         const Icon(
@@ -200,7 +194,7 @@ class _DashBoardCardState extends State<DashBoardCard> {
                           color: Colors.white,
                         ),
                         const SizedBox(
-                          width: 5,
+                          width: 3,
                         ),
                         Text(
                           "EP TRANSFER",
@@ -210,9 +204,6 @@ class _DashBoardCardState extends State<DashBoardCard> {
                               .copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: EPColors.appWhiteColor),
-                        ),
-                        const SizedBox(
-                          width: 10,
                         ),
                       ],
                     ),
@@ -225,13 +216,14 @@ class _DashBoardCardState extends State<DashBoardCard> {
         ),
       ),
       height: MediaQuery.of(context).size.height * 0.2,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage(
                 EPImages.bgImage,
               ),
-              fit: BoxFit.fill),
-          color: EPColors.appWhiteColor,
+              fit: BoxFit.cover),
+          color: EPColors.appMainColor,
           borderRadius: const BorderRadius.all(Radius.circular(5)),
           gradient: LinearGradient(
             colors: [

@@ -21,6 +21,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/model/bank_list_response.dart';
+import '../../utils/money_formatter.dart';
 import '../transfers/widget/pin_verification_dialog.dart';
 
 class BuyDataScreen extends StatefulWidget {
@@ -198,7 +199,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
                         ),
                         Center(
                           child: Text(
-                              "NGN ${double.parse(amount).toCurrencyString(mantissaLength: 0).toString()}",
+                              amountFormatterWithoutDecimal(amount),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2!
