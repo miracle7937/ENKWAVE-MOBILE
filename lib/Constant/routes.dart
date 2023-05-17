@@ -42,6 +42,8 @@ class AppRoute {
   static String verifyIdentity = "$baseRoute/verify-identity";
   static String uploadIdentity = "$baseRoute/upload-identity";
   static String updateBankInfo = "$baseRoute/update-bank-info";
+  static String getTerminalTransaction = "$baseRoute/get-terminal-transaction";
+  static String getTerminals = "$baseRoute/get-terminals";
   static String orderDeviceComplete = "$baseRoute/order-device-complete";
   static String getProfile = "$baseRoute/user-info";
   static String createAccount = "$baseRoute/create-account";

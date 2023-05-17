@@ -47,6 +47,11 @@ class _NavUIState extends State<NavUI> with DashboardView {
   ];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _dashBoardController =
         Provider.of<DashBoardController>(context, listen: true)

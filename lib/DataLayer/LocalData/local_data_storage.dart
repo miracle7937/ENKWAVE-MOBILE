@@ -22,7 +22,17 @@ class LocalDataStorage {
     if (map.isNotEmpty) {
       return UserData.fromJson(map);
     }
-    print(map);
+    return null;
+  }
+
+  static Future<String?> getUserEmail() async {
+    String? value = await _storage.read(
+      key: ConstantString.userDataKey,
+    );
+    Map<String, dynamic> map = value != null ? json.decode(value) : {};
+    if (map.isNotEmpty) {
+      return UserData.fromJson(map).email;
+    }
     return null;
   }
 

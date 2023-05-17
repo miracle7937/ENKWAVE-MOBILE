@@ -18,6 +18,7 @@ import '../../../DataLayer/model/login_response_model.dart';
 import '../../utils/show_alert_dialog.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
+import 'manage_terminals/manage_terminals_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   final VoidCallback? onRefresh;
@@ -228,6 +229,14 @@ class _SettingScreenState extends State<SettingScreen> {
                       builder: (_) => UpdateAccountScreen(
                             refresh: widget.onRefresh,
                           ))),
+            ),
+            SettingTabs(
+              image: EPImages.manageTerminal,
+              title: "Manage Terminals",
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const ManageTerminalScreen())),
             ),
             SettingTabs(
               image: EPImages.customerCare,

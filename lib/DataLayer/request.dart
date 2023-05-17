@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:enk_pay_project/services/navigation_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../main.dart';
+import '../Constant/string_values.dart';
 import 'LocalData/local_data_storage.dart';
+import 'logs/log_request.dart';
 
 Future<Map<String, String>> getHeader() async {
   var token = await LocalDataStorage.getToken() ?? "";
@@ -20,8 +23,26 @@ Future<Map<String, String>> getHeader() async {
   return header;
 }
 
+const IS_PRODUCTION = kReleaseMode;
+
 class ServerRequest {
   String? deviceId;
+
+  void logToSlack(http.Response? response, {String? exception}) async {
+    if (!IS_PRODUCTION) return;
+    var email = await LocalDataStorage.getUserEmail();
+    String? userEmail = isEmpty(email) ? "ANONYMOUS" : email;
+    String platform = Platform.isIOS ? "iOS" : "Android";
+    LogRequest().sendMessage({
+      'text': "'url': ${response?.request?.url.toString()},\n"
+          "'statusCode': ${response?.statusCode},\n"
+          "'method': ${response?.request?.method}\n"
+          "'userEmail': $userEmail\n"
+          "'device': $platform\n"
+          "'body': ${response?.body},\n"
+          "'exception': $exception,\n"
+    });
+  }
 
   Future<HttpResponse> getData({
     String? path,
@@ -35,7 +56,8 @@ class ServerRequest {
       log("$data  route: $path  status: ${response.statusCode}");
 
       if (data["status_code"] == 401) {
-        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+        Navigator.of(NavigationService.navigatorKey.currentContext!)
+            .pushNamedAndRemoveUntil(
           '/signInScreen',
           (route) => false,
         );
@@ -48,9 +70,11 @@ class ServerRequest {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
       } else {
+        logToSlack(response);
         return HttpData(data);
       }
     } catch (e) {
+      logToSlack(null, exception: e.toString());
       debugPrint('exception post ${e.toString()}');
       if (e is HttpException) {
         throw HttpException({"message": e.toString(), "error": true});
@@ -61,7 +85,7 @@ class ServerRequest {
             {"message": 'No Internet connection', "error": true});
       }
       if (e is FormatException) {
-        throw HttpException({"message": 'Bad response format', "error": true});
+        throw HttpException({"message": ' Bad response format', "error": true});
       }
       if (e is HandshakeException) {
         throw HttpException({"message": 'Handshake exception', "error": true});
@@ -99,7 +123,8 @@ class ServerRequest {
       log("${response.statusCode} status code");
       log("${response.body}");
       if (data["status_code"] == 401) {
-        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+        Navigator.of(NavigationService.navigatorKey.currentContext!)
+            .pushNamedAndRemoveUntil(
           '/signInScreen',
           (route) => false,
         );
@@ -111,12 +136,15 @@ class ServerRequest {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HttpData(data);
       } else {
+        logToSlack(response, exception: null);
         return HttpException({
           "message": data["message"] ?? 'something wrong happened',
           "error": true
         });
       }
     } catch (e) {
+      logToSlack(null, exception: e.toString());
+
       debugPrint('exception post ${e.toString()}');
       if (e is HttpException) {
         throw HttpException({"message": e.toString(), "error": true});
@@ -159,7 +187,8 @@ class ServerRequest {
       log(response.statusCode.toString());
 
       if (data["status_code"] == 401) {
-        Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+        Navigator.of(NavigationService.navigatorKey.currentContext!)
+            .pushNamedAndRemoveUntil(
           '/signInScreen',
           (route) => false,
         );
@@ -246,7 +275,8 @@ class ServerRequest {
     // print("MIMI3 $data}");
 
     if (data["status_code"] == 401) {
-      Navigator.of(navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+      Navigator.of(NavigationService.navigatorKey.currentContext!)
+          .pushNamedAndRemoveUntil(
         '/signInScreen',
         (route) => false,
       );

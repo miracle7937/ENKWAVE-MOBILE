@@ -56,6 +56,7 @@ class EPImages {
   static String logOut = "$root/log_out.png";
   static String customerCare = "$root/customer_care.png";
   static String updateBankAccount = "$root/update_bank_account.png";
+  static String manageTerminal = "$root/manage_terminal.png";
   static String requestDevice = "$root/request_device.png";
   static String businessInfoIcon = "$root/business_info_icon.png";
   static String inwardTransaction = "$root/inward_transaction.png";

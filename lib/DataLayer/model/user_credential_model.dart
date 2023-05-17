@@ -2,6 +2,7 @@ class UserCredentialModel {
   String? email;
   String? password;
   String? phone;
+  String? token;
 
   UserCredentialModel({this.email, this.password, this.phone});
 
@@ -9,6 +10,7 @@ class UserCredentialModel {
     email = json['email'];
     password = json['password'];
     phone = json['phone'];
+    token = json['device_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -16,6 +18,7 @@ class UserCredentialModel {
     data['email'] = email;
     data['password'] = password;
     data['phone'] = phone;
+    data['device_id'] = token;
     return data;
   }
 }

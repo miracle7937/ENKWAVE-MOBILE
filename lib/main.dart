@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/services/music_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +23,7 @@ import 'DataLayer/controllers/dashboard_controller.dart';
 import 'DataLayer/controllers/electric_company_controller.dart';
 import 'DataLayer/controllers/email_phone_verification_controller.dart';
 import 'DataLayer/controllers/in_app_transfer_controller.dart';
+import 'DataLayer/controllers/manage_terminal_controller.dart';
 import 'DataLayer/controllers/mobile_data_controller.dart';
 import 'DataLayer/controllers/network_data_controller.dart';
 import 'DataLayer/controllers/pin_controller.dart';
@@ -31,12 +37,15 @@ import 'DataLayer/model/login_response_model.dart';
 import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
 import 'UILayer/Screens/main_screens/splash_screen.dart';
+import 'UILayer/utils/account_creation_dialog.dart';
 import 'UILayer/utils/loader_widget.dart';
 import 'UILayer/utils/primary_swatch_color.dart';
+import 'services/navigation_service.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-void main() {
   runApp(const MyApp());
 }
 
@@ -117,9 +126,11 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => EmailPhoneVerificationController()),
         ChangeNotifierProvider<TransferStatusController>(
             create: (_) => TransferStatusController()),
+        ChangeNotifierProvider<ManageTerminalController>(
+            create: (_) => ManageTerminalController()),
       ],
       child: MaterialApp(
-        navigatorKey: navigatorKey,
+        navigatorKey: NavigationService.navigatorKey,
         routes: {
           '/signInScreen': (context) => const SignInScreen(),
         },
@@ -165,6 +176,30 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.bottom]);
+    try {
+      firesBaseSetUp();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  firesBaseSetUp() async {
+    log("Initialize Firebase");
+    await FirebaseMessaging.instance.getToken();
+    // updateDeviceID(fcmToken!);
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
+      MusicService().playAudioOnce();
+      log(event.data.toString());
+      if (event.data.isNotEmpty) {
+        alertIncomeTransfer(
+          NavigationService.navigatorKey.currentContext!,
+          amount: event.data["amount"],
+          name: event.data["sender_name"],
+          bank: event.data["sender_bank"],
+        );
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {});
   }
 
   @override

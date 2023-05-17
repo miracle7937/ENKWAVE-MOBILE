@@ -1,34 +1,42 @@
+
 {
   "project_info": {
-    "project_number": "231630805464",
-    "project_id": "enkwave-a4a69",
-    "storage_bucket": "enkwave-a4a69.appspot.com"
+    "project_number": "804918610015",
+    "project_id": "kaltani-customer-app",
+    "storage_bucket": "kaltani-customer-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:231630805464:android:bb295d4c4b8d05caf67aad",
+        "mobilesdk_app_id": "1:804918610015:android:8ef2833553e5451a75f3ea",
         "android_client_info": {
           "package_name": "com.enk_pay_project.mobileapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "231630805464-rapsqr3qj05sha10c9ufhjikkkq480vn.apps.googleusercontent.com",
+          "client_id": "804918610015-u5gchkep0m1gagqnf8urjll7bd538nkp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAmCN4mnPowEcNI97Wk880dm0v_lv5bkYg"
+          "current_key": "AIzaSyCmJhhcOvRQClFr1JmOwCxmkVIM_D0_rYk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "231630805464-rapsqr3qj05sha10c9ufhjikkkq480vn.apps.googleusercontent.com",
+              "client_id": "804918610015-u5gchkep0m1gagqnf8urjll7bd538nkp.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "804918610015-4bhhk62e76sqfrcprmp4hourenbh6gsu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kaltani.kashapp"
+              }
             }
           ]
         }
