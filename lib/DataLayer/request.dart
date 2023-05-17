@@ -33,14 +33,23 @@ class ServerRequest {
     var email = await LocalDataStorage.getUserEmail();
     String? userEmail = isEmpty(email) ? "ANONYMOUS" : email;
     String platform = Platform.isIOS ? "iOS" : "Android";
+    log("Logg==================> ${response?.body}");
+
+    var convertBody = response?.body == null ? "" : jsonDecode(response!.body);
+    var body = response?.body == null ? "" : convertBody["message"];
+    var file = response?.body == null ? "" : convertBody["file"];
+    var line = response?.body == null ? "" : convertBody["line"];
+
     LogRequest().sendMessage({
-      'text': "'url': ${response?.request?.url.toString()},\n"
-          "'statusCode': ${response?.statusCode},\n"
-          "'method': ${response?.request?.method}\n"
-          "'userEmail': $userEmail\n"
-          "'device': $platform\n"
-          "'body': ${response?.body},\n"
-          "'exception': $exception,\n"
+      'text': "'url=========>': ${response?.request?.url.toString()},\n"
+          "'statusCode=========>': ${response?.statusCode},\n"
+          "'method=========>': ${response?.request?.method}\n"
+          "'userEmail=========>': $userEmail\n"
+          "'device=========>': $platform\n"
+          "'exception =========>': $exception,\n"
+          "'body=========>': $body\n"
+          "'line=========>': $line\n"
+          "'file=========>': $file\n"
     });
   }
 
@@ -49,9 +58,9 @@ class ServerRequest {
   }) async {
     var header = await getHeader();
     var url = Uri.parse(path!);
-
+    var response;
     try {
-      var response = await http.get(url, headers: header);
+      response = await http.get(url, headers: header);
       var data = jsonDecode(response.body);
       log("$data  route: $path  status: ${response.statusCode}");
 
@@ -74,7 +83,7 @@ class ServerRequest {
         return HttpData(data);
       }
     } catch (e) {
-      logToSlack(null, exception: e.toString());
+      logToSlack(response, exception: e.toString());
       debugPrint('exception post ${e.toString()}');
       if (e is HttpException) {
         throw HttpException({"message": e.toString(), "error": true});
@@ -103,11 +112,11 @@ class ServerRequest {
       {String? path, Map? body, List<Map>? bodyII}) async {
     log("${path}    ${body.toString()}");
     var header = await getHeader();
-
+    var response;
     try {
       var url = Uri.parse(path!);
 
-      var response = await http
+      response = await http
           .post(
         url,
         body: json.encode(body ?? bodyII),

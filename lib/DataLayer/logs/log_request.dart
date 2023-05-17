@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class LogRequest {
-  void sendMessage(Map map) async {
+  Future sendMessage(Map map) async {
     final String apiUrl =
         'https://api.telegram.org/bot6275619836:AAElrl6c-_PU2mTRy9HnoCdUkUTroSvZOXw/sendMessage';
     final Map<String, dynamic> requestData = {
