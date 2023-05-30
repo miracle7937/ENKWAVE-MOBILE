@@ -41,15 +41,15 @@ class ServerRequest {
     var line = response?.body == null ? "" : convertBody["line"];
 
     LogRequest().sendMessage({
-      'text': "'url=========>': ${response?.request?.url.toString()},\n"
-          "'statusCode=========>': ${response?.statusCode},\n"
-          "'method=========>': ${response?.request?.method}\n"
-          "'userEmail=========>': $userEmail\n"
-          "'device=========>': $platform\n"
-          "'exception =========>': $exception,\n"
-          "'body=========>': $body\n"
-          "'line=========>': $line\n"
-          "'file=========>': $file\n"
+      'text': "'url=========>': ${response?.request?.url.toString()},       "
+          "'statusCode=========>': ${response?.statusCode},    "
+          "'method=========>': ${response?.request?.method}    "
+          "'userEmail=========>': $userEmail   "
+          "'device=========>': $platform  "
+          "'exception =========>': $exception   "
+          "'body=========>': $body     "
+          "'line=========>': $line    "
+          "'file=========>': $file    "
     });
   }
 
@@ -64,7 +64,7 @@ class ServerRequest {
       var data = jsonDecode(response.body);
       log("$data  route: $path  status: ${response.statusCode}");
 
-      if (data["status_code"] == 401) {
+      if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
           '/signInScreen',
@@ -131,7 +131,7 @@ class ServerRequest {
       var data = jsonDecode(response.body);
       log("${response.statusCode} status code");
       log("${response.body}");
-      if (data["status_code"] == 401) {
+      if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
           '/signInScreen',
@@ -195,7 +195,7 @@ class ServerRequest {
       // print("$data  route: $path");
       log(response.statusCode.toString());
 
-      if (data["status_code"] == 401) {
+      if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
           '/signInScreen',
@@ -283,7 +283,7 @@ class ServerRequest {
     // var data = json.decode(await response.stream.bytesToString());
     // print("MIMI3 $data}");
 
-    if (data["status_code"] == 401) {
+    if (response.statusCode == 401) {
       Navigator.of(NavigationService.navigatorKey.currentContext!)
           .pushNamedAndRemoveUntil(
         '/signInScreen',
