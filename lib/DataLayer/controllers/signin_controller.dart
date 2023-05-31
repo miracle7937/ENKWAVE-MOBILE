@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../Constant/string_values.dart';
@@ -54,9 +53,9 @@ class SignInController extends ChangeNotifier {
     if (isNotEmpty(userCredentialModel.email)) {
       data["email"] = userCredentialModel.email;
     }
-    String? token = await FirebaseMessaging.instance.getToken();
-    userCredentialModel.token = token;
-    data["device_id"] = token;
+    // String? token = await FirebaseMessaging.instance.getToken();
+    // userCredentialModel.token = token;
+    // data["device_id"] = token;
     LocalDataStorage.saveUserCredential(userCredentialModel);
     loginLogic(userCredentialModel);
   }

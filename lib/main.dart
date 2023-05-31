@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
@@ -185,6 +187,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   firesBaseSetUp() async {
     log("Initialize Firebase");
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+      log("${androidInfo.model} Device");
+      if (androidInfo.model == "TPS900") {
+        return;
+      }
+    }
     await FirebaseMessaging.instance.getToken();
     // updateDeviceID(fcmToken!);
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
