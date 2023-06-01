@@ -27,7 +27,7 @@ class _DashBoardCardState extends State<DashBoardCard> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -126,6 +126,9 @@ class _DashBoardCardState extends State<DashBoardCard> {
                         )),
               ],
             ),
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               children: [
                 ContainButton(
@@ -211,12 +214,10 @@ class _DashBoardCardState extends State<DashBoardCard> {
                   onTap: widget.enkPayTransfer,
                 )
               ],
-            )
+            ),
           ],
         ),
       ),
-      height: MediaQuery.of(context).size.height * 0.2,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage(
