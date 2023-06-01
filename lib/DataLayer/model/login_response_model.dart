@@ -264,7 +264,7 @@ class UserData {
     return isNotEmpty(vAccountNo);
   }
 
- bool get isMale => gender?.toUpperCase() == "MALE";
+  bool get isMale => gender?.toUpperCase() == "MALE";
 }
 
 class APPPermission {
@@ -338,7 +338,7 @@ class AppSettings {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['google_url'] = googleUrl;
     data['ios_url'] = iosUrl;
     data['version'] = version;

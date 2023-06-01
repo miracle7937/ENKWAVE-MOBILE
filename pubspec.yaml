@@ -67,10 +67,10 @@ dependencies:
   device_info: ^2.0.2
 
 
-#  package_name:
-#    git:
-#      url: git://github.com/miracle7937/Telpo_Plugin_POS.git
-#      ref: main
+  telpo_pos_enkwave:
+    git:
+      url: https://github.com/miracle7937/telpo_pos_enkwave.git
+
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1

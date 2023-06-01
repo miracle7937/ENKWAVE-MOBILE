@@ -58,7 +58,7 @@ android {
 
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.enk_pay_project.mobileapp"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode "7".toInteger()
         versionName "7.0.0"

@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/services/music_service.dart';
+import 'package:enk_pay_project/services/service_initialization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +47,7 @@ import 'services/navigation_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  await DeviceServiceInit.initialize();
   runApp(const MyApp());
 }
 
@@ -69,16 +69,6 @@ class MyApp extends StatelessWidget {
           builder: (context, w) => const ThemeWidget()),
     );
   }
-  // // This widget is the root of your application.
-  // @override
-  // Widget build(BuildContext context) {
-  //   return ScreenUtilInit(
-  //     designSize: const Size(360, 690),
-  //     builder: () {
-  //       return const ThemeWidget();
-  //     },
-  //   );
-  // }
 }
 
 class ThemeWidget extends StatelessWidget {
@@ -186,11 +176,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   firesBaseSetUp() async {
-    log("Initialize Firebase");
     if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
-      log("${androidInfo.model} Device");
-      if (androidInfo.model == "TPS900") {
+      if (DeviceServiceInit.androidInfo?.model ==
+          DeviceServiceInit.telpoDevice) {
         return;
       }
     }

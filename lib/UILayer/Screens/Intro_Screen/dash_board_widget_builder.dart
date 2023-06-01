@@ -5,24 +5,27 @@ import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/pos_screens/pos_amount_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../DataLayer/model/login_response_model.dart';
+import '../../../services/service_initialization.dart';
 
 class DashBoardBuilder {
   static List<IntroModel> builder(
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if (Platform.isAndroid && appPermission?.pos == 1) {
+    if ((Platform.isAndroid && appPermission?.pos == 1) ||
+        DeviceServiceInit.androidInfo?.model == DeviceServiceInit.telpoDevice) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",
         image: EPImages.posIcon,
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const PosAmountScreen()));
+          TelpoPosEnkwave().epSDKInit(amount: "100", accountType: "01");
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (_) => const PosAmountScreen()));
         },
       ));
     }

@@ -763,6 +763,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  telpo_pos_enkwave:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "6cc3025317f865f40a0ff342b1e2df69f27823fa"
+      url: "https://github.com/miracle7937/telpo_pos_enkwave.git"
+    source: git
+    version: "0.0.1"
   term_glyph:
     dependency: transitive
     description:
