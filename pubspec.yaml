@@ -72,6 +72,7 @@ dependencies:
       url: https://github.com/miracle7937/telpo_pos_enkwave.git
 
 
+
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1
 
