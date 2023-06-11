@@ -40,7 +40,7 @@ class CardHistoryTile extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      amountFormatter(cardTransaction.amount),
+                      amountUSDFormatter(cardTransaction.amount),
                       style: Theme.of(context).textTheme.headline1!.copyWith(
                           color: Colors.black, fontWeight: FontWeight.w300),
                     ),

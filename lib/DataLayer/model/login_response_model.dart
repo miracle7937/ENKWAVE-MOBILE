@@ -1,5 +1,3 @@
-import 'package:enk_pay_project/Constant/string_values.dart';
-
 class LoginResponseModel {
   bool? status;
   String? message;
@@ -274,7 +272,8 @@ class UserData {
   }
 
   bool userHaveAccount() {
-    return isNotEmpty(vAccountNo);
+    print("hhhhhhhhhhhhhh ${virtualBankList}");
+    return virtualBankList?.isNotEmpty ?? true;
   }
 
   bool get isMale => gender?.toUpperCase() == "MALE";

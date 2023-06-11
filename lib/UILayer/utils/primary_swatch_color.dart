@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PrimarySwatchColor {
   static MaterialColor get() {
     MaterialColor customPrimaryColor = MaterialColor(
-      0xFF990000,
+      0XFF011142,
       <int, Color>{
         50: EPColors.appMainColor,
         100: EPColors.appMainColor,

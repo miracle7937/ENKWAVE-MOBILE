@@ -51,42 +51,60 @@ class _NavUIState extends State<NavUI> with DashboardView {
     super.initState();
   }
 
+  int _backButtonCounter = 0;
+
   @override
   Widget build(BuildContext context) {
     _dashBoardController =
         Provider.of<DashBoardController>(context, listen: true)
           ..fetchDashboardData()
           ..setView = this;
-    return EPScaffold(
-      appBar: EPAppBar(
-        centerTitle: true,
-        title: Text(title[_bottomNavIndex].toUpperCase()),
-        leading: Container(),
-      ),
-      state: AppState(pageState: _dashBoardController.pageState),
-      floatingActionButton: FloatingActionButton(
-        child: Image.asset(EPImages.homeIcon),
-        backgroundColor: EPColors.appMainColor,
-        onPressed: () async {
-          setState(() {
-            _bottomNavIndex = 2;
-          });
-        },
-      ),
-      builder: (context) => getViews[_bottomNavIndex],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        icons: const [Icons.toc_rounded, Icons.person],
-        activeIndex: _bottomNavIndex,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.verySmoothEdge,
-        leftCornerRadius: 20,
-        rightCornerRadius: 20,
-        iconSize: 40,
-        onTap: (index) {
-          setState(() => _bottomNavIndex = index);
-        },
-        //other params
+    return WillPopScope(
+      onWillPop: () async {
+        if (_backButtonCounter < 1) {
+          _backButtonCounter++;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Press back again to exit'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: EPScaffold(
+        appBar: EPAppBar(
+          centerTitle: true,
+          title: Text(title[_bottomNavIndex].toUpperCase()),
+          leading: Container(),
+        ),
+        state: AppState(pageState: _dashBoardController.pageState),
+        floatingActionButton: FloatingActionButton(
+          child: Image.asset(EPImages.homeIcon),
+          backgroundColor: EPColors.appMainColor,
+          onPressed: () async {
+            setState(() {
+              _bottomNavIndex = 2;
+            });
+          },
+        ),
+        builder: (context) => getViews[_bottomNavIndex],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: AnimatedBottomNavigationBar(
+          icons: const [Icons.toc_rounded, Icons.person],
+          activeIndex: _bottomNavIndex,
+          gapLocation: GapLocation.center,
+          notchSmoothness: NotchSmoothness.verySmoothEdge,
+          leftCornerRadius: 20,
+          rightCornerRadius: 20,
+          iconSize: 40,
+          onTap: (index) {
+            setState(() => _bottomNavIndex = index);
+          },
+          //other params
+        ),
       ),
     );
   }

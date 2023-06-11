@@ -55,6 +55,7 @@ class EPImages {
   static String settingsBg = "$root/settings_bg.png";
   static String userMale = "$root/user_male.png";
   static String logOut = "$root/log_out.png";
+  static String deleteAccount = "$root/delete_account.png";
   static String customerCare = "$root/customer_care.png";
   static String updateBankAccount = "$root/update_bank_account.png";
   static String manageTerminal = "$root/manage_terminal.png";

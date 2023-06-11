@@ -290,7 +290,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
             isDeleteAccount == false
                 ? SettingTabs(
-                    image: EPImages.logOut,
+                    image: EPImages.deleteAccount,
                     title: "Delete Account",
                     onTap: () {
                       showAlertDialog(context,
