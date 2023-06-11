@@ -158,8 +158,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                       ));
                 },
                 cashIn: () {
-                  pushToNextScreen(context, const CashInScreen());
-                  // _dashBoardController.onCahIn();
+                  _dashBoardController.onCahIn();
                 },
                 enkPayTransfer: () {
                   pushToNextScreen(context, const TransferInApp());
@@ -274,10 +273,12 @@ class _MainScreenState extends State<MainScreen> with MainView {
 
   @override
   void onShowTransferAccount() {
-    showTransferDialog(context,
-        accountNumber: _dashBoardController.getVAccountNumber,
-        accountName: _dashBoardController.getVAccountName,
-        bankName: _dashBoardController.getVBankName);
+    pushToNextScreen(context, const CashInScreen());
+
+    // showTransferDialog(context,
+    //     accountNumber: _dashBoardController.getVAccountNumber,
+    //     accountName: _dashBoardController.getVAccountName,F
+    //     bankName: _dashBoardController.getVBankName);
   }
 
   @override

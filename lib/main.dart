@@ -48,7 +48,8 @@ import 'services/navigation_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   runApp(const MyApp());
 }
 
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
     return MediaQuery(
       //Setting font does not change with system font size
       data: const MediaQueryData(
-        size: Size(1000, 700),
+        size: Size(100, 700),
       ),
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
@@ -146,6 +147,7 @@ class ThemeWidget extends StatelessWidget {
         title: 'EnkPay',
         theme: ThemeData(
           fontFamily: "Effra",
+          appBarTheme: AppBarTheme(color: EPColors.appMainColor),
           elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith((states) {
               // If the button is pressed, return green, otherwise blue
@@ -179,8 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
+
     try {
       firesBaseSetUp();
     } catch (e) {

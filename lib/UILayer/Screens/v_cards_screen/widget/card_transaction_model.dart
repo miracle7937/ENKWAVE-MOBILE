@@ -1,3 +1,4 @@
+import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,12 +87,12 @@ class _BodyState extends State<_Body> {
           ),
           widget.fundWallet
               ? Text(
-                  "NGN  ${vCardController.fundAmount ?? 0} ",
+                  "${amountFormatter(vCardController.fundAmount.toString())}",
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 )
               : Text(
-                  "NGN  ${vCardController.liquidateAmount ?? 0} ",
+                  "${amountFormatter(vCardController.liquidateAmount.toString())} ",
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),

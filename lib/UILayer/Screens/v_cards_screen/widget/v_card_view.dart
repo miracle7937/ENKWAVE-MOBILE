@@ -97,13 +97,13 @@ class VCardView extends StatelessWidget {
                     children: [
                       expireDate(context, cardDetails?.expiration ?? ""),
                       const Spacer(),
-                      Text(
-                        cardDetails?.cardType ?? "",
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
+                      // Text(
+                      //   cardDetails?.cardType ?? "",
+                      //   style: Theme.of(context).textTheme.headline6!.copyWith(
+                      //         color: Colors.white,
+                      //         fontWeight: FontWeight.w500,
+                      //       ),
+                      // ),
                     ],
                   ),
                   const SizedBox(

@@ -12,6 +12,18 @@ amountFormatter(String? number) {
   }
 }
 
+amountUSDFormatter(String? number) {
+  if (number == "null") {
+    return "NA";
+  }
+  if (number != null) {
+    final oCcy = NumberFormat.currency(locale: 'en_US', symbol: '');
+    return "USD${oCcy.format(double.parse(number) / 100)}";
+  } else {
+    return "NA";
+  }
+}
+
 amountFormatterWithoutDecimal(String? number) {
   if (number == "null") {
     return "NA";
