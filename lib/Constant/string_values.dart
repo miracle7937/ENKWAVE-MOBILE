@@ -92,3 +92,9 @@ bool isEmpty(String? s) => s == null || s == 'null' || s.trim().isEmpty;
 
 /// Returns [true] if [s] is a not null or empty string.
 bool isNotEmpty(String? s) => s != null && s != 'null' && s.trim().isNotEmpty;
+
+String requestTitle =
+    "Card creation charge is 2USD \n\n1% transaction fee  min of 1USD and max of 5USD  \n\n 1USD   maintenance fee per active card. \n\n Maximum cash a card can hold is USD 10,000.";
+
+String verifyImageTitle =
+    "Take a clear picture of your face Make sure you are not wearing cap to glasses ";

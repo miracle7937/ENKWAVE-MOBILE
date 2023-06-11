@@ -6,6 +6,7 @@ import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/format_phone_number.dart';
 import '../LocalData/local_data_storage.dart';
+import '../model/generic_model_response.dart';
 import '../model/user_credential_model.dart';
 import '../repository/auth_repository.dart';
 import 'biomertic_controller.dart';
@@ -143,6 +144,15 @@ class SignInController extends ChangeNotifier {
     } catch (e) {
       pageState = PageState.loaded;
       notifyListeners();
+    }
+  }
+
+  Future<bool?> deleteAccount() async {
+    try {
+      GenericResponse genericResponse = await AuthRepository().deleteAccount();
+      return genericResponse.status;
+    } catch (e) {
+      return false;
     }
   }
 

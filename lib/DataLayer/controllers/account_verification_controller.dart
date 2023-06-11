@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import '../../UILayer/utils/image_helper.dart';
 import '../repository/setting_repository.dart';
 import '../request.dart';
 
@@ -109,21 +109,8 @@ class AccountVerificationController with ChangeNotifier {
       return null;
     }
     return Platform.isAndroid
-        ? compressImage(File(image!.path))
+        ? ImageHelper.compressImage(File(image!.path))
         : Future.value(File(image!.path));
-  }
-
-  Future<File> compressImage(File file) async {
-    var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      quality: 60,
-    );
-    if (result != null) {
-      var compressedFile = await file.writeAsBytes(result);
-      return compressedFile;
-    } else {
-      return file;
-    }
   }
 
   clearImage() {

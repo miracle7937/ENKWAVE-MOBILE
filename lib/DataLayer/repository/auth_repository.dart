@@ -91,4 +91,10 @@ class AuthRepository {
         await ServerRequest().postData(path: AppRoute.forgotForgot, body: map);
     return GenericResponse.fromJson(responseData.data);
   }
+
+  Future<GenericResponse> deleteAccount() async {
+    var responseData =
+        await ServerRequest().postData(path: AppRoute.deleteUser);
+    return GenericResponse.fromJson(responseData.data);
+  }
 }

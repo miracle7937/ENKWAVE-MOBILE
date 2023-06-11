@@ -47,9 +47,17 @@ class AppRoute {
   static String orderDeviceComplete = "$baseRoute/order-device-complete";
   static String getProfile = "$baseRoute/user-info";
   static String createAccount = "$baseRoute/create-account";
+  static String deleteUser = "$baseRoute/delete-user";
   static String cashOutRout = "$baseRoute/self-cash-out";
   static String getHistory = "$baseRoute/all-transaction";
   static String contact = "$baseRoute/contact";
+  static String fundCardRoute = "$baseRoute/fund-card";
+  static String verifyIdentityCardRoute = "$baseRoute/verify-identity";
+  static String blockCardRoute = "$baseRoute/block-card";
+  static String unBlockCardRoute = "$baseRoute/unblock-card";
+  static String liquidateCardRoute = "$baseRoute/liquidate-card";
+  static String cardDetails = "$baseRoute/card-details";
+  static String createCard = "$baseRoute/create-card";
 
   static String termsAndCondition = "https://enkwave.com/terms-and-condition";
 

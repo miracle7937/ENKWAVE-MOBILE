@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class EPColors {
@@ -14,4 +16,15 @@ class EPColors {
   static Color airtelColor = const Color(0XFFd91c1c);
   static Color i9mobile = const Color(0XFF000000);
   static Color dsTv = const Color(0XFF03a5fc);
+
+  static Color generateRandomColor() {
+    Random random = Random();
+    Color color = Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+    return color;
+  }
 }

@@ -24,7 +24,7 @@ class CableTVController extends ProductController with CableTVDataFetch {
   String? customerName, phoneNumber;
   CableEnum? _cableEnum;
   UserWallet? selectedUserWallet;
-  String? decoderNumber, searchName;
+  String? decoderNumber;
   String? get getProductType => _lookData.type;
   set selectWallet(UserWallet value) {
     selectedUserWallet = value;

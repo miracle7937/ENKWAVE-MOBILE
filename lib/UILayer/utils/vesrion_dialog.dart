@@ -11,7 +11,18 @@ versionDialog(BuildContext context, {String? iosLink, String? androidLink}) {
     barrierDismissible: false,
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('INFO'),
+      title: Row(
+        children: [
+          const Text('INFO'),
+          const Spacer(),
+          InkWell(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(
+                Icons.cancel_outlined,
+                color: Colors.red,
+              ))
+        ],
+      ),
       content: Text(
         'An updated version of this app is available. Please proceed to install it.',
         style: Theme.of(context)

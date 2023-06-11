@@ -35,6 +35,7 @@ import 'DataLayer/controllers/set_pin_controller.dart';
 import 'DataLayer/controllers/signin_controller.dart';
 import 'DataLayer/controllers/transfer_status_controller.dart';
 import 'DataLayer/controllers/update_account_controller.dart';
+import 'DataLayer/controllers/vcard_controller.dart';
 import 'DataLayer/model/login_response_model.dart';
 import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
@@ -130,6 +131,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => TransferStatusController()),
         ChangeNotifierProvider<ManageTerminalController>(
             create: (_) => ManageTerminalController()),
+        ChangeNotifierProvider<VCardController>(
+            create: (_) => VCardController()),
       ],
       child: MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
@@ -213,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // return const NavUI();
+    // return const VCardRequestScreen();
 
     return FutureBuilder<UserData?>(
         future: LocalDataStorage.getUserData(),

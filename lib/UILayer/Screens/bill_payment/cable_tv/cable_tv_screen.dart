@@ -180,7 +180,7 @@ class _CableTVScreenState extends State<CableTVScreen> with OnCableTV {
                           ],
                         )
                       : Container(),
-                  isNotEmpty(controller!.searchName)
+                  isNotEmpty(controller!.customerName)
                       ? ContainButton(
                           bgColor: EPColors.appMainColor,
                           child: Padding(
@@ -189,7 +189,7 @@ class _CableTVScreenState extends State<CableTVScreen> with OnCableTV {
                             child: Row(
                               children: [
                                 Text(
-                                  (controller!.searchName ?? ""),
+                                  (controller!.customerName ?? ""),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!

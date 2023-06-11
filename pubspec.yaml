@@ -65,6 +65,7 @@ dependencies:
   audioplayers: ^2.0.0
   firebase_analytics:
   device_info: ^2.0.2
+  flip_card:
 
 
 #  package_name:
