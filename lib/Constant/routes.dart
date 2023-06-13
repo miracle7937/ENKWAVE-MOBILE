@@ -39,7 +39,7 @@ class AppRoute {
   static String forgotForgot = "$baseRoute/forgot-password";
   static String updateBusiness = "$baseRoute/update-business";
   static String orderDevice = "$baseRoute/order-device";
-  static String verifyIdentity = "$baseRoute/verify-identity";
+  static String verifyIdentity = "$baseRoute/verify-card-identity";
   static String uploadIdentity = "$baseRoute/upload-identity";
   static String updateBankInfo = "$baseRoute/update-bank-info";
   static String getTerminalTransaction = "$baseRoute/get-terminal-transaction";
