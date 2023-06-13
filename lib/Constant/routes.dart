@@ -39,7 +39,7 @@ class AppRoute {
   static String forgotForgot = "$baseRoute/forgot-password";
   static String updateBusiness = "$baseRoute/update-business";
   static String orderDevice = "$baseRoute/order-device";
-  static String verifyIdentity = "$baseRoute/verify-card-identity";
+  static String verifyIdentity = "$baseRoute/verify-identity";
   static String uploadIdentity = "$baseRoute/upload-identity";
   static String updateBankInfo = "$baseRoute/update-bank-info";
   static String getTerminalTransaction = "$baseRoute/get-terminal-transaction";
@@ -52,7 +52,7 @@ class AppRoute {
   static String getHistory = "$baseRoute/all-transaction";
   static String contact = "$baseRoute/contact";
   static String fundCardRoute = "$baseRoute/fund-card";
-  static String verifyIdentityCardRoute = "$baseRoute/verify-identity";
+  static String verifyIdentityCardRoute = "$baseRoute/verify-card-identity";
   static String blockCardRoute = "$baseRoute/block-card";
   static String unBlockCardRoute = "$baseRoute/unblock-card";
   static String liquidateCardRoute = "$baseRoute/liquidate-card";
