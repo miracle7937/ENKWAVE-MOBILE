@@ -85,6 +85,7 @@ class UserData {
   String? vAccountName;
   String? cardHolderId;
   List<VirtualBank>? virtualBankList;
+  TerminalInfo? terminalInfo;
 
   UserData(
       {id,
@@ -136,7 +137,8 @@ class UserData {
       vAccountName,
       vBankName,
       cardHolderId,
-      virtualBankList});
+      virtualBankList,
+      terminalInfo});
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -194,6 +196,10 @@ class UserData {
         virtualBankList?.add(VirtualBank.fromJson(v));
       });
     }
+
+    if (json['terminal_info'] != null) {
+      terminalInfo = TerminalInfo.fromJson(json['terminal_info']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -248,6 +254,7 @@ class UserData {
     data['v_bank_name'] = vBankName;
     data['card_holder_id'] = cardHolderId;
     data['user_virtual_account_list'] = virtualBankList;
+    data['terminal_info'] = terminalInfo;
     return data;
   }
 
@@ -379,6 +386,32 @@ class VirtualBank {
     data['bank_name'] = bankName;
     data['account_no'] = accountNo;
     data['account_name'] = accountName;
+    return data;
+  }
+}
+
+class TerminalInfo {
+  String? merchantNo;
+  String? terminalNo;
+  String? merchantName;
+  String? deviceSN;
+
+  TerminalInfo(
+      {this.merchantNo, this.terminalNo, this.merchantName, this.deviceSN});
+
+  TerminalInfo.fromJson(Map<String, dynamic> json) {
+    merchantNo = json['merchantNo'];
+    terminalNo = json['terminalNo'];
+    merchantName = json['merchantName'];
+    deviceSN = json['deviceSN'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['merchantNo'] = this.merchantNo;
+    data['terminalNo'] = this.terminalNo;
+    data['merchantName'] = this.merchantName;
+    data['deviceSN'] = this.deviceSN;
     return data;
   }
 }
