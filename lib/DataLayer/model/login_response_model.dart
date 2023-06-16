@@ -1,5 +1,3 @@
-import 'package:enk_pay_project/Constant/string_values.dart';
-
 class LoginResponseModel {
   bool? status;
   String? message;
@@ -85,6 +83,9 @@ class UserData {
   String? vAccountNo;
   String? vBankName;
   String? vAccountName;
+  String? cardHolderId;
+  List<VirtualBank>? virtualBankList;
+  TerminalInfo? terminalInfo;
 
   UserData(
       {id,
@@ -134,7 +135,10 @@ class UserData {
       token,
       vAccountNo,
       vAccountName,
-      vBankName});
+      vBankName,
+      cardHolderId,
+      virtualBankList,
+      terminalInfo});
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -185,6 +189,17 @@ class UserData {
     vAccountNo = json['v_account_no'];
     vAccountName = json['v_account_name'];
     vBankName = json['v_bank_name'];
+    cardHolderId = json['card_holder_id'];
+    if (json['user_virtual_account_list'] != null) {
+      virtualBankList = <VirtualBank>[];
+      json['user_virtual_account_list'].forEach((v) {
+        virtualBankList?.add(VirtualBank.fromJson(v));
+      });
+    }
+
+    if (json['terminal_info'] != null) {
+      terminalInfo = TerminalInfo.fromJson(json['terminal_info']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -237,6 +252,9 @@ class UserData {
     data['v_account_no'] = vAccountNo;
     data['v_account_name'] = vAccountName;
     data['v_bank_name'] = vBankName;
+    data['card_holder_id'] = cardHolderId;
+    data['user_virtual_account_list'] = virtualBankList;
+    data['terminal_info'] = terminalInfo;
     return data;
   }
 
@@ -261,7 +279,8 @@ class UserData {
   }
 
   bool userHaveAccount() {
-    return isNotEmpty(vAccountNo);
+    print("hhhhhhhhhhhhhh ${virtualBankList}");
+    return virtualBankList?.isNotEmpty ?? true;
   }
 
   bool get isMale => gender?.toUpperCase() == "MALE";
@@ -279,6 +298,7 @@ class APPPermission {
   int? power;
   int? exchange;
   int? ticket;
+  int? vcard;
 
   APPPermission(
       {id,
@@ -305,6 +325,7 @@ class APPPermission {
     power = json['power'];
     exchange = json['exchange'];
     ticket = json['ticket'];
+    vcard = json['v_card'];
   }
 
   Map<String, dynamic> toJson() {
@@ -320,6 +341,7 @@ class APPPermission {
     data['power'] = power;
     data['exchange'] = exchange;
     data['ticket'] = ticket;
+    data['v_card'] = vcard;
     return data;
   }
 }
@@ -342,6 +364,54 @@ class AppSettings {
     data['google_url'] = googleUrl;
     data['ios_url'] = iosUrl;
     data['version'] = version;
+    return data;
+  }
+}
+
+class VirtualBank {
+  String? bankName;
+  String? accountNo;
+  String? accountName;
+
+  VirtualBank({this.bankName, this.accountNo, this.accountName});
+
+  VirtualBank.fromJson(Map<String, dynamic> json) {
+    bankName = json['bank_name'];
+    accountNo = json['account_no'];
+    accountName = json['account_name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['bank_name'] = bankName;
+    data['account_no'] = accountNo;
+    data['account_name'] = accountName;
+    return data;
+  }
+}
+
+class TerminalInfo {
+  String? merchantNo;
+  String? terminalNo;
+  String? merchantName;
+  String? deviceSN;
+
+  TerminalInfo(
+      {this.merchantNo, this.terminalNo, this.merchantName, this.deviceSN});
+
+  TerminalInfo.fromJson(Map<String, dynamic> json) {
+    merchantNo = json['merchantNo'];
+    terminalNo = json['terminalNo'];
+    merchantName = json['merchantName'];
+    deviceSN = json['deviceSN'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['merchantNo'] = this.merchantNo;
+    data['terminalNo'] = this.terminalNo;
+    data['merchantName'] = this.merchantName;
+    data['deviceSN'] = this.deviceSN;
     return data;
   }
 }

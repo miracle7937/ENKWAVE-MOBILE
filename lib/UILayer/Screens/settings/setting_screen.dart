@@ -30,6 +30,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   bool isLogout = false;
+  bool isDeleteAccount = false;
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -266,6 +267,50 @@ class _SettingScreenState extends State<SettingScreen> {
                               .clearAll();
                         }).onError((error, stackTrace) {
                           setState(() => isLogout = false);
+                          Provider.of<DashBoardController>(context,
+                                  listen: false)
+                              .clearAll();
+                          LocalDataStorage.clearUser();
+                          Navigator.pushNamed(context, "/");
+                        });
+                      });
+                    },
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 18),
+                    child: Row(
+                      children: [
+                        CircularProgressIndicator(
+                          color: EPColors.appMainColor,
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+            isDeleteAccount == false
+                ? SettingTabs(
+                    image: EPImages.deleteAccount,
+                    title: "Delete Account",
+                    onTap: () {
+                      showAlertDialog(context,
+                          message:
+                              "Are You sure you want to delete your account?",
+                          onTap: () {
+                        Navigator.pop(context);
+                        setState(() => isDeleteAccount = true);
+                        SignInController().deleteAccount().then((value) {
+                          //if request is true delete account
+                          if (value == true) {
+                            setState(() => isDeleteAccount = false);
+                            LocalDataStorage.clearUser();
+                            Navigator.pushNamed(context, "/");
+                            Provider.of<DashBoardController>(context,
+                                    listen: false)
+                                .clearAll();
+                          }
+                        }).onError((error, stackTrace) {
+                          setState(() => isDeleteAccount = false);
                           Provider.of<DashBoardController>(context,
                                   listen: false)
                               .clearAll();

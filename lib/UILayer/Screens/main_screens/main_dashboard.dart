@@ -4,6 +4,7 @@ import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/cards/cards_view.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
+import 'package:enk_pay_project/UILayer/Screens/cash_in/cash_in_screen.dart';
 import 'package:enk_pay_project/UILayer/utils/greeting_util.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -194,45 +195,57 @@ class _MainScreenState extends State<MainScreen> with MainView {
   }
 
   cardUI(IntroModel introModel) {
-    return ContainButton(
-      // onTap: () {
-      //   verifyPin(context, onSuccess: () {
-      //     print("success true");
-      //   });
-      //   // Navigator.push(
-      //   //     context, MaterialPageRoute(builder: (_) => const SetPinScreen()));
-      // },
-      onTap: introModel.onTap,
-      borderRadius: BorderRadius.circular(15.0),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              introModel.image,
+    return Stack(
+      children: [
+        ContainButton(
+          onTap: introModel.onTap,
+          borderRadius: BorderRadius.circular(15.0),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  introModel.image,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  introModel.title,
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: EPColors.appBlackColor),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  introModel.subTitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              introModel.title,
-              style: Theme.of(context).textTheme.headline1!.copyWith(
-                  fontWeight: FontWeight.w700, color: EPColors.appBlackColor),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              introModel.subTitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                    fontWeight: FontWeight.w400,
-                  ),
-            ),
-          ],
+          ),
         ),
-      ),
+        introModel.newFeature == true
+            ? Positioned(
+                top: 0,
+                left: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    "New",
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            : Container()
+      ],
     );
   }
 
@@ -260,10 +273,12 @@ class _MainScreenState extends State<MainScreen> with MainView {
 
   @override
   void onShowTransferAccount() {
-    showTransferDialog(context,
-        accountNumber: _dashBoardController.getVAccountNumber,
-        accountName: _dashBoardController.getVAccountName,
-        bankName: _dashBoardController.getVBankName);
+    pushToNextScreen(context, const CashInScreen());
+
+    // showTransferDialog(context,
+    //     accountNumber: _dashBoardController.getVAccountNumber,
+    //     accountName: _dashBoardController.getVAccountName,F
+    //     bankName: _dashBoardController.getVBankName);
   }
 
   @override

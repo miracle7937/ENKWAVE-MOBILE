@@ -5,12 +5,16 @@ import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
+import 'package:enk_pay_project/UILayer/Screens/pos_screens/pos_amount_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../DataLayer/model/login_response_model.dart';
 import '../../../services/service_initialization.dart';
+import '../v_cards_screen/loader_page.dart';
+import '../v_cards_screen/v_card_request_screen.dart';
+import '../v_cards_screen/v_card_screen.dart';
 
 class DashBoardBuilder {
   static List<IntroModel> builder(
@@ -81,6 +85,35 @@ class DashBoardBuilder {
             subTitle: "Buy Airtime instantly all network available",
             image: EPImages.byAirtime),
       );
+    }
+    if (appPermission?.vcard == 1) {
+      dashBoardData.add(IntroModel(
+        newFeature: true,
+        title: "Virtual Card",
+        subTitle: "Get a virtual card to make online purchase",
+        image: EPImages.vCard,
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => LoaderPage(
+                        onChange: (value) async {
+                          if (value == true) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const VCardScreen()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const VCardRequestScreen()));
+                          }
+                        },
+                      )));
+        },
+      ));
     }
     if (appPermission?.insurance == 1) {
       dashBoardData.add(

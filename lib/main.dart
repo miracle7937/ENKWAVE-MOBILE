@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
@@ -35,6 +36,7 @@ import 'DataLayer/controllers/set_pin_controller.dart';
 import 'DataLayer/controllers/signin_controller.dart';
 import 'DataLayer/controllers/transfer_status_controller.dart';
 import 'DataLayer/controllers/update_account_controller.dart';
+import 'DataLayer/controllers/vcard_controller.dart';
 import 'DataLayer/model/login_response_model.dart';
 import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
@@ -48,6 +50,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await DeviceServiceInit.initialize();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   runApp(const MyApp());
 }
 
@@ -60,7 +64,7 @@ class MyApp extends StatelessWidget {
     return MediaQuery(
       //Setting font does not change with system font size
       data: const MediaQueryData(
-        size: Size(1000, 700),
+        size: Size(100, 700),
       ),
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
@@ -69,6 +73,16 @@ class MyApp extends StatelessWidget {
           builder: (context, w) => const ThemeWidget()),
     );
   }
+  // // This widget is the root of your application.
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ScreenUtilInit(
+  //     designSize: const Size(360, 690),
+  //     builder: () {
+  //       return const ThemeWidget();
+  //     },
+  //   );
+  // }
 }
 
 class ThemeWidget extends StatelessWidget {
@@ -120,6 +134,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => TransferStatusController()),
         ChangeNotifierProvider<ManageTerminalController>(
             create: (_) => ManageTerminalController()),
+        ChangeNotifierProvider<VCardController>(
+            create: (_) => VCardController()),
       ],
       child: MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
@@ -133,6 +149,7 @@ class ThemeWidget extends StatelessWidget {
         title: 'EnkPay',
         theme: ThemeData(
           fontFamily: "Effra",
+          appBarTheme: AppBarTheme(color: EPColors.appMainColor),
           elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith((states) {
               // If the button is pressed, return green, otherwise blue
@@ -166,8 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
+
     try {
       firesBaseSetUp();
     } catch (e) {

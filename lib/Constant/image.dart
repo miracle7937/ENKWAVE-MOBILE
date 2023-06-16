@@ -19,6 +19,7 @@ class EPImages {
   static String posIcon = "$root/posIcon.png";
   static String appIcon = "$root/app_icon.png";
   static String forex = "$root/forex.png";
+  static String vCard = "$root/v_card.png";
   static String byAirtime = "$root/byAirtime.png";
   static String byData = "$root/byData.png";
   static String examCard = "$root/examCard.png";
@@ -54,6 +55,7 @@ class EPImages {
   static String settingsBg = "$root/settings_bg.png";
   static String userMale = "$root/user_male.png";
   static String logOut = "$root/log_out.png";
+  static String deleteAccount = "$root/delete_account.png";
   static String customerCare = "$root/customer_care.png";
   static String updateBankAccount = "$root/update_bank_account.png";
   static String manageTerminal = "$root/manage_terminal.png";
@@ -77,4 +79,11 @@ class EPImages {
   static String goTV = "$root/gotv.png";
   static String starTime = "$root/star_time.png";
   static String showMax = "$root/show_max.png";
+
+  static String rVcard = "$root/r_vcard.png";
+  static String scanPhoto = "$root/scan_photo.png";
+  static String epCardView = "$root/ep_card_view.png";
+  static String cardView = "$root/card_view.png";
+  static String cardCredit = "$root/card_credit.png";
+  static String cardDebit = "$root/card_debit.png";
 }
