@@ -38,7 +38,7 @@ dependencies:
   intl: ^0.17.0
   pin_code_fields: ^7.3.0
   animated_bottom_navigation_bar: ^0.3.2
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   provider: ^6.0.2
   http: ^0.13.4
   flare_flutter: ^3.0.2
@@ -57,7 +57,7 @@ dependencies:
   flutter_image_compress: ^1.0.0-nullsafety
   geolocator: ^9.0.2
   screenshot: ^1.3.0
-  share_plus: ^6.3.2
+  share_plus: ^6.0.0
 #  firebase_messaging: ^11.0.2
 #  firebase_core: ^2.4.1
 
@@ -72,6 +72,7 @@ dependencies:
   telpo_pos_enkwave:
     git:
       url: https://github.com/miracle7937/telpo_pos_enkwave.git
+      ref: e56302b580ea2fd0eccfc2b12d7751fa6f673d1f
 
 
 
@@ -111,25 +112,25 @@ flutter:
     - assets/play_sound/
 
   fonts:
-    - family: Futura
+    - family: futura
       fonts:
-        - asset: assets/fonts/Futura_Heavy_Italic_font.ttf
+        - asset: assets/fonts/futura_heavy_italic_font.ttf
           weight: 500
-        - asset: assets/fonts/Futura_Heavy_font.ttf
+        - asset: assets/fonts/futura_heavy_font.ttf
           weight: 200
-        - asset: assets/fonts/Futura_Heavy_font.ttf
+        - asset: assets/fonts/futura_heavy_font.ttf
           weight: 700
-        - asset: assets/fonts/Futura_Book_font.ttf
+        - asset: assets/fonts/futura_book_font.ttf
           weight: 400
-        - asset: assets/fonts/Futura_Light_font.ttf
+        - asset: assets/fonts/futura_light_font.ttf
 
-    - family: Effra
+    - family: effra
       fonts:
-        - asset: assets/fonts/Effra_Regular.ttf
-        - asset: assets/fonts/Effra_Italic.ttf
+        - asset: assets/fonts/effra_regular.ttf
+        - asset: assets/fonts/effra_italic.ttf
           style: italic
-        - asset: assets/fonts/Effra_Medium.ttf
+        - asset: assets/fonts/effra_medium.ttf
           weight: 500
-        - asset: assets/fonts/Effra_Light.ttf
+        - asset: assets/fonts/effra_light.ttf
           weight: 200
 

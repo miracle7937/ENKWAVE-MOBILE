@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';

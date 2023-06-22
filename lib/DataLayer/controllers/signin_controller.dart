@@ -5,6 +5,7 @@ import '../../Constant/string_values.dart';
 import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/format_phone_number.dart';
+import '../../services/service_initialization.dart';
 import '../LocalData/local_data_storage.dart';
 import '../model/generic_model_response.dart';
 import '../model/user_credential_model.dart';
@@ -55,9 +56,14 @@ class SignInController extends ChangeNotifier {
     if (isNotEmpty(userCredentialModel.email)) {
       data["email"] = userCredentialModel.email;
     }
-    String? token = await FirebaseMessaging.instance.getToken();
-    userCredentialModel.token = token;
-    data["device_id"] = token;
+
+    if (!(DeviceServiceInit.androidInfo?.model ==
+        DeviceServiceInit.telpoDevice)) {
+      String? token = await FirebaseMessaging.instance.getToken();
+      userCredentialModel.token = token;
+      data["device_id"] = token;
+    }
+
     LocalDataStorage.saveUserCredential(userCredentialModel);
     loginLogic(userCredentialModel);
   }
