@@ -44,7 +44,7 @@ class AccountVerificationController with ChangeNotifier {
   }
 
   uploadImages() {
-    if (billImage == null || govIDCard == null || yourImage == null) {
+    if (billImage == null || govIDCard == null) {
       _identityView
           ?.onError("Please provide all doc required for the process..");
       return;
@@ -71,7 +71,7 @@ class AccountVerificationController with ChangeNotifier {
   }
 
   onSummit() {
-    if (isEmpty(setVerificationValue)) {
+    if (isEmpty(setVerificationValue) || yourImage == null) {
       _view?.onError("Please provide a valid data");
     } else {
       _view?.onFormVerify();
@@ -80,13 +80,13 @@ class AccountVerificationController with ChangeNotifier {
 
   verifyData() {
     Map data = {};
-
+    List<FileKeyValue>? uploadFile = [];
     data["identity_type"] = "bvn";
     data["identity_number"] = setVerificationValue;
-
+    uploadFile.add(FileKeyValue("photo", yourImage));
     pageState = PageState.loading;
     notifyListeners();
-    SettingRepository().bvnAndNINVerification(data).then((value) {
+    SettingRepository().bvnAndNINVerification(data, uploadFile).then((value) {
       if (value.status == true) {
         _view?.onSuccess(value.message ?? "");
       } else {

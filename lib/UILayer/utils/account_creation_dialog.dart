@@ -54,17 +54,19 @@ alertIncomeTransfer(BuildContext context,
               Row(
                 children: [
                   Text(
-                    "Sender Name: ",
+                    "Sender data: ",
                     style: Theme.of(context).textTheme.headline3!.copyWith(
                         color: Colors.black, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(
                     width: 7,
                   ),
-                  Text(
-                    '$name'.toUpperCase(),
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      '$name',
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color: Colors.black, fontWeight: FontWeight.w100),
+                    ),
                   ),
                 ],
               ),

@@ -55,6 +55,7 @@ class SignInController extends ChangeNotifier {
     if (isNotEmpty(userCredentialModel.email)) {
       data["email"] = userCredentialModel.email;
     }
+
     String? token = await FirebaseMessaging.instance.getToken();
     userCredentialModel.token = token;
     data["device_id"] = token;
