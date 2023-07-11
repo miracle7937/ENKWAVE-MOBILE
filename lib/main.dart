@@ -198,7 +198,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
     }
-    await FirebaseMessaging.instance.getToken();
+    var token = await FirebaseMessaging.instance.getToken();
+    log("Firebase Token $token");
     // updateDeviceID(fcmToken!);
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       MusicService().playAudioOnce();

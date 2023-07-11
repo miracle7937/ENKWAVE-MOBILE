@@ -125,6 +125,21 @@ class VCardController extends ChangeNotifier {
     });
   }
 
+  refreshCard() {
+    pageState = PageState.loading;
+    notifyListeners();
+    VCardRepository.getCardsDetail().then((value) {
+      if (value.status == true) {
+        cardDetailsResponse = value;
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      pageState = PageState.loaded;
+      _onVCardView?.onError(error.toString());
+    });
+  }
+
   navigateLogic(List value) {
     if (value.isEmpty) {
       // no card yet

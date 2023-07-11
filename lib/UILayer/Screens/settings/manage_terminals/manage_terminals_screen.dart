@@ -1,11 +1,13 @@
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/manage_terminals/terminal_history_screen.dart';
+import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../Constant/string_values.dart';
 import '../../../../DataLayer/controllers/manage_terminal_controller.dart';
 import '../../../CustomWidget/ReUseableWidget/snack_bar.dart';
 
@@ -41,12 +43,27 @@ class _ManageTerminalScreenState extends State<ManageTerminalScreen>
           const SizedBox(
             height: 10,
           ),
-          Text(
-            "List of Active Terminals",
-            style: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(color: Colors.black87, fontWeight: FontWeight.w400),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "List of Active Terminals",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              isNotEmpty(controller.totalAmountPaid)
+                  ? Text(
+                      "Amount Paid:  ${amountFormatter(controller.totalAmountPaid)}",
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color: Colors.green, fontWeight: FontWeight.w400),
+                    )
+                  : Container(),
+            ],
           ),
           const SizedBox(
             height: 30,

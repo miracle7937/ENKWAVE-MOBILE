@@ -31,9 +31,14 @@ class SettingRepository {
     return RequestDeviceResponse.fromJson(responseData.data);
   }
 
-  Future<GenericResponse> bvnAndNINVerification(Map map) async {
-    var responseData = await ServerRequest()
-        .postData(path: AppRoute.verifyIdentity, body: map);
+  Future<GenericResponse> bvnAndNINVerification(
+      Map map, List<FileKeyValue>? uploadFile) async {
+    // var responseData = await ServerRequest()
+    //     .postData(path: AppRoute.verifyIdentity, body: map);
+    // return GenericResponse.fromJson(responseData.data);
+
+    var responseData = await ServerRequest().uploadFile(
+        path: AppRoute.verifyIdentity, body: map, fileKeyValue: uploadFile);
     return GenericResponse.fromJson(responseData.data);
   }
 

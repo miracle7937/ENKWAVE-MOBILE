@@ -70,14 +70,14 @@ class _IdentityVerificationScreenState extends State<IdentityVerificationScreen>
               accountVerificationController?.setGovIDCard();
             },
           ),
-          IdentityWidget(
-            image: accountVerificationController?.yourImage,
-            title: "Upload a passport",
-            subTitle: "Choose a clear photo of yourself",
-            onTap: () {
-              accountVerificationController?.setYourImage();
-            },
-          ),
+          // IdentityWidget(
+          //   image: accountVerificationController?.yourImage,
+          //   title: "Upload a passport",
+          //   subTitle: "Choose a clear photo of yourself",
+          //   onTap: () {
+          //     accountVerificationController?.setYourImage();
+          //   },
+          // ),
           EPButton(
             title: "CONTINUE",
             onTap: () {

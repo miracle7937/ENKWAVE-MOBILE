@@ -103,6 +103,7 @@ class EmailPhoneVerificationController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {
+      print(e);
       pageState = PageState.loaded;
       notifyListeners();
       _otpView?.onError((e).toString());
