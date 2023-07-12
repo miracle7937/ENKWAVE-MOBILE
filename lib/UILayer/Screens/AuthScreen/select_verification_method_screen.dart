@@ -46,20 +46,22 @@ class _SelectVerificationMethodScreenState
             children: [
               Container(
                 color: EPColors.appMainColor,
-                child: TabBar(
-                  onTap: (i) {
-                    authController?.setIsVerificationPhone(
-                        !authController!.isSelectPhoneVerification);
-                  },
-                  indicatorColor: EPColors.appMainLightColor,
-                  tabs: const [
-                    Tab(
-                      text: "Phone Verification",
-                    ),
-                    Tab(
-                      text: "Email Verification",
-                    ),
-                  ],
+                child: IgnorePointer(
+                  child: TabBar(
+                    onTap: (i) {
+                      authController?.setIsVerificationPhone(
+                          !authController!.isSelectPhoneVerification);
+                    },
+                    indicatorColor: EPColors.appMainLightColor,
+                    tabs: const [
+                      Tab(
+                        text: "Phone Verification",
+                      ),
+                      Tab(
+                        text: "Email Verification",
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Padding(
