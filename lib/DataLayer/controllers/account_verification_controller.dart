@@ -52,7 +52,6 @@ class AccountVerificationController with ChangeNotifier {
     List<FileKeyValue>? uploadFile = [];
     uploadFile.add(FileKeyValue("utility_bill", billImage));
     uploadFile.add(FileKeyValue("identification_image", govIDCard));
-    uploadFile.add(FileKeyValue("selfie", yourImage));
     pageState = PageState.loading;
     notifyListeners();
     SettingRepository().uploadIdentity(uploadFile).then((value) {
@@ -64,6 +63,7 @@ class AccountVerificationController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
     }).onError((onError, trace) {
+      print(trace);
       _identityView?.onError(onError.toString() ?? "");
       pageState = PageState.loaded;
       notifyListeners();
