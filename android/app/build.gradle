@@ -60,8 +60,8 @@ android {
         applicationId "com.enk_pay_project.mobileapp"
         minSdkVersion 19
         targetSdkVersion 31
-        versionCode "12".toInteger()
-        versionName "12.0.0"
+        versionCode "13".toInteger()
+        versionName "13.0.0"
         multiDexEnabled true
     }
 
