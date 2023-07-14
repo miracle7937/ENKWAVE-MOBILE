@@ -160,8 +160,8 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 cashIn: () {
                   _dashBoardController.onCahIn();
                 },
-                enkPayTransfer: () {
-                  pushToNextScreen(context, const TransferInApp());
+                enkPayTransfer: () async {
+                  await pushToNextScreen(context, const TransferInApp());
                 },
               ),
               const SizedBox(
