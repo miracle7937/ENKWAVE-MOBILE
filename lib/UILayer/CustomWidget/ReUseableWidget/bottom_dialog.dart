@@ -141,7 +141,7 @@ Future<void> showEPStatusDialog(BuildContext context,
     bool dismissible = true}) {
   return showBottomSheetDialog(
     context,
-    dismissible: dismissible,
+    dismissible: success == true ? false : dismissible,
     title: title ?? (success ? "Success" : "Error"),
     flareAsset: success ? EPImages.successAnimation : EPImages.errorAnimation,
     message: message,

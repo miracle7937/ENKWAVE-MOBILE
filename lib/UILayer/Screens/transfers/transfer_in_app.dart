@@ -261,6 +261,7 @@ class _TransferInAppState extends State<TransferInApp>
     showEPStatusDialog(context, success: true, message: message, callback: () {
       Navigator.pop(context);
       Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 

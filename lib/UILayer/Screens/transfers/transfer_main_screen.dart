@@ -37,15 +37,15 @@ class TransfersMainScreen extends StatelessWidget {
             CardSelectCard(
               image: EPImages.bankTransfer,
               title: "Transfer to other banks",
-              onTap: () {
-                pushToNextScreen(context, const TransferToOtherBank());
+              onTap: () async {
+                await pushToNextScreen(context, const TransferToOtherBank());
               },
             ),
             CardSelectCard(
               image: EPImages.inAppTransfer,
               title: "Transfer to Enkpay users",
-              onTap: () {
-                pushToNextScreen(context, const TransferInApp());
+              onTap: () async {
+                await pushToNextScreen(context, const TransferInApp());
               },
             ),
           ],
