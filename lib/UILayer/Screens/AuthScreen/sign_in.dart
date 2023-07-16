@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../../Constant/package_info.dart';
 import '../../../DataLayer/controllers/signin_controller.dart';
 import '../main_screens/nav_ui.dart';
+import 'device_reg/change_device_otp.dart';
 import 'forget_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -267,5 +268,14 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   @override
   void onValidate() {
     authController.logIn();
+  }
+
+  @override
+  void onNewDevice(String message) {
+    showChangeDeviceIdDialog(context, message: message, onTap: () {
+      Navigator.pop(context);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const ChangeDeviceOTPScreen()));
+    });
   }
 }
