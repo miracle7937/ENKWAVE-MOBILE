@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import '../../Constant/string_values.dart';
 import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import '../../UILayer/utils/device_info.dart';
 import '../../UILayer/utils/format_phone_number.dart';
 import '../LocalData/local_data_storage.dart';
 import '../model/generic_model_response.dart';
+import '../model/login_response_model.dart';
 import '../model/user_credential_model.dart';
 import '../repository/auth_repository.dart';
 import 'biomertic_controller.dart';
@@ -44,6 +46,12 @@ class SignInController extends ChangeNotifier {
     notifyListeners();
   }
 
+  saveData(LoginResponseModel result) {
+    LocalDataStorage.saveUserData(result.data!);
+    LocalDataStorage.saveUserPermission(result.permission);
+    LocalDataStorage.saveUserAppSettings(result.appSettings);
+  }
+
   logIn() async {
     Map data = {};
     if (isNotEmpty(userCredentialModel.phone)) {
@@ -59,6 +67,11 @@ class SignInController extends ChangeNotifier {
     String? token = await FirebaseMessaging.instance.getToken();
     userCredentialModel.token = token;
     data["device_id"] = token;
+
+    String? deviceID = await DeviceInfo.getDeviceID();
+    String? deviceName = await DeviceInfo.getDeviceName();
+    userCredentialModel.deviceIdentifier = deviceID;
+    userCredentialModel.deviceName = deviceName;
     LocalDataStorage.saveUserCredential(userCredentialModel);
     loginLogic(userCredentialModel);
   }
@@ -70,16 +83,22 @@ class SignInController extends ChangeNotifier {
       var result = await AuthRepository()
           .login(credentialModel!.toJson(), phoneLogin: loginWithPhoneNumber);
       if (result.status == true) {
-        LocalDataStorage.saveUserData(result.data!);
-        LocalDataStorage.saveUserPermission(result.permission!);
-        LocalDataStorage.saveUserAppSettings(result.appSettings!);
+        //save user
+        saveData(result);
         _view?.onSuccess(result.message ?? "");
       } else {
-        _view?.onError(result.message ?? "");
+        if (result.isNewDevice == true) {
+          //save user
+          saveData(result);
+          _view?.onNewDevice(result.message ?? "");
+        } else {
+          _view?.onError(result.message ?? "");
+        }
       }
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {
+      print(e);
       pageState = PageState.loaded;
       notifyListeners();
       _view?.onError(e.toString() ?? "");
@@ -184,6 +203,7 @@ class SignInController extends ChangeNotifier {
 abstract class LOGINView {
   void onSuccess(String message);
   void onError(String message);
+  void onNewDevice(String message);
   void onValidate();
 }
 

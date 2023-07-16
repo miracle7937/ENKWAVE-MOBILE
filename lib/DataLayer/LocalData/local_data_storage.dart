@@ -36,10 +36,10 @@ class LocalDataStorage {
     return null;
   }
 
-  static saveUserAppSettings(AppSettings appSettings) {
+  static saveUserAppSettings(AppSettings? appSettings) {
     _storage.write(
       key: ConstantString.appSettings,
-      value: json.encode(appSettings.toJson()),
+      value: json.encode(appSettings?.toJson()),
     );
   }
 
@@ -54,10 +54,10 @@ class LocalDataStorage {
     return appSettings;
   }
 
-  static saveUserPermission(APPPermission featurePermission) {
+  static saveUserPermission(APPPermission? featurePermission) {
     _storage.write(
       key: ConstantString.userPermission,
-      value: json.encode(featurePermission.toJson()),
+      value: json.encode(featurePermission?.toJson()),
     );
   }
 

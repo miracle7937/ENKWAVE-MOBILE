@@ -67,6 +67,7 @@ dependencies:
   firebase_analytics:
   device_info: ^2.0.2
   flip_card:
+  device_info_plus: ^8.2.2
 
 
 #  package_name:

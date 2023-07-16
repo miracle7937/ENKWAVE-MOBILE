@@ -1,15 +1,18 @@
 class LoginResponseModel {
   bool? status;
   String? message;
+  bool? isNewDevice;
   UserData? data;
   APPPermission? permission;
   AppSettings? appSettings;
 
-  LoginResponseModel({status, message, data, permission, appSettings});
+  LoginResponseModel(
+      {status, message, data, permission, appSettings, isNewDevice});
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
+    isNewDevice = json['isNewDevice'];
     data = json['data'] != null ? UserData.fromJson(json['data']) : null;
     permission = json['permission'] != null
         ? APPPermission.fromJson(json['permission'])
@@ -23,6 +26,7 @@ class LoginResponseModel {
     final Map<String, dynamic> map = <String, dynamic>{};
     map['status'] = status;
     map['message'] = message;
+    map['isNewDevice'] = isNewDevice;
     if (data != null) {
       map['data'] = data!.toJson();
     }
