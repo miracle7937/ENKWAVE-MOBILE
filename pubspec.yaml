@@ -42,7 +42,6 @@ dependencies:
   provider: ^6.0.2
   http: ^0.13.4
   flare_flutter: ^3.0.2
-  flutter_secure_storage: ^5.0.2
   webview_flutter: ^3.0.0
   flutter_multi_formatter: ^2.5.1
   lottie: ^1.2.2
@@ -68,6 +67,7 @@ dependencies:
   device_info: ^2.0.2
   flip_card:
   device_info_plus: ^8.2.2
+  shared_preferences: ^2.2.0
 
 
 #  package_name:

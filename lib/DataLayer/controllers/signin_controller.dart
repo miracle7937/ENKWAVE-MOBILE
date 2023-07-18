@@ -38,11 +38,12 @@ class SignInController extends ChangeNotifier {
   }
 
   setEmail(String v) {
-    userCredentialModel.email = v;
+    userCredentialModel.email = v.replaceAll(' ', '');
   }
 
-  set setLoginType(bool v) {
+  setLoginType(bool v) async {
     loginWithPhoneNumber = v;
+    await initCredential();
     notifyListeners();
   }
 
@@ -130,6 +131,16 @@ class SignInController extends ChangeNotifier {
     });
   }
 
+  Future initCredential() async {
+    UserCredentialModel? _credentialModel =
+        await LocalDataStorage.getUserCredential();
+    if (_credentialModel != null) {
+      _credentialModel.password = "";
+      _view?.onSetUserCredential(_credentialModel);
+      userCredentialModel = _credentialModel;
+    }
+  }
+
   validateSIGNInForm() {
     if (loginWithPhoneNumber) {
       if (isEmpty(userCredentialModel.phone)) {
@@ -204,6 +215,7 @@ abstract class LOGINView {
   void onSuccess(String message);
   void onError(String message);
   void onNewDevice(String message);
+  void onSetUserCredential(UserCredentialModel userCredentialModel);
   void onValidate();
 }
 

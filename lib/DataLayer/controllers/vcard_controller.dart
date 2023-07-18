@@ -44,7 +44,7 @@ class VCardController extends ChangeNotifier {
       fundAmount = "0";
     } else {
       fundAmount =
-          (int.parse(amount) * int.parse(cardDetailsResponse?.rate ?? "0"))
+          (num.parse(amount) * num.parse(cardDetailsResponse?.rate ?? "0"))
               .toString();
     }
 
@@ -56,7 +56,7 @@ class VCardController extends ChangeNotifier {
       liquidateAmount = "0";
     } else {
       liquidateAmount =
-          (int.parse(amount) * int.parse(cardDetailsResponse?.wRate ?? "0"))
+          (num.parse(amount) * num.parse(cardDetailsResponse?.wRate ?? "0"))
               .toString();
     }
 
@@ -74,8 +74,8 @@ class VCardController extends ChangeNotifier {
   }
 
   String creationFeeNaira() {
-    int rate = int.parse(cardDetailsResponse?.creationCharge ?? "0") *
-        int.parse(cardDetailsResponse?.rate ?? "0");
+    num rate = num.parse(cardDetailsResponse?.creationCharge ?? "0") *
+        num.parse(cardDetailsResponse?.rate ?? "0");
     return rate.toString();
   }
 

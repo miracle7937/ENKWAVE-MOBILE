@@ -85,6 +85,14 @@ class _BVNandNINVerificationScreenState
           //           ),
           //         )
           //         .toList()),
+          Text(
+            "Please provide a clear picture of your face for this verification.",
+            style: TextStyle(
+              color: EPColors.appGreyColor,
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
           EPForm(
             hintText: "Enter your BVN",
             enabledBorderColor: EPColors.appGreyColor,
