@@ -103,7 +103,7 @@ class AccountVerificationController with ChangeNotifier {
 
   Future<File?> imagePicker() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
     if (image?.path == null) {
       return null;

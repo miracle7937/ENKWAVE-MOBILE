@@ -3,20 +3,23 @@ import 'dart:convert';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/model/login_response_model.dart';
 import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalDataStorage {
-  static const _storage = FlutterSecureStorage();
-  static saveUserData(UserData? userData) {
-    _storage.write(
-      key: ConstantString.userDataKey,
-      value: json.encode(userData!.toJson()),
+  // static const _storage = FlutterSecureStorage();
+
+  static saveUserData(UserData? userData) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.userDataKey,
+      json.encode(userData!.toJson()),
     );
   }
 
   static Future<UserData?> getUserData() async {
-    String? value = await _storage.read(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.userDataKey,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -26,8 +29,9 @@ class LocalDataStorage {
   }
 
   static Future<String?> getUserEmail() async {
-    String? value = await _storage.read(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.userDataKey,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -36,17 +40,19 @@ class LocalDataStorage {
     return null;
   }
 
-  static saveUserAppSettings(AppSettings? appSettings) {
-    _storage.write(
-      key: ConstantString.appSettings,
-      value: json.encode(appSettings?.toJson()),
+  static saveUserAppSettings(AppSettings? appSettings) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.appSettings,
+      json.encode(appSettings?.toJson()),
     );
   }
 
   static Future<AppSettings?> getUserAppSettings() async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
     AppSettings? appSettings;
-    String? value = await _storage.read(
-      key: ConstantString.appSettings,
+    String? value = _storage.getString(
+      ConstantString.appSettings,
     );
     if (value != null) {
       appSettings = AppSettings.fromJson(jsonDecode(value));
@@ -54,17 +60,19 @@ class LocalDataStorage {
     return appSettings;
   }
 
-  static saveUserPermission(APPPermission? featurePermission) {
-    _storage.write(
-      key: ConstantString.userPermission,
-      value: json.encode(featurePermission?.toJson()),
+  static saveUserPermission(APPPermission? featurePermission) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.userPermission,
+      json.encode(featurePermission?.toJson()),
     );
   }
 
   static Future<APPPermission?> getUserPermission() async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
     APPPermission? featurePermission;
-    String? value = await _storage.read(
-      key: ConstantString.userPermission,
+    String? value = _storage.getString(
+      ConstantString.userPermission,
     );
     if (value != null) {
       featurePermission = APPPermission.fromJson(jsonDecode(value));
@@ -73,8 +81,9 @@ class LocalDataStorage {
   }
 
   static Future<String?> getToken() async {
-    String? value = await _storage.read(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.userDataKey,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -84,8 +93,9 @@ class LocalDataStorage {
   }
 
   static Future<String?> getUserUUID() async {
-    String? value = await _storage.read(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.userDataKey,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -95,8 +105,9 @@ class LocalDataStorage {
   }
 
   static Future<String?> getPhone() async {
-    String? value = await _storage.read(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.userDataKey,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -105,56 +116,64 @@ class LocalDataStorage {
     return null;
   }
 
-  static saveHideBalance(bool hide) {
-    _storage.write(
-      key: ConstantString.hideBalance,
-      value: hide.toString(),
+  static saveHideBalance(bool hide) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.hideBalance,
+      hide.toString(),
     );
   }
 
   static Future<bool> getHideBalance() async {
-    String? value = await _storage.read(key: ConstantString.hideBalance);
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(ConstantString.hideBalance);
     bool hide = (value == "false" || value == null) ? false : true;
     return hide;
   }
 
-  static saveHideBonus(bool hide) {
-    _storage.write(
-      key: ConstantString.hideBonus,
-      value: hide.toString(),
+  static saveHideBonus(bool hide) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.hideBonus,
+      hide.toString(),
     );
   }
 
   static Future<bool> getHideBonus() async {
-    String? value = await _storage.read(key: ConstantString.hideBonus);
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(ConstantString.hideBonus);
     bool hide = (value == "false" || value == null) ? false : true;
     return hide;
   }
 
-  static saveEnableBiometric(bool hide) {
-    _storage.write(
-      key: ConstantString.enableBiometric,
-      value: hide.toString(),
+  static saveEnableBiometric(bool hide) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.enableBiometric,
+      hide.toString(),
     );
   }
 
   static Future<bool> getBiometricStatus() async {
-    String? value = await _storage.read(key: ConstantString.enableBiometric);
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(ConstantString.enableBiometric);
     bool isEnable = (value == "false" || value == null) ? false : true;
     return isEnable;
   }
 
   //user creditential
-  static saveUserCredential(UserCredentialModel? userCredentialModel) {
-    _storage.write(
-      key: ConstantString.credential,
-      value: json.encode(userCredentialModel!.toJson()),
+  static saveUserCredential(UserCredentialModel? userCredentialModel) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    await _storage.setString(
+      ConstantString.credential,
+      json.encode(userCredentialModel!.toJson()),
     );
   }
 
   static Future<UserCredentialModel?> getUserCredential() async {
-    String? value = await _storage.read(
-      key: ConstantString.credential,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.credential,
     );
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
@@ -164,8 +183,9 @@ class LocalDataStorage {
   }
 
   static Future clearUser() async {
-    return _storage.delete(
-      key: ConstantString.userDataKey,
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    return _storage.remove(
+      ConstantString.userDataKey,
     );
   }
 }

@@ -1,0 +1,39 @@
+name: Publish to Play Store
+on:
+  push:
+    branches:
+      - publish-android
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.6' # Replace with your desired Flutter version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Authenticate with Google Play
+        uses: google-github-actions/auth-setup-android@v1
+        with:
+          service-account-key: ${{ secrets.PLAY_STORE_KEY }} # Replace with your secret name containing the encrypted service account key
+
+      - name: Upload APK to Google Play
+        run: |
+          export TRACK=internal # Choose your desired track (e.g., internal, alpha, beta, production)
+          export APK_FILE=$(ls build/app/outputs/flutter-apk/app-release.apk) # Adjust the APK file path if needed
+          echo "Uploading $APK_FILE to $TRACK track on Google Play"
+          bundletool push --source=$APK_FILE --track=$TRACK
+
+      - name: Clean up
+        run: flutter clean
