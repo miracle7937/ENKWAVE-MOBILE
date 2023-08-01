@@ -70,10 +70,11 @@ dependencies:
   shared_preferences: ^2.2.0
 
 
-  package_name:
+  ep_softpos_plugin:
     git:
       url: https://github.com/miracle7937/soft_Pos.git
       ref: main
+      
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1
