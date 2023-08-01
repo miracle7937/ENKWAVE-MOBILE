@@ -70,10 +70,10 @@ dependencies:
   shared_preferences: ^2.2.0
 
 
-#  package_name:
-#    git:
-#      url: git://github.com/miracle7937/Telpo_Plugin_POS.git
-#      ref: main
+  package_name:
+    git:
+      url: https://github.com/miracle7937/soft_Pos.git
+      ref: main
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1
