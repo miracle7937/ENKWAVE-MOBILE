@@ -98,7 +98,7 @@ class HistoryListTile extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      status(context)
+                      status(context, transactionData?.status)
                     ],
                   ),
                   const Divider()
@@ -118,15 +118,37 @@ class HistoryListTile extends StatelessWidget {
     return v.credit.toString();
   }
 
-  status(BuildContext context) {
+  String statusString(num? status) {
+    switch (status) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Successful";
+      default:
+        return "Reversed";
+    }
+  }
+
+  Color statusColor(num? status) {
+    switch (status) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
+  }
+
+  status(BuildContext context, num? status) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.green, borderRadius: BorderRadius.circular(5)),
+          color: statusColor(status), borderRadius: BorderRadius.circular(5)),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
         child: Center(
           child: Text(
-            "Successful",
+            statusString(status),
             style: Theme.of(context)
                 .textTheme
                 .headline4!

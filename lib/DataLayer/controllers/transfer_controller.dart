@@ -13,8 +13,8 @@ class TransferController with ChangeNotifier {
   BankTransferModel bankTransferModel = BankTransferModel();
   Bank? selectedBank;
   String? accountNumber, accountName;
-
   String? _transferCharge;
+  Position? position;
 
   int getTransferCharge() => int.parse(_transferCharge ?? "0");
 
@@ -39,10 +39,10 @@ class TransferController with ChangeNotifier {
   }
 
   getLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
+    position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    bankTransferModel.longitude = position.longitude.toString();
-    bankTransferModel.latitude = position.latitude.toString();
+    bankTransferModel.longitude = position?.longitude.toString();
+    bankTransferModel.latitude = position?.latitude.toString();
   }
 
   set setPin(String v) {
@@ -138,6 +138,8 @@ class TransferController with ChangeNotifier {
         isNotEmpty(bankTransferModel.accountNumber) &&
         isNotEmpty(bankTransferModel.amount) &&
         isNotEmpty(bankTransferModel.wallet)) {
+      print(bankTransferModel.toJson());
+      return;
       pageState = PageState.loading;
       notifyListeners();
       TransferRepository().bankTransfer(bankTransferModel).then((value) {
