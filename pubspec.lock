@@ -215,8 +215,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: d62cff49e3f32653e8f0035b82d23ff565e5f33b
+      ref: adbeed0d161ad912186bac6bd193372e8774aeb9
+      resolved-ref: adbeed0d161ad912186bac6bd193372e8774aeb9
       url: "https://github.com/miracle7937/soft_Pos.git"
     source: git
     version: "0.0.1"
