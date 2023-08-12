@@ -43,6 +43,13 @@ class AuthRepository {
     return LoginResponseModel.fromJson(responseData.data);
   }
 
+  static Future<LoginResponseModel> resSendOTPForDeviceVerification(
+      Map map) async {
+    var responseData = await ServerRequest()
+        .postData(path: AppRoute.resSendOTPEmil, body: map);
+    return LoginResponseModel.fromJson(responseData.data);
+  }
+
   static Future<LoginResponseModel> sendOTPAuthenticatedUser(
       Map map, bool isSelectPhoneVerification) async {
     var responseData = await ServerRequest().postData(
@@ -61,6 +68,12 @@ class AuthRepository {
             : AppRoute.otpVerificationEmail,
         body: map);
     return LoginResponseModel.fromJson(responseData.data);
+  }
+
+  static Future<GenericResponse> otpUpdateDevice(Map map) async {
+    var responseData = await ServerRequest()
+        .postData(path: AppRoute.otpUpdateDevice, body: map);
+    return GenericResponse.fromJson(responseData.data);
   }
 
   static Future<LocationResponse> getAllState() async {

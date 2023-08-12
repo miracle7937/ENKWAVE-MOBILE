@@ -56,99 +56,92 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
               children: [
                 Screenshot(
                   controller: screenshotController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // SizedBox(
-                      //   width: MediaQuery.of(context).size.width * 0.5,
-                      //   height: MediaQuery.of(context).size.height * 0.1,
-                      //   child: Lottie.asset(
-                      //     EPImages.successJson,
-                      //     alignment: Alignment.center,
-                      //     fit: BoxFit.contain,
-                      //   ),
-                      // ),
-                      const SizedBox(
-                        height: 10,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: Image.asset(EPImages.appIcon),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            statusString(
+                                myProvider.transactionStatusModel?.status),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: statusColor(myProvider
+                                        .transactionStatusModel?.status)),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Transfer successful. Actual credit time subject to recipient's bank.",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          rowView(
+                            "Recipient",
+                            myProvider.transactionStatusModel?.receiverName,
+                          ),
+                          rowView(
+                            "Recipient Bank",
+                            myProvider.transactionStatusModel?.receiverBank,
+                          ),
+                          rowView(
+                            "Recipient Bank",
+                            myProvider.transactionStatusModel?.receiverBank,
+                          ),
+                          rowView(
+                            "Recipient Account Number",
+                            myProvider
+                                .transactionStatusModel?.receiverAccountNo,
+                          ),
+                          rowView(
+                            "Transaction Amount",
+                            amountFormatter(myProvider
+                                .transactionStatusModel?.amount
+                                .toString()),
+                          ),
+                          rowView("Reference ID",
+                              myProvider.transactionStatusModel?.eRef ?? "",
+                              copy: true),
+                          rowView(
+                            "Note",
+                            myProvider.transactionStatusModel?.note ?? "",
+                          ),
+                          rowView(
+                            "Date",
+                            TimeUtilAgo.format2(
+                                myProvider.transactionStatusModel!.date!),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        child: Image.asset(EPImages.appIcon),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      myProvider.transactionStatusModel?.status == 1
-                          ? Text(
-                              "Successful",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green),
-                            )
-                          : Text(
-                              "Pending",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.orange),
-                            ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "Transfer successful. Actual credit time subject to recipient's bank.",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontWeight: FontWeight.w500, color: Colors.grey),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      rowView(
-                        "Recipient",
-                        myProvider.transactionStatusModel?.receiverName,
-                      ),
-                      rowView(
-                        "Recipient Bank",
-                        myProvider.transactionStatusModel?.receiverBank,
-                      ),
-                      rowView(
-                        "Recipient Bank",
-                        myProvider.transactionStatusModel?.receiverBank,
-                      ),
-                      rowView(
-                        "Recipient Account Number",
-                        myProvider.transactionStatusModel?.receiverAccountNo,
-                      ),
-                      rowView(
-                        "Transaction Amount",
-                        amountFormatter(myProvider
-                            .transactionStatusModel?.amount
-                            .toString()),
-                      ),
-                      rowView("Reference ID",
-                          myProvider.transactionStatusModel?.eRef ?? "",
-                          copy: true),
-                      rowView(
-                        "Note",
-                        myProvider.transactionStatusModel?.note ?? "",
-                      ),
-                      rowView(
-                        "Date",
-                        TimeUtilAgo.format2(
-                            myProvider.transactionStatusModel!.date!),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 Text(
@@ -161,7 +154,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                   title: "Share",
                   onTap: () {
                     screenshotController
-                        .capture(delay: const Duration(milliseconds: 3))
+                        .capture(delay: const Duration(milliseconds: 2))
                         .then((capturedImage) async {
                       if (capturedImage != null) {
                         await saveImage(capturedImage);
@@ -179,6 +172,28 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
         ),
       );
     });
+  }
+
+  String statusString(num? status) {
+    switch (status) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Successful";
+      default:
+        return "Reversed";
+    }
+  }
+
+  Color statusColor(num? status) {
+    switch (status) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
   }
 
   Widget rowView(String title, String? value, {bool copy = false}) {
@@ -204,11 +219,13 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
             ),
             Row(
               children: [
-                Text(
-                  value!,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                      fontWeight: FontWeight.w200, color: Colors.black87),
+                Expanded(
+                  child: Text(
+                    value!,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                        fontWeight: FontWeight.w200, color: Colors.black87),
+                  ),
                 ),
                 const Spacer(),
                 copy

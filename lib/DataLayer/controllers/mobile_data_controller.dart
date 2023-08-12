@@ -100,7 +100,7 @@ class MobileDataController extends ProductController with MobileDataFetch {
       _onMobileDataView.onError("Please select account");
       return;
     }
-    return;
+
     _onMobileDataView.onPInVerify();
   }
 

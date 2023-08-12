@@ -3,6 +3,8 @@ class UserCredentialModel {
   String? password;
   String? phone;
   String? token;
+  String? deviceIdentifier;
+  String? deviceName;
 
   UserCredentialModel({this.email, this.password, this.phone});
 
@@ -11,6 +13,8 @@ class UserCredentialModel {
     password = json['password'];
     phone = json['phone'];
     token = json['device_id'];
+    deviceIdentifier = json['deviceIdentifier'];
+    deviceName = json['deviceName'];
   }
 
   Map<String, dynamic> toJson() {
@@ -19,6 +23,8 @@ class UserCredentialModel {
     data['password'] = password;
     data['phone'] = phone;
     data['device_id'] = token;
+    data['deviceIdentifier'] = deviceIdentifier;
+    data['deviceName'] = deviceName;
     return data;
   }
 }

@@ -10,38 +10,43 @@ versionDialog(BuildContext context, {String? iosLink, String? androidLink}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (context) => AlertDialog(
-      title: Row(
-        children: [
-          const Text('INFO'),
-          const Spacer(),
-          InkWell(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.cancel_outlined,
-                color: Colors.red,
-              ))
+    builder: (context) => WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: AlertDialog(
+        title: Row(
+          children: [
+            const Text('INFO'),
+            const Spacer(),
+            // InkWell(
+            //     onTap: () => Navigator.pop(context),
+            //     child: const Icon(
+            //       Icons.cancel_outlined,
+            //       color: Colors.red,
+            //     ))
+          ],
+        ),
+        content: Text(
+          'An updated version of this app is available. Please proceed to install it.',
+          style: Theme.of(context)
+              .textTheme
+              .headline1!
+              .copyWith(color: Colors.black, fontWeight: FontWeight.w300),
+        ),
+        actions: [
+          EPButton(
+            title: "Proceed",
+            onTap: () {
+              if (Platform.isAndroid) {
+                _launchUrl(androidLink);
+              } else if (Platform.isIOS) {
+                _launchUrl(iosLink);
+              }
+            },
+          ),
         ],
       ),
-      content: Text(
-        'An updated version of this app is available. Please proceed to install it.',
-        style: Theme.of(context)
-            .textTheme
-            .headline1!
-            .copyWith(color: Colors.black, fontWeight: FontWeight.w300),
-      ),
-      actions: [
-        EPButton(
-          title: "Proceed",
-          onTap: () {
-            if (Platform.isAndroid) {
-              _launchUrl(androidLink);
-            } else if (Platform.isIOS) {
-              _launchUrl(iosLink);
-            }
-          },
-        ),
-      ],
     ),
   );
 }

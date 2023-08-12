@@ -141,7 +141,7 @@ Future<void> showEPStatusDialog(BuildContext context,
     bool dismissible = true}) {
   return showBottomSheetDialog(
     context,
-    dismissible: dismissible,
+    dismissible: success == true ? false : dismissible,
     title: title ?? (success ? "Success" : "Error"),
     flareAsset: success ? EPImages.successAnimation : EPImages.errorAnimation,
     message: message,
@@ -429,6 +429,94 @@ pinDialog(BuildContext context,
                 height: 15,
               ),
               body,
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: const SizedBox(
+                  height: 15,
+                ),
+              )
+            ],
+          ),
+        ),
+        padding: const EdgeInsets.all(10),
+      );
+    },
+  );
+}
+
+showChangeDeviceIdDialog(BuildContext context,
+    {String? message, VoidCallback? onTap}) {
+  return showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      ),
+    ),
+    isScrollControlled: true,
+    context: context,
+    builder: (context) {
+      return _createExtensibleDialogWidget(
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: Container(
+                  height: 5,
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(50)),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: FlareActor(
+                      EPImages.errorAnimation,
+                      animation: "Animation",
+                      alignment: Alignment.center,
+                      fit: BoxFit.contain,
+                    )),
+              ),
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  message ?? "",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: EPColors.appBlackColor,
+                      ),
+                ),
+              )),
+              const SizedBox(
+                height: 15,
+              ),
+              Column(
+                children: [
+                  EPButton(
+                    bgColor: Colors.grey,
+                    title: "Cancel",
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  EPButton(
+                    title: "OK",
+                    onTap: onTap,
+                  ),
+                ],
+              ),
               Padding(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),

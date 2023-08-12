@@ -54,13 +54,15 @@ class VerificationMainScreen extends StatelessWidget {
                               ))),
                 ),
                 AccountVerificationWidget(
-                  isVerifyCompleted: snapshot.data?.isBVNAndNINCompleted(),
-                  title: 'BVN Verification',
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const BVNandNINVerificationScreen())),
-                ),
+                    isVerifyCompleted: snapshot.data?.isBVNAndNINCompleted(),
+                    title: 'BVN Verification',
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const BVNandNINVerificationScreen()));
+                    }),
                 AccountVerificationWidget(
                   isVerifyCompleted:
                       snapshot.data?.isIdentificationVerifiedCompleted(),

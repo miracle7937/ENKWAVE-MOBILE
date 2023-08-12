@@ -1,11 +1,15 @@
 class TerminalRequestModel {
   bool? status;
   List<TerminalData>? data;
+  String? amountPaid;
 
   TerminalRequestModel({this.status, this.data});
 
   TerminalRequestModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
+    if (json['amountpaid'] != null) {
+      amountPaid = json['amountpaid'].toString();
+    }
     if (json['data'] != null) {
       data = <TerminalData>[];
       json['data'].forEach((v) {
@@ -17,6 +21,7 @@ class TerminalRequestModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
+    data['amountpaid'] = amountPaid;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }

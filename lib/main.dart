@@ -42,6 +42,7 @@ import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
 import 'UILayer/Screens/main_screens/splash_screen.dart';
 import 'UILayer/utils/account_creation_dialog.dart';
 import 'UILayer/utils/loader_widget.dart';
+import 'UILayer/utils/location_controller.dart';
 import 'UILayer/utils/primary_swatch_color.dart';
 import 'services/navigation_service.dart';
 
@@ -179,15 +180,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool? isLocationEnable;
   @override
   void initState() {
     super.initState();
 
     try {
+      checkLocation();
       firesBaseSetUp();
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  checkLocation() async {
+    isLocationEnable = await LocationController().determinePosition();
+    if (isLocationEnable == false) {}
+    setState(() {});
   }
 
   firesBaseSetUp() async {
@@ -197,7 +206,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
     }
-    await FirebaseMessaging.instance.getToken();
+    var token = await FirebaseMessaging.instance.getToken();
+    log("Firebase Token $token");
     // updateDeviceID(fcmToken!);
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       MusicService().playAudioOnce();

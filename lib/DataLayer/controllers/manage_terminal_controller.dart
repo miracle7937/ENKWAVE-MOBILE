@@ -13,6 +13,7 @@ class ManageTerminalController with ChangeNotifier {
   List<TerminalData>? terminalData;
   TerminalTransactionsModel? terminalTransactionsModel;
   TerminalData? selectedTerminal;
+  String? totalAmountPaid;
 
   set setSelectedTerminal(v) {
     selectedTerminal = v;
@@ -31,6 +32,7 @@ class ManageTerminalController with ChangeNotifier {
       pageState = PageState.loading;
       SettingRepository().getAllTerminal().then((value) {
         terminalData = value.data ?? [];
+        totalAmountPaid = value.amountPaid;
         pageState = PageState.loaded;
         notifyListeners();
       }).catchError((v) {

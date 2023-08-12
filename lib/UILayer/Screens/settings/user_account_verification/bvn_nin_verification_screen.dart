@@ -2,6 +2,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import 'package:enk_pay_project/UILayer/Screens/settings/user_account_verification/widget/identy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,6 +85,14 @@ class _BVNandNINVerificationScreenState
           //           ),
           //         )
           //         .toList()),
+          Text(
+            "Please provide a clear picture of your face for this verification.",
+            style: TextStyle(
+              color: EPColors.appGreyColor,
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
           EPForm(
             hintText: "Enter your BVN",
             enabledBorderColor: EPColors.appGreyColor,
@@ -94,6 +103,14 @@ class _BVNandNINVerificationScreenState
             ],
             onChange: (v) {
               verificationController?.setVerificationValue = v;
+            },
+          ),
+          IdentityWidget(
+            image: verificationController?.yourImage,
+            title: "Upload a passport",
+            subTitle: "Choose a clear photo of yourself",
+            onTap: () {
+              verificationController?.setYourImage();
             },
           ),
           EPButton(

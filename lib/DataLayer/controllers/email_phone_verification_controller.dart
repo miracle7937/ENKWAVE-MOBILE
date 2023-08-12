@@ -56,6 +56,7 @@ class EmailPhoneVerificationController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
     }).onError((error, i) {
+      print(i);
       _requestOTPView?.onError(error.toString());
       pageState = PageState.loaded;
       notifyListeners();
@@ -103,6 +104,7 @@ class EmailPhoneVerificationController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {
+      print(e);
       pageState = PageState.loaded;
       notifyListeners();
       _otpView?.onError((e).toString());
@@ -114,7 +116,7 @@ class EmailPhoneVerificationController with ChangeNotifier {
   }
 
   void setEmail(String v) {
-    email = v;
+    email = v.replaceAll(' ', '');
   }
 
   void setOTp(String v) {

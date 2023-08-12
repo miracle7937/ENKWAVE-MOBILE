@@ -30,67 +30,74 @@ class _VCardScreenState extends State<VCardScreen> with OnVCardView {
       appBar: EPAppBar(
         title: const Text("Card"),
       ),
-      builder: (_) => Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 210,
-            width: MediaQuery.of(context).size.width,
-            child: PageView.builder(
-              onPageChanged: (v) {
-                setState(() {
-                  cardIndex = v;
-                });
-              },
-              scrollDirection: Axis.horizontal,
-              itemCount:
-                  vCardController?.cardDetailsResponse?.cardDetails?.length ??
+      builder: (_) => RefreshIndicator(
+        onRefresh: () async {
+          vCardController?.refreshCard();
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 210,
+                  width: MediaQuery.of(context).size.width,
+                  child: PageView.builder(
+                    onPageChanged: (v) {
+                      setState(() {
+                        cardIndex = v;
+                      });
+                    },
+                    scrollDirection: Axis.horizontal,
+                    itemCount: vCardController
+                            ?.cardDetailsResponse?.cardDetails?.length ??
+                        0,
+                    itemBuilder: (_, index) => VCardView(
+                      cardDetails: vCardController
+                          ?.cardDetailsResponse!.cardDetails![index],
+                    ),
+                  ),
+                ),
+                Text(
+                  "Tap to flip",
+                  style: Theme.of(context).textTheme.headline4!.copyWith(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  height: 40,
+                  child: ListView(
+                    children: CardAction.values
+                        .map<Widget>((cardAction) => _button(
+                            cardAction.name.replaceAll("\$", " "),
+                            onTap: () => onTap(cardAction)))
+                        .toList(),
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                    child: ListView.builder(
+                  itemCount: vCardController
+                          ?.cardDetailsResponse?.cardTransaction?.length ??
                       0,
-              itemBuilder: (_, index) => VCardView(
-                cardDetails:
-                    vCardController?.cardDetailsResponse!.cardDetails![index],
-              ),
+                  itemBuilder: (_, index) => CardHistoryTile(
+                    cardTransaction: vCardController!
+                        .cardDetailsResponse!.cardTransaction![index],
+                  ),
+                  // children:
+                  //     List.generate(5, (index) => const CardHistoryTile()).toList(),
+                ))
+              ],
             ),
-          ),
-          Text(
-            "Tap to flip",
-            style: Theme.of(context)
-                .textTheme
-                .headline4!
-                .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          SizedBox(
-            height: 40,
-            child: ListView(
-              children: CardAction.values
-                  .map<Widget>((cardAction) => _button(
-                      cardAction.name.replaceAll("\$", " "),
-                      onTap: () => onTap(cardAction)))
-                  .toList(),
-              scrollDirection: Axis.horizontal,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-              child: ListView.builder(
-            itemCount:
-                vCardController?.cardDetailsResponse?.cardTransaction?.length ??
-                    0,
-            itemBuilder: (_, index) => CardHistoryTile(
-              cardTransaction:
-                  vCardController!.cardDetailsResponse!.cardTransaction![index],
-            ),
-            // children:
-            //     List.generate(5, (index) => const CardHistoryTile()).toList(),
-          ))
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -184,7 +191,10 @@ class _VCardScreenState extends State<VCardScreen> with OnVCardView {
   }
 }
 
-enum CardAction { card$Info, fund$Card, liquidate,
+enum CardAction {
+  card$Info,
+  fund$Card,
+  liquidate,
 
   // freeze$Card, deleted$Card
 

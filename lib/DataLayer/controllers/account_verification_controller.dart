@@ -44,7 +44,7 @@ class AccountVerificationController with ChangeNotifier {
   }
 
   uploadImages() {
-    if (billImage == null || govIDCard == null || yourImage == null) {
+    if (billImage == null || govIDCard == null) {
       _identityView
           ?.onError("Please provide all doc required for the process..");
       return;
@@ -52,7 +52,6 @@ class AccountVerificationController with ChangeNotifier {
     List<FileKeyValue>? uploadFile = [];
     uploadFile.add(FileKeyValue("utility_bill", billImage));
     uploadFile.add(FileKeyValue("identification_image", govIDCard));
-    uploadFile.add(FileKeyValue("selfie", yourImage));
     pageState = PageState.loading;
     notifyListeners();
     SettingRepository().uploadIdentity(uploadFile).then((value) {
@@ -64,6 +63,7 @@ class AccountVerificationController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
     }).onError((onError, trace) {
+      print(trace);
       _identityView?.onError(onError.toString() ?? "");
       pageState = PageState.loaded;
       notifyListeners();
@@ -71,7 +71,7 @@ class AccountVerificationController with ChangeNotifier {
   }
 
   onSummit() {
-    if (isEmpty(setVerificationValue)) {
+    if (isEmpty(setVerificationValue) || yourImage == null) {
       _view?.onError("Please provide a valid data");
     } else {
       _view?.onFormVerify();
@@ -80,13 +80,13 @@ class AccountVerificationController with ChangeNotifier {
 
   verifyData() {
     Map data = {};
-
+    List<FileKeyValue>? uploadFile = [];
     data["identity_type"] = "bvn";
     data["identity_number"] = setVerificationValue;
-
+    uploadFile.add(FileKeyValue("photo", yourImage));
     pageState = PageState.loading;
     notifyListeners();
-    SettingRepository().bvnAndNINVerification(data).then((value) {
+    SettingRepository().bvnAndNINVerification(data, uploadFile).then((value) {
       if (value.status == true) {
         _view?.onSuccess(value.message ?? "");
       } else {
@@ -103,7 +103,7 @@ class AccountVerificationController with ChangeNotifier {
 
   Future<File?> imagePicker() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
     if (image?.path == null) {
       return null;

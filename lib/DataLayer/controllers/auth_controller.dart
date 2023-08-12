@@ -1,5 +1,6 @@
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/Constant/validation.dart';
+import 'package:enk_pay_project/DataLayer/model/login_response_model.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_model.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_response.dart';
 import 'package:enk_pay_project/DataLayer/repository/auth_repository.dart';
@@ -8,6 +9,8 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.
 import 'package:enk_pay_project/UILayer/utils/format_phone_number.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../UILayer/utils/device_info.dart';
+import '../LocalData/local_data_storage.dart';
 import '../model/lga_response.dart';
 import '../model/location_response.dart';
 
@@ -240,6 +243,59 @@ class AuthController extends ChangeNotifier with RegView {
       pageState = PageState.loaded;
       notifyListeners();
     });
+  }
+
+  resendOTPForDeviceID() async {
+    UserData? userData = await LocalDataStorage.getUserData();
+    Map data = {"email": userData?.email};
+    pageState = PageState.loading;
+    notifyListeners();
+    AuthRepository.resSendOTPForDeviceVerification(data).then((value) {
+      if (value.status == true) {
+        _otpView.onSuccess(value.message.toString());
+      } else {
+        _otpView.onError(value.message.toString());
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).onError((error, i) {
+      _otpView.onError(error.toString());
+      pageState = PageState.loaded;
+      notifyListeners();
+    });
+  }
+
+  otpVerificationAndDeviceUpdate() async {
+    UserData? userData = await LocalDataStorage.getUserData();
+    String? deviceID = await DeviceInfo.getDeviceID() ?? "";
+    String? deviceName = await DeviceInfo.getDeviceName() ?? "";
+    Map data = {
+      "email": userData?.email,
+      'deviceIdentifier': deviceID,
+      "deviceName": deviceName,
+      "code": otp
+    };
+    try {
+      pageState = PageState.loading;
+      notifyListeners();
+      var result = await AuthRepository.otpUpdateDevice(data);
+
+      if (result.status == true) {
+        _otpView.onVerify(result.message.toString());
+      } else {
+        _otpView.onError(result.message!);
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    } catch (e) {
+      pageState = PageState.loaded;
+      notifyListeners();
+      if (e is HttpException) {
+        _otpView.onError((e).getMessage);
+        return;
+      }
+      _otpView.onError((e).toString());
+    }
   }
 
   void validateRegistrationPersonalForm() {

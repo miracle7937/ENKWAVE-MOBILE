@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
+import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
@@ -14,8 +15,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Constant/package_info.dart';
+import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/controllers/signin_controller.dart';
 import '../main_screens/nav_ui.dart';
+import 'device_reg/change_device_otp.dart';
 import 'forget_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -37,6 +40,18 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   void initState() {
     super.initState();
     checkBiometric();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authController.initCredential();
+      credentialInit();
+    });
+  }
+
+  credentialInit() async {
+    UserCredentialModel? _credentialModel =
+        await LocalDataStorage.getUserCredential();
+    if (_credentialModel != null) {
+      onSetUserCredential(_credentialModel);
+    }
   }
 
   checkBiometric() async {
@@ -173,8 +188,9 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                             ? "Login with email"
                             : "Login with phone number",
                         onTap: () {
-                          authController.setLoginType =
-                              !authController.loginWithPhoneNumber;
+                          credentialInit();
+                          authController.setLoginType(
+                              !authController.loginWithPhoneNumber);
                         },
                       ),
                       isBiometricEnable
@@ -267,5 +283,21 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   @override
   void onValidate() {
     authController.logIn();
+  }
+
+  @override
+  void onNewDevice(String message) {
+    showChangeDeviceIdDialog(context, message: message, onTap: () {
+      Navigator.pop(context);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const ChangeDeviceOTPScreen()));
+    });
+  }
+
+  @override
+  void onSetUserCredential(UserCredentialModel userCredentialModel) {
+    _emailController.text = userCredentialModel.email ?? "";
+    _phoneController.text = userCredentialModel.phone ?? "";
+    setState(() {});
   }
 }

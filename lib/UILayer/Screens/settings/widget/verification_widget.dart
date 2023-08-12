@@ -23,7 +23,7 @@ class VerificationWidget extends StatelessWidget {
               children: [
                 Text(
                   isVerifyCompleted == true
-                      ? "Account has been verify"
+                      ? "Account has been verified"
                       : "Tap to Verify your account",
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                       fontWeight: FontWeight.w400,
