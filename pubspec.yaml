@@ -42,7 +42,6 @@ dependencies:
   provider: ^6.0.2
   http: ^0.13.4
   flare_flutter: ^3.0.2
-  flutter_secure_storage: ^5.0.2
   webview_flutter: ^3.0.0
   flutter_multi_formatter: ^2.5.1
   lottie: ^1.2.2
@@ -67,12 +66,14 @@ dependencies:
   firebase_analytics:
   device_info: ^2.0.2
   flip_card:
+  device_info_plus: ^8.2.2
+  shared_preferences: ^2.2.0
 
 
   telpo_pos_enkwave:
     git:
       url: https://github.com/miracle7937/telpo_pos_enkwave.git
-      ref: 38e591b8061533355748b9ce7728ec6c04885f30
+      ref: 44db4873a395fa4238f1aefd8d6f24e6926c1a2b
 
 
 

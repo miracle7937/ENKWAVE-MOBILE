@@ -65,9 +65,13 @@ class SignInController extends ChangeNotifier {
       data["email"] = userCredentialModel.email;
     }
 
-    String? token = await FirebaseMessaging.instance.getToken();
-    userCredentialModel.token = token;
-    data["device_id"] = token;
+    DeviceInfo.getDeviceName().then((value) async {
+      if (value != "TPS900") {
+        String? token = await FirebaseMessaging.instance.getToken();
+        userCredentialModel.token = token;
+        data["device_id"] = token;
+      }
+    });
 
     String? deviceID = await DeviceInfo.getDeviceID();
     String? deviceName = await DeviceInfo.getDeviceName();
@@ -84,6 +88,7 @@ class SignInController extends ChangeNotifier {
       var result = await AuthRepository()
           .login(credentialModel!.toJson(), phoneLogin: loginWithPhoneNumber);
       if (result.status == true) {
+        print(result);
         //save user
         saveData(result);
         _view?.onSuccess(result.message ?? "");
@@ -96,6 +101,7 @@ class SignInController extends ChangeNotifier {
           _view?.onError(result.message ?? "");
         }
       }
+
       pageState = PageState.loaded;
       notifyListeners();
     } catch (e) {

@@ -7,6 +7,7 @@ import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_select
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/model/login_response_model.dart';
@@ -27,9 +28,10 @@ class DashBoardBuilder {
         image: EPImages.posIcon,
         onTap: () async {
           UserData? userData = await LocalDataStorage.getUserData();
-          print(userData?.terminalInfo?.toJson());
-          // TelpoPosEnkwave().ePayment(
-          //     context: context, terminalInfo: userData?.terminalInfo?.toJson());
+          TelpoPosEnkwave().ePayment(
+              context: context,
+              terminalInfo: userData?.terminalInfo?.toJson(),
+              userID: userData?.id);
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (_) => const PosAmountScreen()));
         },
