@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
-import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
-import 'package:ep_softpos_plugin/in_ap/In_app_pos.dart';
 import 'package:flutter/material.dart';
 
 import '../../../DataLayer/model/login_response_model.dart';
@@ -25,10 +23,10 @@ class DashBoardBuilder {
         subTitle: "Cash in instantly with MPOS/POS",
         image: EPImages.posIcon,
         onTap: () async {
-          UserData? userData = await LocalDataStorage.getUserData();
-          if (userData?.id != null) {
-            InAppPOS().start(context, userData!.id!);
-          }
+          // UserData? userData = await LocalDataStorage.getUserData();
+          // if (userData?.id != null) {
+          //   InAppPOS().start(context, userData!.id!);
+          // }
         },
       ));
     }
