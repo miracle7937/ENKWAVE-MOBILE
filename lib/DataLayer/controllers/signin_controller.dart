@@ -66,11 +66,11 @@ class SignInController extends ChangeNotifier {
     }
 
     DeviceInfo.getDeviceName().then((value) async {
-      if (value != "TPS900") {
-        String? token = await FirebaseMessaging.instance.getToken();
-        userCredentialModel.token = token;
-        data["device_id"] = token;
-      }
+      // if (value != "TPS900") {
+      String? token = await FirebaseMessaging.instance.getToken();
+      userCredentialModel.token = token;
+      data["device_id"] = token;
+      // }
     });
 
     String? deviceID = await DeviceInfo.getDeviceID();
