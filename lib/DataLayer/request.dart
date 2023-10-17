@@ -258,6 +258,7 @@ class ServerRequest {
     log("BODY: $body");
     log("File: $fileKeyValue");
     var postUri = Uri.parse('$path');
+    log(postUri.path);
     var request = http.MultipartRequest(
       "POST",
       postUri,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
@@ -17,7 +15,7 @@ class DashBoardBuilder {
   static List<IntroModel> builder(
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if (Platform.isAndroid && appPermission?.pos == 0) {
+    if (appPermission?.pos == 1) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",

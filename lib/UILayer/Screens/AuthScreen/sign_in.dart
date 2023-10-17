@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
 import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
@@ -35,6 +36,7 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   final _passwordController = TextEditingController();
   late SignInController authController;
   bool isBiometricEnable = false;
+  UserCredentialModel? _credentialModel;
 
   @override
   void initState() {
@@ -47,10 +49,9 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   }
 
   credentialInit() async {
-    UserCredentialModel? _credentialModel =
-        await LocalDataStorage.getUserCredential();
+    _credentialModel == await LocalDataStorage.getUserCredential();
     if (_credentialModel != null) {
-      onSetUserCredential(_credentialModel);
+      onSetUserCredential(_credentialModel!);
     }
   }
 
@@ -296,6 +297,10 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
 
   @override
   void onSetUserCredential(UserCredentialModel userCredentialModel) {
+    print(userCredentialModel.toJson());
+    if (isNotEmpty(userCredentialModel.email)) {
+      authController.setLoginType(false);
+    }
     _emailController.text = userCredentialModel.email ?? "";
     _phoneController.text = userCredentialModel.phone ?? "";
     setState(() {});

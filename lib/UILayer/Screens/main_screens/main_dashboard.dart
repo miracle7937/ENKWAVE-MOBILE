@@ -89,6 +89,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                                   const FaIcon(
                                     FontAwesomeIcons.exclamationTriangle,
                                     color: Colors.red,
+                                    size: 10,
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -110,39 +111,53 @@ class _MainScreenState extends State<MainScreen> with MainView {
                       ),
                     ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
-              Row(
-                children: [
-                  _dashBoardController.isMale
-                      ? Image.asset(EPImages.userMale)
-                      : Image.asset(
-                          EPImages.female,
+              SizedBox(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      height: 30,
+                      child: _dashBoardController.isMale
+                          ? Image.asset(EPImages.userMale)
+                          : Image.asset(
+                              EPImages.female,
+                            ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          greetingMessage(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: EPColors.appBlackColor),
                         ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        greetingMessage(),
-                        style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: EPColors.appBlackColor),
-                      ),
-                      Text(
-                        _dashBoardController.fullName.toUpperCase(),
-                        style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: EPColors.appBlackColor),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                ],
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Text(
+                          _dashBoardController.fullName.toUpperCase(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: EPColors.appBlackColor),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
