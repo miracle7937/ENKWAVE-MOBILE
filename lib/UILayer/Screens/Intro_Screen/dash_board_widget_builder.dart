@@ -17,7 +17,7 @@ class DashBoardBuilder {
   static List<IntroModel> builder(
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if (Platform.isAndroid && appPermission?.pos == 0) {
+    if (Platform.isAndroid && appPermission?.pos == 1) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",
