@@ -1,12 +1,20 @@
+import 'dart:developer';
+
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
+import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 
+import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/model/login_response_model.dart';
+import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
+import '../pos_screens/accountype_selection.dart';
+import '../pos_screens/pos_amount_screen.dart';
 import '../v_cards_screen/loader_page.dart';
 import '../v_cards_screen/v_card_request_screen.dart';
 import '../v_cards_screen/v_card_screen.dart';
@@ -15,16 +23,53 @@ class DashBoardBuilder {
   static List<IntroModel> builder(
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if (appPermission?.pos == 1) {
+    if (appPermission?.pos == 0) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",
         image: EPImages.posIcon,
         onTap: () async {
-          // UserData? userData = await LocalDataStorage.getUserData();
-          // if (userData?.id != null) {
-          //   InAppPOS().start(context, userData!.id!);
-          // }
+          NavigatorState navigator = Navigator.of(context);
+          navigator.push(MaterialPageRoute(
+              builder: (_) => PosAmountScreen(
+                    onAmount: (String? amount) {
+                      Navigator.of(context).pop();
+                      if (isNotEmpty(amount)) {
+                        log(amount.toString());
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (a) => AccountTypeSelectionScreen(
+                                  onSelectAccountType: (String tanxType) async {
+                                    log(tanxType.toString());
+                                    Navigator.of(context).pop();
+                                    UserData? userData =
+                                        await LocalDataStorage.getUserData();
+                                    TerminalConfig? terminalConfig =
+                                        await LocalDataStorage
+                                            .getTerminalConfig();
+                                    if (userData?.isStatusCompleted() == true) {
+                                      Map data = {
+                                        "customerName": userData
+                                            ?.terminalInfo?.merchantName,
+                                        "userID": userData?.id,
+                                        "phoneNumber": userData?.phone ?? "",
+                                        "email": userData?.email ?? "",
+                                        "tid":
+                                            userData?.terminalInfo?.terminalNo,
+                                        "amount": amount,
+                                        "accountType": tanxType,
+                                        "tid_config": terminalConfig?.toJson()
+                                      };
+                                      await EtopPosPlugin().pay(data);
+                                    } else {
+                                      snackBar(context,
+                                          message:
+                                              "We kindly request you to complete your KYC");
+                                    }
+                                  },
+                                )));
+                      }
+                    },
+                  )));
         },
       ));
     }

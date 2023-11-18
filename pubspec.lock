@@ -211,15 +211,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
-  ep_softpos_plugin:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: adbeed0d161ad912186bac6bd193372e8774aeb9
-      resolved-ref: adbeed0d161ad912186bac6bd193372e8774aeb9
-      url: "https://github.com/miracle7937/soft_Pos.git"
-    source: git
-    version: "0.0.1"
   equatable:
     dependency: "direct main"
     description:
@@ -227,6 +218,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  etop_pos_plugin:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: c3ed631623de07ff7f2453a15ca53a90cbd37fc7
+      resolved-ref: c3ed631623de07ff7f2453a15ca53a90cbd37fc7
+      url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
+    source: git
+    version: "0.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -407,13 +407,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.15"
-  flutter_riverpod:
-    dependency: transitive
-    description:
-      name: flutter_riverpod
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -753,13 +746,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.5"
-  riverpod:
-    dependency: transitive
-    description:
-      name: riverpod
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   screenshot:
     dependency: "direct main"
     description:
@@ -849,13 +835,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
-  state_notifier:
-    dependency: transitive
-    description:
-      name: state_notifier
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.7.2+1"
   stream_channel:
     dependency: transitive
     description:
@@ -1025,5 +1004,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.0 <3.0.0"
+  dart: ">=2.18.2 <3.0.0"
   flutter: ">=3.3.0"

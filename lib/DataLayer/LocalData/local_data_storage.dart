@@ -60,6 +60,26 @@ class LocalDataStorage {
     return appSettings;
   }
 
+  static saveTerminalConfig(TerminalConfig? terminalConfig) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.terminalConfig,
+      json.encode(terminalConfig?.toJson()),
+    );
+  }
+
+  static Future<TerminalConfig?> getTerminalConfig() async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    TerminalConfig? terminalConfig;
+    String? value = _storage.getString(
+      ConstantString.terminalConfig,
+    );
+    if (value != null) {
+      terminalConfig = TerminalConfig.fromJson(jsonDecode(value));
+    }
+    return terminalConfig;
+  }
+
   static saveUserPermission(APPPermission? featurePermission) async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
     _storage.setString(
@@ -85,6 +105,7 @@ class LocalDataStorage {
     String? value = _storage.getString(
       ConstantString.userDataKey,
     );
+
     Map<String, dynamic> map = value != null ? json.decode(value) : {};
     if (map.isNotEmpty) {
       return UserData.fromJson(map).token;

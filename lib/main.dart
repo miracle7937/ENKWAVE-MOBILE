@@ -186,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       checkLocation();
-      firesBaseSetUp();
+      // firesBaseSetUp();
     } catch (e) {
       log(e.toString());
     }

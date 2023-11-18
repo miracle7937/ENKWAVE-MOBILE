@@ -35,7 +35,7 @@ class ManageTerminalController with ChangeNotifier {
         totalAmountPaid = value.amountPaid;
         pageState = PageState.loaded;
         notifyListeners();
-      }).catchError((v) {
+      }).onError((v, o) {
         _onGetTerminal?.onError(v.toString());
         pageState = PageState.loaded;
         notifyListeners();

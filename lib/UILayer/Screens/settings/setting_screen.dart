@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
@@ -8,6 +10,7 @@ import 'package:enk_pay_project/UILayer/Screens/settings/user_account_verificati
 import 'package:enk_pay_project/UILayer/Screens/settings/widget/setting_tabs.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_widget.dart';
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
+import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +18,7 @@ import '../../../Constant/colors.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/controllers/signin_controller.dart';
 import '../../../DataLayer/model/login_response_model.dart';
+import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
 import '../../utils/show_alert_dialog.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
@@ -49,157 +53,171 @@ class _SettingScreenState extends State<SettingScreen> {
                       child: LoaderWidget(),
                     );
                   }
-                  return RefreshIndicator(
-                    onRefresh: () async {},
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0, vertical: 15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          snapshot.data?.isMale == true
-                                              ? Image.asset(EPImages.userMale)
-                                              : Image.asset(
-                                                  EPImages.female,
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        snapshot.data?.isMale == true
+                                            ? Image.asset(EPImages.userMale)
+                                            : Image.asset(
+                                                EPImages.female,
+                                              ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${snapshot.data?.firstName ?? ""}  ${snapshot.data?.lastName ?? ""} ",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline1!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 12,
+                                                      color: EPColors
+                                                          .appWhiteColor),
+                                            ),
+                                            snapshot.data?.addressLine1 != null
+                                                ? Text(
+                                                    snapshot.data
+                                                            ?.addressLine1 ??
+                                                        "",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline1!
+                                                        .copyWith(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: EPColors
+                                                                .appWhiteColor),
+                                                  )
+                                                : Container(),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  snapshot.data?.email ?? "",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline4!
+                                                      .copyWith(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: EPColors
+                                                              .appWhiteColor),
                                                 ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "${snapshot.data?.firstName ?? ""}  ${snapshot.data?.lastName ?? ""} ",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline1!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize: 12,
-                                                        color: EPColors
-                                                            .appWhiteColor),
-                                              ),
-                                              snapshot.data?.addressLine1 !=
-                                                      null
-                                                  ? Text(
-                                                      snapshot.data
-                                                              ?.addressLine1 ??
-                                                          "",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline1!
-                                                          .copyWith(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: EPColors
-                                                                  .appWhiteColor),
-                                                    )
-                                                  : Container(),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    snapshot.data?.email ?? "",
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  snapshot.data?.phone ?? "",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline4!
+                                                      .copyWith(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: EPColors
+                                                              .appWhiteColor),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            isNotEmpty(snapshot.data?.serialNo)
+                                                ? Text(
+                                                    "Terminal NO: ${snapshot.data?.serialNo ?? ""}",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .headline4!
                                                         .copyWith(
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                             color: EPColors
                                                                 .appWhiteColor),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data?.phone ?? "",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline4!
-                                                        .copyWith(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: EPColors
-                                                                .appWhiteColor),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              isNotEmpty(
-                                                      snapshot.data?.serialNo)
-                                                  ? Text(
-                                                      "Terminal NO: ${snapshot.data?.serialNo ?? ""}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline4!
-                                                          .copyWith(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: EPColors
-                                                                  .appWhiteColor),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                                  )
+                                                : Container(),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ],
                           ),
+                          height: MediaQuery.of(context).size.height * 0.23,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12)),
                         ),
-                        VerificationWidget(
-                          isVerifyCompleted: snapshot.data?.isStatusCompleted(),
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const VerificationMainScreen()));
-                            widget.onRefresh!();
-                          },
-                        )
-                      ],
-                    ),
+                      ),
+                      VerificationWidget(
+                        isVerifyCompleted: snapshot.data?.isStatusCompleted(),
+                        onTap: () async {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      const VerificationMainScreen()));
+                          widget.onRefresh!();
+                        },
+                      )
+                    ],
                   );
+                }),
+            SettingTabs(
+                image: EPImages.changePinIcon,
+                title: "Sync Device",
+                onTap: () async {
+                  UserData? userData = await LocalDataStorage.getUserData();
+                  TerminalConfig? terminalConfig =
+                      await LocalDataStorage.getTerminalConfig();
+
+                  Map<String, dynamic> prepData = {
+                    "tid": userData?.terminalInfo?.terminalNo,
+                    "tid_config": terminalConfig?.toJson()
+                  };
+                  log(prepData.toString());
+                  if (isNotEmpty(userData?.terminalInfo?.terminalNo)) {
+                    await EtopPosPlugin().prepDevice(prepData);
+                  } else {
+                    snackBar(context,
+                        message: "Sorry you have not been profiled");
+                  }
                 }),
             SettingTabs(
               image: EPImages.changePinIcon,
@@ -288,50 +306,50 @@ class _SettingScreenState extends State<SettingScreen> {
                       ],
                     ),
                   ),
-            isDeleteAccount == false
-                ? SettingTabs(
-                    image: EPImages.deleteAccount,
-                    title: "Delete Account",
-                    onTap: () {
-                      showAlertDialog(context,
-                          message:
-                              "Are You sure you want to delete your account?",
-                          onTap: () {
-                        Navigator.pop(context);
-                        setState(() => isDeleteAccount = true);
-                        SignInController().deleteAccount().then((value) {
-                          //if request is true delete account
-                          if (value == true) {
-                            setState(() => isDeleteAccount = false);
-                            LocalDataStorage.clearUser();
-                            Navigator.pushNamed(context, "/");
-                            Provider.of<DashBoardController>(context,
-                                    listen: false)
-                                .clearAll();
-                          }
-                        }).onError((error, stackTrace) {
-                          setState(() => isDeleteAccount = false);
-                          Provider.of<DashBoardController>(context,
-                                  listen: false)
-                              .clearAll();
-                          LocalDataStorage.clearUser();
-                          Navigator.pushNamed(context, "/");
-                        });
-                      });
-                    },
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 18),
-                    child: Row(
-                      children: [
-                        CircularProgressIndicator(
-                          color: EPColors.appMainColor,
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                  ),
+            // isDeleteAccount == false
+            //     ? SettingTabs(
+            //         image: EPImages.deleteAccount,
+            //         title: "Delete Account",
+            //         onTap: () {
+            //           showAlertDialog(context,
+            //               message:
+            //                   "Are You sure you want to delete your account?",
+            //               onTap: () {
+            //             Navigator.pop(context);
+            //             setState(() => isDeleteAccount = true);
+            //             SignInController().deleteAccount().then((value) {
+            //               //if request is true delete account
+            //               if (value == true) {
+            //                 setState(() => isDeleteAccount = false);
+            //                 LocalDataStorage.clearUser();
+            //                 Navigator.pushNamed(context, "/");
+            //                 Provider.of<DashBoardController>(context,
+            //                         listen: false)
+            //                     .clearAll();
+            //               }
+            //             }).onError((error, stackTrace) {
+            //               setState(() => isDeleteAccount = false);
+            //               Provider.of<DashBoardController>(context,
+            //                       listen: false)
+            //                   .clearAll();
+            //               LocalDataStorage.clearUser();
+            //               Navigator.pushNamed(context, "/");
+            //             });
+            //           });
+            //         },
+            //       )
+            //     : Padding(
+            //         padding: const EdgeInsets.symmetric(
+            //             vertical: 8.0, horizontal: 18),
+            //         child: Row(
+            //           children: [
+            //             CircularProgressIndicator(
+            //               color: EPColors.appMainColor,
+            //             ),
+            //             const Spacer(),
+            //           ],
+            //         ),
+            //       ),
           ],
         ),
       ),

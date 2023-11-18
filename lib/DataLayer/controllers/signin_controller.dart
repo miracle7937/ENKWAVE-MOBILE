@@ -13,12 +13,24 @@ import '../repository/auth_repository.dart';
 import 'biomertic_controller.dart';
 
 class SignInController extends ChangeNotifier {
+  SignInController() {
+    setDefault();
+  }
   UserCredentialModel userCredentialModel = UserCredentialModel();
   PageState pageState = PageState.loaded;
   LOGINView? _view;
   ForgetPasswordView? _forgetPasswordView;
 
   late bool loginWithPhoneNumber = true;
+
+  setDefault() async {
+    LocalDataStorage.getUserCredential().then((value) {
+      if (value != null) {
+        userCredentialModel.phone = PhoneNumber.format(value.phone ?? "");
+        userCredentialModel.email = (value.email ?? "").replaceAll(' ', '');
+      }
+    });
+  }
 
   set forgetView(ForgetPasswordView forgetPasswordView) {
     _forgetPasswordView = forgetPasswordView;
@@ -50,6 +62,7 @@ class SignInController extends ChangeNotifier {
     LocalDataStorage.saveUserData(result.data!);
     LocalDataStorage.saveUserPermission(result.permission);
     LocalDataStorage.saveUserAppSettings(result.appSettings);
+    LocalDataStorage.saveTerminalConfig(result.terminalConfig);
   }
 
   logIn() async {

@@ -89,7 +89,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                             height: 20,
                           ),
                           Text(
-                            "Transfer successful. Actual credit time subject to recipient's bank.",
+                            "Transaction successful. Actual credit time subject to recipient's bank.",
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme

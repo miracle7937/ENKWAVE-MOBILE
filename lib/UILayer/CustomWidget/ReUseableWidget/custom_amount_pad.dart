@@ -1,7 +1,7 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 typedef DeleteCode = void Function();
 typedef CodeVerify = Future<bool> Function(String code);
@@ -34,7 +34,6 @@ class _AmountScreenState extends State<AmountScreen> {
     if (widget.shuffle) {
       values.shuffle();
     }
-    //ToDo check biometrics setup
     super.initState();
   }
 
@@ -43,16 +42,6 @@ class _AmountScreenState extends State<AmountScreen> {
     return Container(
       child: Column(
         children: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //     vertical: 10,
-          //   ),
-          //   child: SizedBox(
-          //     height: 50,
-          //     width: 50,
-          //     // child: Image.asset(IVImages.ivShieldColored),
-          //   ),
-          // ),
           const SizedBox(
             height: 10,
           ),
@@ -82,52 +71,8 @@ class _AmountScreenState extends State<AmountScreen> {
                         color: EPColors.appMainColor),
                   ),
                   //
-                  // TextFormField(
-                  //   showCursor: false,
-                  //   style: Theme.of(context).textTheme.overline!.copyWith(
-                  //       fontWeight: FontWeight.bold,
-                  //       color: EPColors.appMainColor),
-                  //   textAlign: TextAlign.center,
-                  //   controller: controller,
-                  //   decoration: const InputDecoration(
-                  //     border: InputBorder.none,
-                  //   ),
-                  // ),
                 ],
               )),
-          // Text(_inputList.join()),
-
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //     vertical: 0,
-          //   ),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: Iterable<int>.generate(_inputLength)
-          //         .map(
-          //           (e) => Container(
-          //             padding: EdgeInsets.all(10),
-          //             child: SizedBox(
-          //               child: Container(
-          //                 decoration: BoxDecoration(
-          //                   color: _inputList.length > e
-          //                       ? Colors.black
-          //                       : Colors.white,
-          //                   border:
-          //                       new Border.all(color: Colors.red, width: 2.0),
-          //                   borderRadius: BorderRadius.all(
-          //                     Radius.circular(5),
-          //                   ),
-          //                 ),
-          //               ),
-          //               width: 10,
-          //               height: 10,
-          //             ),
-          //           ),
-          //         )
-          //         .toList(),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: AspectRatio(
@@ -158,15 +103,6 @@ class _AmountScreenState extends State<AmountScreen> {
                               ),
                             ),
                           );
-                          // return FractionallySizedBox(
-                          //   widthFactor: 1 / 3,
-                          //   child: AspectRatio(
-                          //     aspectRatio: 1,
-                          //     child: Container(
-                          //       child: Text("C"),
-                          //     ),
-                          //   ),
-                          // );
                         }
                       case 10:
                         {
@@ -253,22 +189,26 @@ class _AmountScreenState extends State<AmountScreen> {
   }
 
   checkingEmptyValue() {
+    var currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '');
     var amount = _inputList.join().isEmpty
-        ? 0
-        : double.parse(_inputList.join()).toCurrencyString(mantissaLength: 0);
-    controller.text = "${amount.toString()}";
+        ? "0"
+        : currencyFormat.format(double.parse(_inputList.join()));
+    String stringWithoutDecimal = amount.replaceAll(RegExp(r'\.0+$'), '');
+    widget.codeVerify!(_inputList.join());
+    controller.text = "${stringWithoutDecimal.toString()}";
   }
 
   clearAll() {
     controller.text = "0.0";
     _inputList.clear();
+    widget.codeVerify!(_inputList.join());
   }
 
   void addChar(int value) {
-    if (_inputList.length >= _inputLength) {
-      _verifyPin();
-      return;
-    }
+    // if (_inputList.length >= _inputLength) {
+    //   _verifyPin();
+    //   return;
+    // }
 
     if (_inputList.isEmpty && value == 0) {
     } else {
@@ -284,22 +224,5 @@ class _AmountScreenState extends State<AmountScreen> {
     }
     _inputList.removeLast();
     checkingEmptyValue();
-  }
-
-  _verifyPin({bool isBio = false}) async {
-    String _pin = _inputList.join();
-
-    setState(() {});
-
-    widget.codeVerify!(_pin).whenComplete(() {
-      setState(() {});
-    }).then((onValue) async {
-      if (!mounted) return;
-      if (onValue) {
-        setState(() {});
-      } else {
-        setState(() {});
-      }
-    });
   }
 }

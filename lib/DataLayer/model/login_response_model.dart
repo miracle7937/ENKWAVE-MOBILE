@@ -5,9 +5,16 @@ class LoginResponseModel {
   UserData? data;
   APPPermission? permission;
   AppSettings? appSettings;
+  TerminalConfig? terminalConfig;
 
   LoginResponseModel(
-      {status, message, data, permission, appSettings, isNewDevice});
+      {status,
+      message,
+      data,
+      permission,
+      appSettings,
+      isNewDevice,
+      terminalConfig});
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -20,6 +27,10 @@ class LoginResponseModel {
 
     appSettings =
         json['setting'] != null ? AppSettings.fromJson(json['setting']) : null;
+
+    terminalConfig = json['tid_config'] != null
+        ? TerminalConfig.fromJson(json['tid_config'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -417,5 +428,41 @@ class TerminalInfo {
     data['merchantName'] = this.merchantName;
     data['deviceSN'] = this.deviceSN;
     return data;
+  }
+}
+
+class TerminalConfig {
+  String? ip;
+  String? port;
+  bool? ssl;
+  String? compKey1;
+  String? compKey2;
+
+  TerminalConfig({
+    this.ip,
+    this.port,
+    this.ssl,
+    this.compKey1,
+    this.compKey2,
+  });
+
+  factory TerminalConfig.fromJson(Map<String, dynamic> json) {
+    return TerminalConfig(
+      ip: json['ip'],
+      port: json['port'],
+      ssl: json['ssl'] == "true",
+      compKey1: json['compKey1'],
+      compKey2: json['compKey2'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ip': ip,
+      'port': port,
+      'ssl': ssl.toString(), // Convert bool to string
+      'compKey1': compKey1,
+      'compKey2': compKey2,
+    };
   }
 }

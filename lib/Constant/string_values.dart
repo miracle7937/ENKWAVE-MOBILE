@@ -85,6 +85,7 @@ class ConstantString {
   static String credential = "user-data-credential";
   static String userPermission = "userPermission";
   static String appSettings = "Settings";
+  static String terminalConfig = "terminalConfig";
 }
 
 /// Returns [true] if [s] is either null or empty.
