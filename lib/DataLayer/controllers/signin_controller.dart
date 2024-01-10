@@ -51,6 +51,7 @@ class SignInController extends ChangeNotifier {
     LocalDataStorage.saveUserData(result.data!);
     LocalDataStorage.saveUserPermission(result.permission);
     LocalDataStorage.saveUserAppSettings(result.appSettings);
+    LocalDataStorage.saveTerminalConfig(result.terminalConfig);
   }
 
   logIn() async {
@@ -65,13 +66,9 @@ class SignInController extends ChangeNotifier {
       data["email"] = userCredentialModel.email;
     }
 
-    DeviceInfo.getDeviceName().then((value) async {
-      // if (value != "TPS900") {
-      String? token = await FirebaseMessaging.instance.getToken();
-      userCredentialModel.token = token;
-      data["device_id"] = token;
-      // }
-    });
+    String? token = await FirebaseMessaging.instance.getToken();
+    userCredentialModel.token = token;
+    data["device_id"] = token;
 
     String? deviceID = await DeviceInfo.getDeviceID();
     String? deviceName = await DeviceInfo.getDeviceName();

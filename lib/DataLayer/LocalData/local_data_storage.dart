@@ -8,6 +8,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalDataStorage {
   // static const _storage = FlutterSecureStorage();
 
+  static saveTerminalConfig(TerminalConfig? config) async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    _storage.setString(
+      ConstantString.terminalConfig,
+      json.encode(config!.toJson()),
+    );
+  }
+
+  static Future<TerminalConfig?> getTerminalConfig() async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    String? value = _storage.getString(
+      ConstantString.terminalConfig,
+    );
+    Map<String, dynamic> map = value != null ? json.decode(value) : {};
+    if (map.isNotEmpty) {
+      return TerminalConfig.fromJson(map);
+    }
+    return null;
+  }
+
   static saveUserData(UserData? userData) async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
     _storage.setString(

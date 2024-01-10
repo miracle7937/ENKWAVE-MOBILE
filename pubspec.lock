@@ -399,7 +399,7 @@ packages:
     source: hosted
     version: "2.0.15"
   flutter_riverpod:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_riverpod
       url: "https://pub.dartlang.org"
@@ -865,9 +865,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "44db4873a395fa4238f1aefd8d6f24e6926c1a2b"
-      resolved-ref: "44db4873a395fa4238f1aefd8d6f24e6926c1a2b"
-      url: "https://github.com/miracle7937/telpo_pos_enkwave.git"
+      ref: "4488cb9948458ac3f84a3f39c18c93fe67efe0d0"
+      resolved-ref: "4488cb9948458ac3f84a3f39c18c93fe67efe0d0"
+      url: "git@github.com:miracle7937/telpo_pos_enkwave.git"
     source: git
     version: "0.0.1"
   term_glyph:

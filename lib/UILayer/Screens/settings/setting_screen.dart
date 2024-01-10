@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
@@ -10,6 +12,7 @@ import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_wid
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../Constant/colors.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
@@ -74,9 +77,13 @@ class _SettingScreenState extends State<SettingScreen> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           snapshot.data?.isMale == true
-                                              ? Image.asset(EPImages.userMale)
+                                              ? Image.asset(
+                                                  EPImages.userMale,
+                                                  width: 30,
+                                                )
                                               : Image.asset(
                                                   EPImages.female,
+                                                  width: 30,
                                                 ),
                                           const SizedBox(
                                             width: 10,
@@ -136,18 +143,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                                   ),
                                                   const SizedBox(
                                                     width: 10,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data?.phone ?? "",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline4!
-                                                        .copyWith(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: EPColors
-                                                                .appWhiteColor),
                                                   ),
                                                 ],
                                               ),
@@ -215,6 +210,21 @@ class _SettingScreenState extends State<SettingScreen> {
                   MaterialPageRoute(
                       builder: (_) => const BusinessInfoScreen())),
             ),
+            SettingTabs(
+                image: EPImages.syncKey,
+                title: "Sync terminal keys",
+                onTap: () async {
+                  UserData? userData = await LocalDataStorage.getUserData();
+                  TerminalConfig? terminalConfig =
+                      await LocalDataStorage.getTerminalConfig();
+                  log("COMP1 <==============> ${terminalConfig?.compKey1}");
+                  log("COMP2 <==============> ${terminalConfig?.compKey2}");
+                  log("IP AND PORT <==============> ${terminalConfig?.ip} / ${terminalConfig?.port}");
+                  log("Terminal no <==============> ${userData?.terminalInfo?.terminalNo}");
+                  log("Base Url <==============> ${terminalConfig?.baseUrl}");
+                  TelpoPosEnkwave().prep(userData!.terminalInfo!.terminalNo!,
+                      terminalConfig!.toJson());
+                }),
             SettingTabs(
               image: EPImages.requestDevice,
               title: "Request for a new device",

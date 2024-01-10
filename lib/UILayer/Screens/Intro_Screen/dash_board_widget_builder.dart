@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
@@ -20,7 +21,7 @@ class DashBoardBuilder {
   static List<IntroModel> builder(
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
-    if ((Platform.isAndroid && appPermission?.pos == 1) ||
+    if ((Platform.isAndroid && appPermission?.pos != 1) ||
         DeviceServiceInit.androidInfo?.model == DeviceServiceInit.telpoDevice) {
       dashBoardData.add(IntroModel(
         title: "POS",
@@ -28,10 +29,14 @@ class DashBoardBuilder {
         image: EPImages.posIcon,
         onTap: () async {
           UserData? userData = await LocalDataStorage.getUserData();
+          TerminalConfig? terminalConfig =
+              await LocalDataStorage.getTerminalConfig();
+          log(userData!.terminalInfo!.toJson().toString());
+          log(terminalConfig!.toJson().toString());
           TelpoPosEnkwave().ePayment(
               context: context,
-              terminalInfo: userData?.terminalInfo?.toJson(),
-              userID: userData?.id);
+              terminalInfo: userData.terminalInfo?.toJson(),
+              userID: userData.id);
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (_) => const PosAmountScreen()));
         },
@@ -149,6 +154,15 @@ class DashBoardBuilder {
           subTitle: "Exchange your currency seamless ",
           image: EPImages.forex));
     }
+
+    dashBoardData.add(IntroModel(
+        title: "End of Day",
+        subTitle: "Print end of day pos transactions",
+        image: EPImages.eod,
+        onTap: () async {
+          UserData? userData = await LocalDataStorage.getUserData();
+          TelpoPosEnkwave().openEOD(context: context, userID: userData!.id!);
+        }));
 
     return dashBoardData;
   }

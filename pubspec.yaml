@@ -68,12 +68,13 @@ dependencies:
   flip_card:
   device_info_plus: ^8.2.2
   shared_preferences: ^2.2.0
+  flutter_riverpod: ^1.0.4
 
 
   telpo_pos_enkwave:
     git:
-      url: https://github.com/miracle7937/telpo_pos_enkwave.git
-      ref: 44db4873a395fa4238f1aefd8d6f24e6926c1a2b
+      url: git@github.com:miracle7937/telpo_pos_enkwave.git
+      ref: 4488cb9948458ac3f84a3f39c18c93fe67efe0d0
 
 
 

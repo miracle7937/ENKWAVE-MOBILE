@@ -1,4 +1,8 @@
 
+
+fo AAR to work you need to add only the path to the gradle dependencies that all. dont add aar file just the path
+example (  implementation fileTree(dir: 'C:\\Users\\Admin\\Desktop\\Enkwave-new\\telpo_pos_enkwave\\android\\libs', include: ['*.aar', '*.jar'], exclude: []))
+
 0 #add contact permission  for ios
 1 change buy data permission that was hardcoded
 2 add type of data in description screen

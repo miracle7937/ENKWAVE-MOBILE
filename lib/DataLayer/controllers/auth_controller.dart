@@ -160,9 +160,9 @@ class AuthController extends ChangeNotifier with RegView {
       //clear form
       pageState = PageState.loaded;
       notifyListeners();
-    } catch (e) {
+    } catch (e, v) {
       //clear form
-
+      print(v.toString());
       pageState = PageState.loaded;
       notifyListeners();
       if (e is HttpException) {

@@ -79,6 +79,7 @@ class ConstantString {
   ];
 
   static String userDataKey = "user-data-key";
+  static String terminalConfig = "terminalConfig";
   static String hideBalance = "hideBalance";
   static String hideBonus = "hideBonus";
   static String enableBiometric = "enableBiometric";
