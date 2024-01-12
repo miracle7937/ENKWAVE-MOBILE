@@ -24,7 +24,7 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
   /// this widget will be use for each digit
   Widget numButton(int number) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: 14),
       child: TextButton(
         onPressed: () {
           setState(() {
@@ -74,62 +74,50 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
                   ),
                 ),
               ),
-              const SizedBox(height: 50),
 
               /// pin code area
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  4,
-                  (index) {
-                    return Container(
-                      margin: const EdgeInsets.all(6.0),
-                      width: isPinVisible ? 50 : 16,
-                      height: isPinVisible ? 50 : 16,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        color: index < enteredPin.length
-                            ? isPinVisible
-                                ? EPColors.appMainColor
-                                : EPColors.appMainColor
-                            : CupertinoColors.activeBlue.withOpacity(0.1),
-                      ),
-                      child: isPinVisible && index < enteredPin.length
-                          ? Center(
-                              child: Text(
-                                enteredPin[index],
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    4,
+                    (index) {
+                      return Container(
+                        margin: const EdgeInsets.all(6.0),
+                        width: isPinVisible ? 50 : 16,
+                        height: isPinVisible ? 50 : 16,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.0),
+                          color: index < enteredPin.length
+                              ? isPinVisible
+                                  ? EPColors.appMainColor
+                                  : EPColors.appMainColor
+                              : CupertinoColors.activeBlue.withOpacity(0.1),
+                        ),
+                        child: isPinVisible && index < enteredPin.length
+                            ? Center(
+                                child: Text(
+                                  enteredPin[index],
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : null,
-                    );
-                  },
+                              )
+                            : null,
+                      );
+                    },
+                  ),
                 ),
               ),
-
-              /// visiblity toggle button
-              // IconButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       isPinVisible = !isPinVisible;
-              //     });
-              //   },
-              //   icon: Icon(
-              //     isPinVisible ? Icons.visibility_off : Icons.visibility,
-              //   ),
-              // ),
-
-              SizedBox(height: isPinVisible ? 50.0 : 8.0),
 
               /// digits
               for (var i = 0; i < 3; i++)
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
@@ -141,7 +129,7 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
 
               /// 0 digit with back remove
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -167,7 +155,9 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
                   ],
                 ),
               ),
-              const Spacer(),
+              const Spacer(
+                flex: 4,
+              ),
             ],
           ),
         ),
