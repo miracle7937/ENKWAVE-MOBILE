@@ -67,7 +67,7 @@ class ServerRequest {
       if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
-          '/signInScreen',
+          '/pinSignIn',
           (route) => false,
         );
         //  return  TimeoutException('process time out');
@@ -134,7 +134,7 @@ class ServerRequest {
       if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
-          '/signInScreen',
+          '/pinSignIn',
           (route) => false,
         );
         throw HttpException({
@@ -198,7 +198,7 @@ class ServerRequest {
       if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
-          '/signInScreen',
+          '/pinSignIn',
           (route) => false,
         );
         throw HttpException({
@@ -286,7 +286,7 @@ class ServerRequest {
     if (response.statusCode == 401) {
       Navigator.of(NavigationService.navigatorKey.currentContext!)
           .pushNamedAndRemoveUntil(
-        '/signInScreen',
+        '/pinSignIn',
         (route) => false,
       );
       throw HttpException({"message": 'Sessions expired', "error": true});

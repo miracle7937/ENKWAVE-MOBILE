@@ -42,6 +42,7 @@ import 'UILayer/Screens/AuthScreen/sign_in.dart';
 import 'UILayer/Screens/Intro_Screen/onboarding_screen.dart';
 import 'UILayer/Screens/main_screens/splash_screen.dart';
 import 'UILayer/utils/account_creation_dialog.dart';
+import 'UILayer/utils/key_pad.dart';
 import 'UILayer/utils/loader_widget.dart';
 import 'UILayer/utils/location_controller.dart';
 import 'UILayer/utils/primary_swatch_color.dart';
@@ -142,6 +143,7 @@ class ThemeWidget extends StatelessWidget {
         navigatorKey: NavigationService.navigatorKey,
         routes: {
           '/signInScreen': (context) => const SignInScreen(),
+          '/pinSignIn': (context) => const PinCodeWidget(),
         },
         builder: (context, widget) {
           ScreenUtil.init(context);
@@ -240,7 +242,8 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.data == null) {
             return const OnBoardingScreen();
           } else {
-            return const SignInScreen();
+            // return const SignInScreen();
+            return const PinCodeWidget();
           }
         });
   }

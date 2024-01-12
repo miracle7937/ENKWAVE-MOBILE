@@ -2,11 +2,11 @@ import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../AuthScreen/select_verification_method_screen.dart';
+import '../AuthScreen/sign_in.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
