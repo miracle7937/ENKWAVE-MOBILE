@@ -59,6 +59,7 @@ class AppRoute {
   static String liquidateCardRoute = "$baseRoute/liquidate-card";
   static String cardDetails = "$baseRoute/card-details";
   static String createCard = "$baseRoute/create-card";
+  static String pinLogin = "$baseRoute/pin-login";
 
   static String termsAndCondition = "https://enkwave.com/terms-and-condition";
 

@@ -18,11 +18,16 @@ class SignInController extends ChangeNotifier {
   PageState pageState = PageState.loaded;
   LOGINView? _view;
   ForgetPasswordView? _forgetPasswordView;
+  PinSignInView? _pinSignInView;
 
   late bool loginWithPhoneNumber = true;
 
   set forgetView(ForgetPasswordView forgetPasswordView) {
     _forgetPasswordView = forgetPasswordView;
+  }
+
+  set pinView(PinSignInView pinSignInView) {
+    _pinSignInView = pinSignInView;
   }
 
   set view(LOGINView v) {
@@ -209,6 +214,49 @@ class SignInController extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  pinSignIn(String pin) async {
+    try {
+      UserData? userData = await LocalDataStorage.getUserData();
+      pageState = PageState.loading;
+      notifyListeners();
+
+      UserCredentialModel? _credentialModel =
+          await LocalDataStorage.getUserCredential();
+      debugPrint(_credentialModel!.toJson().toString());
+      Map data = {};
+      if (isNotEmpty(_credentialModel.phone)) {
+        data["phone"] = _credentialModel.phone;
+        loginWithPhoneNumber = true;
+      } else if (isNotEmpty(_credentialModel.email)) {
+        data["email"] = _credentialModel.email;
+        loginWithPhoneNumber = false;
+      }
+      // loginWithPhoneNumber  determine the route to push the auth data ;
+
+      if (isNotEmpty(_credentialModel.password)) {
+        data["password"] = _credentialModel.password;
+      }
+
+      data["pin"] = pin;
+
+      var result = await AuthRepository().pinLogin(data);
+      if (result.status == true) {
+        //save user
+        saveData(result);
+        _pinSignInView?.onSuccess(result.message ?? "");
+      } else {
+        _pinSignInView?.onError(result.message ?? "");
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      pageState = PageState.loaded;
+      notifyListeners();
+      _view?.onError(e.toString() ?? "");
+    }
+  }
 }
 
 abstract class LOGINView {
@@ -220,6 +268,11 @@ abstract class LOGINView {
 }
 
 abstract class ForgetPasswordView {
+  void onSuccess(String message);
+  void onError(String message);
+}
+
+abstract class PinSignInView {
   void onSuccess(String message);
   void onError(String message);
 }
