@@ -865,8 +865,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4488cb9948458ac3f84a3f39c18c93fe67efe0d0"
-      resolved-ref: "4488cb9948458ac3f84a3f39c18c93fe67efe0d0"
+      ref: "794999205813709299492f738c565069c0b71d22"
+      resolved-ref: "794999205813709299492f738c565069c0b71d22"
       url: "git@github.com:miracle7937/telpo_pos_enkwave.git"
     source: git
     version: "0.0.1"

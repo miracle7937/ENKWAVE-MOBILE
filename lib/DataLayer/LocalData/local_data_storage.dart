@@ -10,6 +10,7 @@ class LocalDataStorage {
 
   static saveTerminalConfig(TerminalConfig? config) async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
+
     _storage.setString(
       ConstantString.terminalConfig,
       json.encode(config!.toJson()),

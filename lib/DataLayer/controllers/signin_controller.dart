@@ -56,6 +56,7 @@ class SignInController extends ChangeNotifier {
     LocalDataStorage.saveUserData(result.data!);
     LocalDataStorage.saveUserPermission(result.permission);
     LocalDataStorage.saveUserAppSettings(result.appSettings);
+    print("DataCon ${result.terminalConfig}");
     LocalDataStorage.saveTerminalConfig(result.terminalConfig);
   }
 

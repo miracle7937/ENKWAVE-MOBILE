@@ -1,5 +1,5 @@
 class AppRoute {
-  // static String baseRoute = "http://test.enkpay.com/api";
+  // static String baseRoute = "https://test.enkpay.com/api";
   static String baseRoute = "https://enkpayapp.enkwave.com/api";
 
   static String signUp = "$baseRoute/register";

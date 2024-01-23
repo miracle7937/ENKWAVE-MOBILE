@@ -57,8 +57,8 @@ class _AirtimeSelectedState extends State<AirtimeSelector> {
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: Stack(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.21,
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.20,
               height: MediaQuery.of(context).size.width * 0.25,
               // color: Colors.red,
             ),

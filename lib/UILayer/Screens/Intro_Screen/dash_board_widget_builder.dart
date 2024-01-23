@@ -10,9 +10,11 @@ import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.d
 import 'package:flutter/material.dart';
 import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
+import '../../../Constant/string_values.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/model/login_response_model.dart';
 import '../../../services/service_initialization.dart';
+import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
 import '../v_cards_screen/loader_page.dart';
 import '../v_cards_screen/v_card_request_screen.dart';
 import '../v_cards_screen/v_card_screen.dart';
@@ -161,7 +163,21 @@ class DashBoardBuilder {
         image: EPImages.eod,
         onTap: () async {
           UserData? userData = await LocalDataStorage.getUserData();
-          TelpoPosEnkwave().openEOD(context: context, userID: userData!.id!);
+          TerminalConfig? terminalConfig =
+              await LocalDataStorage.getTerminalConfig();
+          print(
+              "++++++++++++++++++USERID =${userData?.id} ++++++++++++++++++++");
+          print(
+              "++++++++++++++++++baseURL =${terminalConfig?.baseUrl} ++++++++++++++++++++");
+          if (isEmpty(terminalConfig?.baseUrl)) {
+            snackBar(context,
+                message: "Terminal not profile for pos transaction");
+            return;
+          }
+          TelpoPosEnkwave().openEOD(
+              context: context,
+              userID: userData!.id!,
+              baseRoute: terminalConfig!.baseUrl!);
         }));
 
     return dashBoardData;
