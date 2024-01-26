@@ -139,7 +139,6 @@ class TransferController with ChangeNotifier {
         isNotEmpty(bankTransferModel.amount) &&
         isNotEmpty(bankTransferModel.wallet)) {
       print(bankTransferModel.toJson());
-      return;
       pageState = PageState.loading;
       notifyListeners();
       TransferRepository().bankTransfer(bankTransferModel).then((value) {

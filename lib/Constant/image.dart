@@ -30,6 +30,7 @@ class EPImages {
   static String pinLock = "$root/pin_lock.png";
   static String bgImage = "$root/bg_image.png";
   static String splashScreenLogo = "$root/spalshscreen_logo.png";
+  static String testIcon = "$root/test_icon.png";
 
   static String errorLottie = "$root/error-lottie.json";
   static String loader = "$root/loader.json";

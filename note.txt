@@ -19,3 +19,9 @@ note enable biometric
 
 https://pub.dev/packages/url_launcher config for ios
 image_picker permission too
+
+
+//to  build first
+flutter build apk --release --target-platform android-arm
+
+adb install C:\Users\Admin\Desktop\flutterProject\enk_pay_project\build\app\outputs\apk\release\app-release.apk
