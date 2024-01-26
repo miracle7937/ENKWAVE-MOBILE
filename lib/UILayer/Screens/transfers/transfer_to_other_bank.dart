@@ -30,11 +30,17 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
   TextEditingController selectedBankController = TextEditingController();
   TransferController? transferController;
   UserWallet? selectedUserWallet;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<TransferController>(context, listen: false).getLocation();
+  }
+
   @override
   void dispose() {
     super.dispose();
     transferController?.disposeAll();
-    Provider.of<TransferController>(context, listen: false).getLocation();
   }
 
   @override

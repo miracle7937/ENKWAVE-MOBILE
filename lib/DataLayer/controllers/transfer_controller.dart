@@ -125,7 +125,8 @@ class TransferController with ChangeNotifier {
         }
         pageState = PageState.loaded;
         notifyListeners();
-      }).catchError((v) {
+      }).catchError((v, i) {
+        print(i);
         pageState = PageState.loaded;
         notifyListeners();
         _onBankTransfer.onError(v.toString());
