@@ -298,6 +298,7 @@ class APPPermission {
   int? mobileData;
   int? airtime;
   int? insurance;
+  int? apiService;
   int? education;
   int? power;
   int? exchange;
@@ -312,6 +313,7 @@ class APPPermission {
       mobileData,
       airtime,
       insurance,
+      apiService,
       education,
       power,
       exchange,
@@ -330,6 +332,7 @@ class APPPermission {
     exchange = json['exchange'];
     ticket = json['ticket'];
     vcard = json['v_card'];
+    apiService = json['api_service'];
   }
 
   Map<String, dynamic> toJson() {
@@ -346,6 +349,7 @@ class APPPermission {
     data['exchange'] = exchange;
     data['ticket'] = ticket;
     data['v_card'] = vcard;
+    data['api_service'] = apiService;
     return data;
   }
 }

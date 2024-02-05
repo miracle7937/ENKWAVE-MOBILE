@@ -61,6 +61,10 @@ class AppRoute {
   static String createCard = "$baseRoute/create-card";
   static String pinLogin = "$baseRoute/pin-login";
 
+  static String apiService = "$baseRoute/service-properties";
+  static String serviceCheck = "$baseRoute/service-check";
+  static String serviceFund = "$baseRoute/service-fund";
+
   static String termsAndCondition = "https://enkwave.com/terms-and-condition";
 
   //data buying and bill

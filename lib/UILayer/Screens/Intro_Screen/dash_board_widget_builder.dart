@@ -9,6 +9,7 @@ import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.d
 import 'package:flutter/material.dart';
 
 import '../../../DataLayer/model/login_response_model.dart';
+import '../services/pay_service_screen.dart';
 import '../v_cards_screen/loader_page.dart';
 import '../v_cards_screen/v_card_request_screen.dart';
 import '../v_cards_screen/v_card_screen.dart';
@@ -111,6 +112,18 @@ class DashBoardBuilder {
                       )));
         },
       ));
+    }
+    if (appPermission?.apiService == 1) {
+      dashBoardData.add(
+        IntroModel(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const ApiServiceScreen()));
+            },
+            title: "API Service Payment",
+            subTitle: "Pay for services",
+            image: EPImages.insurance),
+      );
     }
     if (appPermission?.insurance == 1) {
       dashBoardData.add(

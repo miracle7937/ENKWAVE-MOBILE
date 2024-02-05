@@ -213,6 +213,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 ),
                 Text(
                   introModel.title,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                       fontWeight: FontWeight.w700,
                       color: EPColors.appBlackColor),
