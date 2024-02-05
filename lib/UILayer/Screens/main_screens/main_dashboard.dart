@@ -115,14 +115,15 @@ class _MainScreenState extends State<MainScreen> with MainView {
               Row(
                 children: [
                   _dashBoardController.isMale
-                      ? Image.asset(EPImages.userMale)
-                      : Image.asset(
-                          EPImages.female,
-                        ),
+                      ? Image.asset(
+                          EPImages.userMale,
+                          width: 30,
+                        )
+                      : Image.asset(EPImages.female, width: 30),
                   const SizedBox(
                     width: 15,
                   ),
-                  Column(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -130,6 +131,9 @@ class _MainScreenState extends State<MainScreen> with MainView {
                         style: Theme.of(context).textTheme.headline1!.copyWith(
                             fontWeight: FontWeight.w500,
                             color: EPColors.appBlackColor),
+                      ),
+                      const SizedBox(
+                        width: 10,
                       ),
                       Text(
                         _dashBoardController.fullName.toUpperCase(),
@@ -147,22 +151,49 @@ class _MainScreenState extends State<MainScreen> with MainView {
               const SizedBox(
                 height: 10,
               ),
-              DashBoardCard(
-                amount: _dashBoardController.getAccountBalance,
-                bonusWallet: _dashBoardController.getAccountBonusBalance,
-                cashOut: () {
-                  pushToNextScreen(
-                      context,
-                      CashOutScreen(
-                        onRefresh: widget.onRefresh,
-                      ));
-                },
-                cashIn: () {
-                  _dashBoardController.onCahIn();
-                },
-                enkPayTransfer: () async {
-                  await pushToNextScreen(context, const TransferInApp());
-                },
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                width: MediaQuery.of(context).size.width,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    DashBoardCard(
+                      title: "Main Wallet",
+                      amount: _dashBoardController.getAccountBalance,
+                      cashOut: () {
+                        pushToNextScreen(
+                            context,
+                            CashOutScreen(
+                              onRefresh: widget.onRefresh,
+                            ));
+                      },
+                      cashIn: () {
+                        _dashBoardController.onCahIn();
+                      },
+                      enkPayTransfer: () async {
+                        await pushToNextScreen(context, const TransferInApp());
+                      },
+                    ),
+                    DashBoardCard(
+                      title: "Bonus Wallet",
+                      forBonus: true,
+                      amount: _dashBoardController.getAccountBonusBalance,
+                      cashOut: () {
+                        pushToNextScreen(
+                            context,
+                            CashOutScreen(
+                              onRefresh: widget.onRefresh,
+                            ));
+                      },
+                      cashIn: () {
+                        _dashBoardController.onCahIn();
+                      },
+                      enkPayTransfer: () async {
+                        await pushToNextScreen(context, const TransferInApp());
+                      },
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 15,
