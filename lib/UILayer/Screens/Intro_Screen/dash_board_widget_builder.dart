@@ -7,8 +7,8 @@ import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_scree
 import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
+import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
-import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../Constant/string_values.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
@@ -35,7 +35,7 @@ class DashBoardBuilder {
               await LocalDataStorage.getTerminalConfig();
           log(userData!.terminalInfo!.toJson().toString());
           log(terminalConfig!.toJson().toString());
-          TelpoPosEnkwave().ePayment(
+          EtopPosPlugin().ePayment(
               context: context,
               terminalInfo: userData.terminalInfo?.toJson(),
               userID: userData.id);
@@ -174,7 +174,7 @@ class DashBoardBuilder {
                 message: "Terminal not profile for pos transaction");
             return;
           }
-          TelpoPosEnkwave().openEOD(
+          EtopPosPlugin().openEOD(
               context: context,
               userID: userData!.id!,
               baseRoute: terminalConfig!.baseUrl!);

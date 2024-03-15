@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
@@ -12,14 +10,13 @@ import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_wid
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:telpo_pos_enkwave/telpo_pos_enkwave.dart';
 
 import '../../../Constant/colors.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/controllers/signin_controller.dart';
 import '../../../DataLayer/model/login_response_model.dart';
-import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
 import '../../utils/show_alert_dialog.dart';
+import '../../utils/sync_keys.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
 import 'manage_terminals/manage_terminals_screen.dart';
@@ -215,21 +212,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 image: EPImages.syncKey,
                 title: "Sync terminal keys",
                 onTap: () async {
-                  UserData? userData = await LocalDataStorage.getUserData();
-                  TerminalConfig? terminalConfig =
-                      await LocalDataStorage.getTerminalConfig();
-                  log("COMP1 <==============> ${terminalConfig?.compKey1}");
-                  log("COMP2 <==============> ${terminalConfig?.compKey2}");
-                  log("IP AND PORT <==============> ${terminalConfig?.ip} / ${terminalConfig?.port}");
-                  log("Terminal no <==============> ${userData?.terminalInfo?.terminalNo}");
-                  log("Base Url <==============> ${terminalConfig?.baseUrl}");
-                  if (isEmpty(terminalConfig?.baseUrl)) {
-                    snackBar(context,
-                        message: "Terminal not profile for pos transaction");
-                    return;
-                  }
-                  TelpoPosEnkwave().prep(userData!.terminalInfo!.terminalNo!,
-                      terminalConfig!.toJson());
+                  SyncKeys().init(context, showLoader: true);
                 }),
             SettingTabs(
               image: EPImages.requestDevice,

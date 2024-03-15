@@ -46,6 +46,7 @@ import 'UILayer/utils/key_pad.dart';
 import 'UILayer/utils/loader_widget.dart';
 import 'UILayer/utils/location_controller.dart';
 import 'UILayer/utils/primary_swatch_color.dart';
+import 'UILayer/utils/sync_keys.dart';
 import 'services/navigation_service.dart';
 
 void main() async {
@@ -190,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       checkLocation();
-      firesBaseSetUp();
+      // firesBaseSetUp();
     } catch (e) {
       log(e.toString());
     }
@@ -200,6 +201,14 @@ class _MyHomePageState extends State<MyHomePage> {
     isLocationEnable = await LocationController().determinePosition();
     if (isLocationEnable == false) {}
     setState(() {});
+
+    //inject keys
+
+    try {
+      SyncKeys().init(context, showLoader: false);
+    } catch (e) {
+      log("In jecting logs =======================> ${e}");
+    }
   }
 
   firesBaseSetUp() async {

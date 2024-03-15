@@ -17,7 +17,7 @@
 
 
     <application
-        android:label="SAMWINTONY"
+        android:label="SAMWINTOY"
         android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true"
         tools:replace="android:icon,android:label"

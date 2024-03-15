@@ -438,6 +438,7 @@ class TerminalConfig {
   String? compKey2;
   String? baseUrl;
   String? logoUrl;
+  String? showLoader;
 
   TerminalConfig(
       {this.ip,
@@ -446,7 +447,8 @@ class TerminalConfig {
       this.compKey1,
       this.compKey2,
       this.baseUrl,
-      this.logoUrl});
+      this.logoUrl,
+      showLoader});
 
   TerminalConfig.fromJson(Map<String, dynamic> json) {
     ip = json['ip'];
@@ -467,6 +469,11 @@ class TerminalConfig {
     data['compKey2'] = compKey2;
     data['baseUrl'] = baseUrl;
     data['logoUrl'] = logoUrl;
+    data['showLoader'] = showLoader;
     return data;
+  }
+
+  setShowLoader(String v) {
+    showLoader = v;
   }
 }
