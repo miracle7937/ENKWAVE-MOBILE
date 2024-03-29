@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../Constant/string_values.dart';
 import '../../DataLayer/LocalData/local_data_storage.dart';
 import '../../DataLayer/model/login_response_model.dart';
 import '../CustomWidget/ReUseableWidget/snack_bar.dart';
@@ -18,8 +17,8 @@ class SyncKeys {
     log("Terminal no <==============> ${userData?.terminalInfo?.terminalNo}");
     log("Base Url <==============> ${terminalConfig?.baseUrl}");
     log("LOGO Url <==============> ${terminalConfig?.logoUrl}");
-    if (isEmpty(terminalConfig?.baseUrl)) {
-      snackBar(context, message: "Terminal not profile for pos transaction");
+    if (terminalConfig?.hasNull == true || userData?.terminalInfo == null) {
+      snackBar(context, message: "Terminal not profile for pos properly");
       return;
     }
     terminalConfig?.setShowLoader(showLoader.toString());

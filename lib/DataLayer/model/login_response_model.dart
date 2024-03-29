@@ -476,4 +476,13 @@ class TerminalConfig {
   setShowLoader(String v) {
     showLoader = v;
   }
+
+  bool get hasNull {
+    return ip == null ||
+        port == null ||
+        ssl == null ||
+        compKey1 == null ||
+        compKey2 == null ||
+        baseUrl == null;
+  }
 }

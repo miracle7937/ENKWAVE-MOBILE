@@ -21,6 +21,7 @@ class TransferStatusController with ChangeNotifier {
       }
       notifyListeners();
     }).onError((error, stackTrace) {
+      print(stackTrace);
       pageState = PageState.error;
       notifyListeners();
     });

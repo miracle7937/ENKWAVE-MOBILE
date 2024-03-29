@@ -61,6 +61,7 @@ class HistoryScreen extends StatelessWidget {
                                               builder: (builder) =>
                                                   TransferStatusPage(
                                                     refTransId: e.refTransId,
+                                                    transactionTitle: e.title,
                                                   )));
                                       // if (getTransactionEnum(
                                       //         e.transactionType!) ==

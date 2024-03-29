@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../Constant/string_values.dart';
@@ -5,6 +7,8 @@ import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/device_info.dart';
 import '../../UILayer/utils/format_phone_number.dart';
+import '../../UILayer/utils/sync_keys.dart';
+import '../../services/navigation_service.dart';
 import '../LocalData/local_data_storage.dart';
 import '../model/generic_model_response.dart';
 import '../model/login_response_model.dart';
@@ -51,12 +55,17 @@ class SignInController extends ChangeNotifier {
     notifyListeners();
   }
 
-  saveData(LoginResponseModel result) {
-    LocalDataStorage.saveUserData(result.data!);
-    LocalDataStorage.saveUserPermission(result.permission);
-    LocalDataStorage.saveUserAppSettings(result.appSettings);
-    print("DataCon ${result.terminalConfig}");
-    LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+  saveData(LoginResponseModel result) async {
+    await LocalDataStorage.saveUserData(result.data!);
+    await LocalDataStorage.saveUserPermission(result.permission);
+    await LocalDataStorage.saveUserAppSettings(result.appSettings);
+    await LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+    try {
+      SyncKeys().init(NavigationService.navigatorKey.currentState!.context,
+          showLoader: false);
+    } catch (e) {
+      log("Injecting logs fails======================> ${e}");
+    }
   }
 
   logIn() async {

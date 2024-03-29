@@ -5,6 +5,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.d
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
+import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,14 +15,18 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../Constant/image.dart';
+import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/controllers/transfer_status_controller.dart';
+import '../../../DataLayer/model/login_response_model.dart';
 import '../../utils/time_ago_util.dart';
 import 'ep_button.dart';
 
 class TransferStatusPage extends StatefulWidget {
   final VoidCallback? onTap;
   final String? refTransId;
-  const TransferStatusPage({Key? key, this.onTap, this.refTransId})
+  final String? transactionTitle;
+  const TransferStatusPage(
+      {Key? key, this.onTap, this.refTransId, this.transactionTitle})
       : super(key: key);
 
   @override
@@ -89,7 +94,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                             height: 20,
                           ),
                           Text(
-                            "Transfer successful. Actual credit time subject to recipient's bank.",
+                            "Actual credit time subject to recipient's bank.",
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme
@@ -110,10 +115,6 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                             myProvider.transactionStatusModel?.receiverBank,
                           ),
                           rowView(
-                            "Recipient Bank",
-                            myProvider.transactionStatusModel?.receiverBank,
-                          ),
-                          rowView(
                             "Recipient Account Number",
                             myProvider
                                 .transactionStatusModel?.receiverAccountNo,
@@ -126,6 +127,12 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                           ),
                           rowView("Reference ID",
                               myProvider.transactionStatusModel?.eRef ?? "",
+                              copy: true),
+                          rowView("Card Pan",
+                              myProvider.transactionStatusModel?.cardPan ?? "",
+                              copy: false),
+                          rowView("RRN",
+                              myProvider.transactionStatusModel?.rrn ?? "",
                               copy: true),
                           rowView(
                             "Note",
@@ -151,19 +158,15 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                       fontWeight: FontWeight.w300, color: Colors.black87),
                 ),
                 EPButton(
-                  title: "Share",
-                  onTap: () {
-                    screenshotController
-                        .capture(delay: const Duration(milliseconds: 2))
-                        .then((capturedImage) async {
-                      if (capturedImage != null) {
-                        await saveImage(capturedImage);
-                        Share.shareXFiles([file!], text: "Receipt");
-                      }
-                      print(capturedImage);
-                    }).catchError((onError) {
-                      print(onError);
-                    });
+                  title: "Print",
+                  onTap: () async {
+                    UserData? userData = await LocalDataStorage.getUserData();
+                    Map map = {
+                      "title": widget.transactionTitle,
+                      "merchantName": userData?.terminalInfo?.merchantName
+                    };
+                    map["data"] = transactionMap(myProvider);
+                    EtopPosPlugin().reprint(map: map);
                   },
                 ),
               ],
@@ -195,6 +198,22 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
         return Colors.orange;
     }
   }
+
+  Map<String, dynamic> transactionMap(TransferStatusController myProvider) => {
+        "Card Pan": myProvider.transactionStatusModel?.cardPan ?? "",
+        "RRN": myProvider.transactionStatusModel?.rrn ?? "",
+        "Recipient": myProvider.transactionStatusModel?.receiverName ?? "",
+        "Recipient Bank": myProvider.transactionStatusModel?.receiverBank ?? "",
+        "Recipient Account Number":
+            myProvider.transactionStatusModel?.receiverAccountNo ?? "",
+        "Transaction Amount": amountFormatter(
+                myProvider.transactionStatusModel?.amount.toString()) ??
+            "",
+        "Date": myProvider.transactionStatusModel?.date != null
+            ? TimeUtilAgo.format2(myProvider.transactionStatusModel!.date!)
+            : "",
+        "Message": statusString(myProvider.transactionStatusModel?.status),
+      };
 
   Widget rowView(String title, String? value, {bool copy = false}) {
     if (isEmpty(value)) {

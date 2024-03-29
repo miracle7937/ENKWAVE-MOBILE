@@ -164,7 +164,7 @@ showTransferDialog(BuildContext context,
               ),
               InkWell(
                 onTap: () {
-                  Clipboard.setData(ClipboardData(text: accountNumber))
+                  Clipboard.setData(ClipboardData(text: accountNumber ?? ""))
                       .then((value) {
                     snackBar(context, message: "$accountNumber copied");
                   });

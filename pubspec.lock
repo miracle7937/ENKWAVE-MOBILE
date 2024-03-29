@@ -222,8 +222,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: f7e48973014118672307952e0c45d299d130a6b2
-      resolved-ref: f7e48973014118672307952e0c45d299d130a6b2
+      ref: a3021e6fb1f13384e146aa809dafec182c239511
+      resolved-ref: a3021e6fb1f13384e146aa809dafec182c239511
       url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
     source: git
     version: "0.0.1"
@@ -745,7 +745,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   riverpod:
     dependency: transitive
     description:
