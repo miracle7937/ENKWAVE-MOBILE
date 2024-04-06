@@ -1,4 +1,5 @@
 import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
 import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
@@ -30,17 +31,11 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
   TextEditingController selectedBankController = TextEditingController();
   TransferController? transferController;
   UserWallet? selectedUserWallet;
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<TransferController>(context, listen: false).getLocation();
-  }
-
   @override
   void dispose() {
     super.dispose();
     transferController?.disposeAll();
+    Provider.of<TransferController>(context, listen: false).getLocation();
   }
 
   @override
@@ -108,6 +103,23 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                           )),
                     )
                     .toList()),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Image.asset(EPImages.beneficiary),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text("Send to Beneficiary",
+                      style: Theme.of(context).textTheme.headline3!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                          color: EPColors.appBlackColor))
+                ],
+              ),
+            ),
             EPDropdownButton<Bank>(
                 itemsListTitle: "Select Bank",
                 iconSize: 22,
@@ -141,7 +153,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
             Row(
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: EPForm(
                     hintText: "Account number",
                     enabledBorderColor: EPColors.appGreyColor,
@@ -159,6 +171,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                   ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: EPButton(
                     title: "Verify",
                     onTap: () {
@@ -183,6 +196,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                                 .headline1!
                                 .copyWith(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                     color: Colors.white),
                           ),
                         ],

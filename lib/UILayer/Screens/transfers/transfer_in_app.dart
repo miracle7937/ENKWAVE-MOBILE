@@ -8,12 +8,10 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.d
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/widget/pin_verification_dialog.dart';
-import 'package:enk_pay_project/UILayer/utils/format_phone_number.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_contacts/contact.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -35,15 +33,10 @@ class _TransferInAppState extends State<TransferInApp>
     with InternalTransferView {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController amountController = TextEditingController();
-  late List<Contact> contacts;
+  late List<Contact>? contacts;
 
   getPhoneNumber() async {
-    if (await FlutterContacts.requestPermission()) {
-      // Get all contacts (lightly fetched)
-      contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-      );
-    }
+    contacts = await FlutterContactPicker().selectContacts();
   }
 
   @override
@@ -217,10 +210,12 @@ class _TransferInAppState extends State<TransferInApp>
   }
 
   void selectContact() async {
-    showPhoneList(context, contacts, (v) {
-      phoneNumberController.text = v.phones.first.number;
-      transferController!.phoneNumber =
-          PhoneNumber.format(v.phones.first.number);
+    if (contacts == null) {
+      return;
+    }
+    showPhoneList(context, contacts!, (v) {
+      phoneNumberController.text = v.phoneNumbers?.first ?? "";
+      transferController!.phoneNumber = v.phoneNumbers?.first ?? "";
     });
   }
 

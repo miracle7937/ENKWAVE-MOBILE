@@ -151,49 +151,22 @@ class _MainScreenState extends State<MainScreen> with MainView {
               const SizedBox(
                 height: 10,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                width: MediaQuery.of(context).size.width,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    DashBoardCard(
-                      title: "Main Wallet",
-                      amount: _dashBoardController.getAccountBalance,
-                      cashOut: () {
-                        pushToNextScreen(
-                            context,
-                            CashOutScreen(
-                              onRefresh: widget.onRefresh,
-                            ));
-                      },
-                      cashIn: () {
-                        _dashBoardController.onCahIn();
-                      },
-                      enkPayTransfer: () async {
-                        await pushToNextScreen(context, const TransferInApp());
-                      },
-                    ),
-                    DashBoardCard(
-                      title: "Bonus Wallet",
-                      forBonus: true,
-                      amount: _dashBoardController.getAccountBonusBalance,
-                      cashOut: () {
-                        pushToNextScreen(
-                            context,
-                            CashOutScreen(
-                              onRefresh: widget.onRefresh,
-                            ));
-                      },
-                      cashIn: () {
-                        _dashBoardController.onCahIn();
-                      },
-                      enkPayTransfer: () async {
-                        await pushToNextScreen(context, const TransferInApp());
-                      },
-                    ),
-                  ],
-                ),
+              DashBoardCard(
+                amount: _dashBoardController.getAccountBalance,
+                bonusWallet: _dashBoardController.getAccountBonusBalance,
+                cashOut: () {
+                  pushToNextScreen(
+                      context,
+                      CashOutScreen(
+                        onRefresh: widget.onRefresh,
+                      ));
+                },
+                cashIn: () {
+                  _dashBoardController.onCahIn();
+                },
+                enkPayTransfer: () async {
+                  await pushToNextScreen(context, const TransferInApp());
+                },
               ),
               const SizedBox(
                 height: 15,
@@ -244,9 +217,9 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 ),
                 Text(
                   introModel.title,
-                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                       fontWeight: FontWeight.w700,
+                      fontSize: 10,
                       color: EPColors.appBlackColor),
                 ),
                 const SizedBox(
@@ -270,7 +243,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
-                    "New",
+                    "New+",
                     style: Theme.of(context).textTheme.headline3!.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold),
                   ),

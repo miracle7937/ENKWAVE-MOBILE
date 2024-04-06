@@ -11,14 +11,13 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/model/bank_list_response.dart';
 import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
 import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
-import '../../utils/format_phone_number.dart';
 import '../../utils/money_formatter.dart';
 import '../transfers/widget/pin_verification_dialog.dart';
 
@@ -32,7 +31,9 @@ class BuyAirtimeScreen extends StatefulWidget {
 class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   TextEditingController amountController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  late List<Contact> contacts;
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
+
+  late List<Contact>? contacts;
 
   @override
   void dispose() {
@@ -47,12 +48,8 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   }
 
   getPhoneNumber() async {
-    if (await FlutterContacts.requestPermission()) {
-      // Get all contacts (lightly fetched)
-      contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-      );
-    }
+    // Get all contacts (lightly fetched)
+    contacts = await _contactPicker.selectContacts();
   }
 
   late AirtimeController _airtimeController;
@@ -223,8 +220,12 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   }
 
   void selectContact() async {
-    showPhoneList(context, contacts, (v) {
-      phoneNumberController.text = PhoneNumber.format(v.phones.first.number);
+    if (contacts == null) {
+      return;
+    }
+    showPhoneList(context, contacts!, (v) {
+      // phoneNumberController.text = PhoneNumber.format(v.phoneNumbers);
+      phoneNumberController.text = v.phoneNumbers?.first ?? "";
     });
   }
 
