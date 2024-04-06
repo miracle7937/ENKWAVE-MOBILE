@@ -135,7 +135,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
             Row(
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: EPForm(
                     hintText: "Account number",
                     enabledBorderColor: EPColors.appGreyColor,
@@ -153,6 +153,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                   ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: EPButton(
                     title: "Verify",
                     onTap: () {
@@ -177,6 +178,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                                 .headline1!
                                 .copyWith(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                     color: Colors.white),
                           ),
                         ],
