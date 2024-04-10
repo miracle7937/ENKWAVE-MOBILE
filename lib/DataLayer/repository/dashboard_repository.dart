@@ -18,6 +18,14 @@ class DashboardRepository {
     return HistoryModel.fromJson(responseData.data);
   }
 
+  Future<HistoryModel> getHistoryByDate(
+      {required String startDate, required String endDate}) async {
+    var responseData = await ServerRequest().postData(
+        path: AppRoute.transactionHistoryByDate,
+        body: {"startDate": startDate, "endDate": endDate});
+    return HistoryModel.fromJson(responseData.data);
+  }
+
   Future<GenericResponse> createAccount() async {
     var responseData =
         await ServerRequest().postData(path: AppRoute.createAccount);

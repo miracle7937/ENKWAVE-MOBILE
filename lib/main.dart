@@ -18,6 +18,7 @@ import 'DataLayer/LocalData/local_data_storage.dart';
 import 'DataLayer/controllers/account_verification_controller.dart';
 import 'DataLayer/controllers/api_service_controller.dart';
 import 'DataLayer/controllers/auth_controller.dart';
+import 'DataLayer/controllers/beneficiary_controller.dart';
 import 'DataLayer/controllers/business_controller.dart';
 import 'DataLayer/controllers/buy_airtime_controller.dart';
 import 'DataLayer/controllers/cable_tv_controller.dart';
@@ -139,6 +140,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => VCardController()),
         ChangeNotifierProvider<ApiServiceController>(
             create: (_) => ApiServiceController()),
+        ChangeNotifierProvider<BeneficiaryController>(
+            create: (_) => BeneficiaryController()),
       ],
       child: MaterialApp(
         navigatorKey: NavigationService.navigatorKey,

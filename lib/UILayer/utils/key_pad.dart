@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../DataLayer/controllers/signin_controller.dart';
 import '../CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import '../CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import '../Screens/AuthScreen/sign_in.dart';
 import '../Screens/main_screens/nav_ui.dart';
 
 class PinCodeWidget extends StatefulWidget {
@@ -63,7 +64,26 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              const Spacer(),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => const SignInScreen()));
+                    },
+                    child: const Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(
+                flex: 2,
+              ),
               const Center(
                 child: Text(
                   'Enter Your Pin',

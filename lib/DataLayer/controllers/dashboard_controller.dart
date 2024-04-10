@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:enk_pay_project/DataLayer/model/login_response_model.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import '../../Constant/package_info.dart';
 import '../../Constant/string_values.dart';
@@ -17,12 +18,18 @@ class DashBoardController with ChangeNotifier {
   List<TransactionData> queryTransactionData = [];
   late DashboardView _dashboardView;
   late MainView _mainView;
+  late HistoryView _historyView;
   PageState pageState = PageState.loaded;
   bool isAccountCreationLoading = false;
+  bool isHistoryLoading = false;
   AppSettings? appSettings;
-
+  String? startDate, endDate;
   set setView(DashboardView dashboardView) {
     _dashboardView = dashboardView;
+  }
+
+  set setHistoryView(v) {
+    _historyView = v;
   }
 
   set setMainView(MainView mainView) {
@@ -69,14 +76,19 @@ class DashBoardController with ChangeNotifier {
   }
 
   fetchHistory({bool refresh = false}) async {
+    if (!refresh) {
+      if (isHistoryLoading) {
+        return;
+      }
+    }
     pageState = PageState.loading;
     if (refresh == true) {
       notifyListeners();
     }
     await DashboardRepository().getHistory().then((result) {
       if (result.status == true) {
-        transactionData = result.transactionData!;
         queryTransactionData = result.transactionData!;
+        isHistoryLoading = true;
       }
       pageState = PageState.loaded;
       notifyListeners();
@@ -86,6 +98,44 @@ class DashBoardController with ChangeNotifier {
       pageState = PageState.loaded;
       notifyListeners();
       _dashboardView.onError(onError.toString());
+    });
+  }
+
+  fetchHistoryByDate() async {
+    if (isEmpty(startDate) || isEmpty(endDate)) {
+      _historyView.onError("Please choose a start date and an end date.");
+      return;
+    }
+    DateFormat format = DateFormat("dd-MM-yyyy");
+    DateTime _startDate = format.parse(startDate!);
+    DateTime _endDate = format.parse(endDate!);
+
+    if (_startDate.isAfter(_endDate)) {
+      _historyView
+          .onError("Please choose a start date that is before end date.");
+      return;
+    }
+    pageState = PageState.loading;
+    notifyListeners();
+    await DashboardRepository()
+        .getHistoryByDate(startDate: startDate!, endDate: endDate!)
+        .then((result) {
+      if (result.status == true) {
+        transactionData = result.transactionData!;
+        queryTransactionData = result.transactionData!;
+      }
+      startDate = null;
+      endDate = null;
+      pageState = PageState.loaded;
+      notifyListeners();
+      log(userData.toJson().toString());
+    }).onError((onError, trace) {
+      print("$trace trace");
+      startDate = null;
+      endDate = null;
+      pageState = PageState.loaded;
+      notifyListeners();
+      _historyView.onError(onError.toString());
     });
   }
 
@@ -152,6 +202,8 @@ class DashBoardController with ChangeNotifier {
 
   clearAll() {
     userData = UserData();
+    startDate = null;
+    endDate = null;
   }
 }
 
@@ -159,6 +211,11 @@ abstract class DashboardView {
   void onSuccess(String message);
   void onError(String message);
   void onVersionCheck();
+}
+
+abstract class HistoryView {
+  void onSuccess(String message);
+  void onError(String message);
 }
 
 abstract class MainView {

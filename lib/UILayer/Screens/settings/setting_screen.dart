@@ -18,6 +18,7 @@ import '../../../DataLayer/model/login_response_model.dart';
 import '../../utils/show_alert_dialog.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
+import 'manage_beneficiary/beneficiaries_page.dart';
 import 'manage_terminals/manage_terminals_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -220,6 +221,12 @@ class _SettingScreenState extends State<SettingScreen> {
               title: "Request for a new device",
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const RequestDevicePage())),
+            ),
+            SettingTabs(
+              image: EPImages.requestDevice,
+              title: "Manage Beneficiary",
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => BeneficiariesPage())),
             ),
             SettingTabs(
               image: EPImages.updateBankAccount,

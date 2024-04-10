@@ -239,7 +239,7 @@ class _CXDateFormState extends State<EPDateForm> {
         ))!;
 
         // = date.toIso8601String();
-        _controller.text = DateFormat('dd-MM-yyyy').format(date);
+        _controller.text = DateFormat('yyyy-MM-dd').format(date);
         widget.onChange!(_controller.text);
       },
       child: Padding(
