@@ -42,6 +42,7 @@ class _HistorySelectableState extends State<HistorySelectable> {
                   color: selectedValue == value
                       ? EPColors.appWhiteColor
                       : EPColors.appBlackColor,
+                  fontSize: 11,
                   fontWeight: FontWeight.w400),
             ),
           )),
@@ -49,9 +50,10 @@ class _HistorySelectableState extends State<HistorySelectable> {
               color: selectedValue == value
                   ? EPColors.appMainColor
                   : EPColors.appWhiteColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: const Color(0xffd8d8d8),
+                width: 0.5,
+                color: Colors.black,
               )),
         ),
       ),

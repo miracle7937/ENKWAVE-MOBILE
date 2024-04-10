@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Constant/image.dart';
 import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
 import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../utils/money_formatter.dart';
@@ -28,8 +29,19 @@ class TransferToOtherBank extends StatefulWidget {
 class _TransferToOtherBankState extends State<TransferToOtherBank>
     with OnBankTransfer {
   TextEditingController selectedBankController = TextEditingController();
+  TextEditingController accountController = TextEditingController();
   TransferController? transferController;
   UserWallet? selectedUserWallet;
+  bool saveBeneficiary = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TransferController>(context, listen: false).getLocation();
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -102,6 +114,36 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                           )),
                     )
                     .toList()),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Spacer(),
+                  InkWell(
+                    onTap: () => setBeneficiary(
+                        (transferController?.getBeneficary ?? [])),
+                    child: Row(
+                      children: [
+                        Image.asset(EPImages.beneficiary),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text("Send to Beneficiary",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11,
+                                    color: EPColors.appBlackColor))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
             EPDropdownButton<Bank>(
                 itemsListTitle: "Select Bank",
                 iconSize: 22,
@@ -137,6 +179,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                 Expanded(
                   flex: 3,
                   child: EPForm(
+                    controller: accountController,
                     hintText: "Account number",
                     enabledBorderColor: EPColors.appGreyColor,
                     keyboardType: TextInputType.number,
@@ -186,6 +229,30 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
                     ),
                   )
                 : Column(),
+            Container(
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("Add as beneficiary",
+                      style: Theme.of(context).textTheme.headline3!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                          color: EPColors.appBlackColor)),
+                  Transform.scale(
+                    scale: 0.6,
+                    child: CupertinoSwitch(
+                      activeColor: EPColors.appMainColor,
+                      value:
+                          (transferController?.bankTransferModel.beneficiary ??
+                              false),
+                      onChanged: (v) => transferController?.setBeneficiary = v,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -252,6 +319,7 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
               loading: transferController?.pageState == PageState.loading,
               title: "Continue",
               onTap: () {
+                FocusNode().unfocus();
                 transferController?.validateTransferForm();
               },
             ),
@@ -259,6 +327,20 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
         ),
       ),
     );
+  }
+
+  setBeneficiary(List<Beneficariy> recipients) {
+    showBeneficiaryList(context, recipients, (Beneficariy beneficariy) {
+      print("MIMI ${beneficariy.toJson()}");
+      TransferController transferController =
+          Provider.of<TransferController>(context, listen: false);
+      transferController.bankTransferModel.bankCode = beneficariy.bankCode;
+      transferController.bankTransferModel.accountNumber = beneficariy.acctNo;
+      transferController.setBank = transferController.listOfBank
+          .firstWhere((element) => element.bankCbnCode == beneficariy.bankCode);
+      accountController.text = beneficariy.acctNo.toString();
+      transferController.bankAccountVerification();
+    });
   }
 
   @override

@@ -257,9 +257,11 @@ class _MainScreenState extends State<MainScreen> with MainView {
 
   @override
   void onError(String message) {
-    showEPStatusDialog(context, success: false, message: message, callback: () {
-      Navigator.pop(context);
-    });
+   if(mounted){
+     showEPStatusDialog(context, success: false, message: message, callback: () {
+       Navigator.pop(context);
+     });
+   }
   }
 
   @override

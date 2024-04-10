@@ -72,7 +72,7 @@ _view(BuildContext context, {String? title, String? value}) {
   );
 }
 
-baseViewDialog(BuildContext context, Widget child) {
+baseViewDialog(BuildContext context, Widget child, {bool isScrollControlled=true}) {
   return showModalBottomSheet(
     backgroundColor: Colors.transparent,
     shape: const RoundedRectangleBorder(
@@ -81,7 +81,7 @@ baseViewDialog(BuildContext context, Widget child) {
         topRight: Radius.circular(15),
       ),
     ),
-    isScrollControlled: true,
+    isScrollControlled: isScrollControlled,
     context: context,
     builder: (context) {
       return createExtensibleDialogWidget(

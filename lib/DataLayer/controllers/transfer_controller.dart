@@ -10,11 +10,13 @@ import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 class TransferController with ChangeNotifier {
   List<Bank> listOfBank = [];
   List<UserWallet> userWallet = [];
+  List<Beneficariy> getBeneficary = [];
   BankTransferModel bankTransferModel = BankTransferModel();
   Bank? selectedBank;
   String? accountNumber, accountName;
   String? _transferCharge;
   Position? position;
+  bool? beneficiary;
 
   int getTransferCharge() => int.parse(_transferCharge ?? "0");
 
@@ -47,6 +49,11 @@ class TransferController with ChangeNotifier {
 
   set setPin(String v) {
     bankTransferModel.pin = v;
+  }
+
+  set setBeneficiary(bool v) {
+    bankTransferModel.beneficiary = v;
+    notifyListeners();
   }
 
   set setBank(Bank bank) {
@@ -120,6 +127,7 @@ class TransferController with ChangeNotifier {
           listOfBank = value.data!;
           userWallet = value.userWallets!;
           _transferCharge = value.transferCharge;
+          getBeneficary = value.beneficiary!;
         } else {
           _onBankTransfer.onError("Fetching banks fails");
         }

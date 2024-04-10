@@ -8,6 +8,7 @@ class BankTransferModel {
   String? customerName;
   String? receiverBank;
   String? longitude, latitude;
+  bool? beneficiary;
 
   BankTransferModel(
       {this.amount,
@@ -32,6 +33,7 @@ class BankTransferModel {
     longitude = json['longitude'];
     latitude = json['latitude'];
     receiverBank = json['receiver_bank'];
+    beneficiary = json['beneficiary'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +48,7 @@ class BankTransferModel {
     data['longitude'] = longitude;
     data['latitude'] = latitude;
     data['receiver_bank'] = receiverBank;
+    data['beneficiary'] = beneficiary;
     return data;
   }
 }

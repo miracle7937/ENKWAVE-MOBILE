@@ -26,9 +26,9 @@ class _DashBoardCardState extends State<DashBoardCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.2,
+      // height: MediaQuery.of(context).size.height * 0.12,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

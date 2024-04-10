@@ -183,19 +183,23 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
         return "Pending";
       case 1:
         return "Successful";
-      default:
+      case 3:
         return "Reversed";
+      default:
+        return "Failed";
     }
   }
 
   Color statusColor(num? status) {
     switch (status) {
       case 0:
-        return Colors.red;
+        return Colors.orange;
       case 1:
         return Colors.green;
-      default:
+      case 4:
         return Colors.orange;
+      default:
+        return Colors.red;
     }
   }
 

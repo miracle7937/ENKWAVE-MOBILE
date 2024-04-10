@@ -88,6 +88,6 @@ class EPImages {
   static String cardView = "$root/card_view.png";
   static String cardCredit = "$root/card_credit.png";
   static String cardDebit = "$root/card_debit.png";
-
+  static String beneficiary = "$root/beneficiary.png";
   static String syncKey = "$root/sync_key.png";
 }

@@ -302,6 +302,30 @@ void showPhoneList(BuildContext context, List<Contact> recipients,
   );
 }
 
+void showBeneficiaryList(BuildContext context, List<Beneficariy> recipients,
+    ValueChanged<Beneficariy> valueChanged) {
+  showIVBottomSheetList<Beneficariy>(
+    hasSearch: true,
+    searchMatcher: (Beneficariy recipient, String b) {
+      return [
+        recipient.name,
+      ].any((String? it) => it!.contains(b));
+    },
+    title: "Beneficiary Number",
+    context: context,
+    items: recipients,
+    itemBuilder: (Beneficariy r) {
+      return DropdownMenuItem(
+        child: Text(
+          "${r.name} ",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      );
+    },
+    onItemSelected: valueChanged,
+  );
+}
+
 void showBankList(BuildContext context, List<Bank> listOfBanks,
     ValueChanged<Bank> valueChanged) {
   showIVBottomSheetList<Bank>(

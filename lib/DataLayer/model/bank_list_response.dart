@@ -4,6 +4,7 @@ class TransferProperties {
   List<Bank>? data;
   List<UserWallet>? userWallets;
   String? transferCharge;
+  List<Beneficariy>? beneficiary;
   TransferProperties({this.data, this.userWallets, this.transferCharge});
 
   TransferProperties.fromJson(Map<String, dynamic> json) {
@@ -21,6 +22,13 @@ class TransferProperties {
         userWallets!.add(UserWallet.fromJson(v));
       });
     }
+
+    if (json['beneficariy'] != null) {
+      beneficiary = <Beneficariy>[];
+      json['beneficariy'].forEach((v) {
+        beneficiary!.add(Beneficariy.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -29,6 +37,7 @@ class TransferProperties {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data["transfer_charge"] = transferCharge;
+    data["beneficariy"] = beneficiary;
     return data;
   }
 }
@@ -76,4 +85,29 @@ class UserWallet extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props => [title, amount, key];
+}
+
+class Beneficariy {
+  int? id;
+  String? name;
+  String? bankCode;
+  String? acctNo;
+
+  Beneficariy({this.name, this.bankCode, this.acctNo});
+
+  Beneficariy.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    bankCode = json['bank_code'];
+    acctNo = json['acct_no'];
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['bank_code'] = bankCode ?? "";
+    data['acct_no'] = acctNo ?? "";
+    data['id'] = id;
+    return data;
+  }
 }
