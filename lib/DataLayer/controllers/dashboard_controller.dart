@@ -121,8 +121,13 @@ class DashBoardController with ChangeNotifier {
         .getHistoryByDate(startDate: startDate!, endDate: endDate!)
         .then((result) {
       if (result.status == true) {
-        transactionData = result.transactionData!;
-        queryTransactionData = result.transactionData!;
+        if (result.message == null) {
+          transactionData = result.transactionData!;
+          queryTransactionData = result.transactionData!;
+        } else {
+          _historyView.onSuccess(result.message ??
+              "Please review the transaction details sent to your email.");
+        }
       }
       startDate = null;
       endDate = null;

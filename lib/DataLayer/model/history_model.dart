@@ -1,11 +1,13 @@
 class HistoryModel {
   bool? status;
+  String? message;
   List<TransactionData>? transactionData;
 
-  HistoryModel({status, transactionData});
+  HistoryModel({status, transactionData, message});
 
   HistoryModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
+    message = json['message'];
     if (json['data'] != null) {
       transactionData = <TransactionData>[];
       json['data'].forEach((v) {
@@ -17,6 +19,7 @@ class HistoryModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
+    data['message'] = message;
     if (transactionData != null) {
       data['data'] = transactionData!.map((v) => v.toJson()).toList();
     }
