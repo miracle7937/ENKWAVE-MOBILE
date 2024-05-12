@@ -19,6 +19,7 @@ import 'DataLayer/LocalData/local_data_storage.dart';
 import 'DataLayer/controllers/account_verification_controller.dart';
 import 'DataLayer/controllers/auth_controller.dart';
 import 'DataLayer/controllers/beneficiary_controller.dart';
+import 'DataLayer/controllers/bill_payment_controller.dart';
 import 'DataLayer/controllers/business_controller.dart';
 import 'DataLayer/controllers/buy_airtime_controller.dart';
 import 'DataLayer/controllers/cable_tv_controller.dart';
@@ -141,6 +142,8 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => VCardController()),
         ChangeNotifierProvider<BeneficiaryController>(
             create: (_) => BeneficiaryController()),
+        ChangeNotifierProvider<BillPaymentController>(
+            create: (_) => BillPaymentController()),
       ],
       child: MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
@@ -152,7 +155,7 @@ class ThemeWidget extends StatelessWidget {
           ScreenUtil.init(context);
           return widget!;
         },
-        title: 'EnkPay',
+        title: 'Falcon Agency',
         theme: ThemeData(
           fontFamily: "Effra",
           appBarTheme: AppBarTheme(color: EPColors.appMainColor),

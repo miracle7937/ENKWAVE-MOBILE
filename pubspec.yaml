@@ -70,13 +70,14 @@ dependencies:
   device_info_plus: ^8.2.2
   shared_preferences: ^2.2.0
   flutter_riverpod: ^1.0.4
+  awesome_dialog: ^2.2.0
 
 
 
   etop_pos_plugin:
     git:
       url: git@github.com:miracle7937/e-top-horizon-plugin.git
-      ref: a3021e6fb1f13384e146aa809dafec182c239511
+      ref: e88fabb6b563aabbfed429ca6b260cc129876944
 
 
 
@@ -101,7 +102,7 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/test_logo.png"
+  image_path: "assets/logo.png"
   min_sdk_android: 21
 #  flutter pub run flutter_launcher_icons:main
 

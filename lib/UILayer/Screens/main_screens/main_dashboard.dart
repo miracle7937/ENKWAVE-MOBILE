@@ -7,7 +7,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.d
 import 'package:enk_pay_project/UILayer/Screens/cash_in/cash_in_screen.dart';
 import 'package:enk_pay_project/UILayer/utils/greeting_util.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/LocalData/local_data_storage.dart';
@@ -18,7 +17,6 @@ import '../../utils/linear_progress_bar.dart';
 import '../../utils/screen_navigation.dart';
 import '../Intro_Screen/dash_board_widget_builder.dart';
 import '../cash_out/cash_out_screen.dart';
-import '../settings/user_account_verification/verification_main_screen.dart';
 import '../transfers/transfer_in_app.dart';
 
 class MainScreen extends StatefulWidget {
@@ -67,48 +65,6 @@ class _MainScreenState extends State<MainScreen> with MainView {
               const SizedBox(
                 height: 5,
               ),
-              _dashBoardController.completeKYC
-                  ? Container()
-                  : InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const VerificationMainScreen())),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.red.shade100,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 5),
-                              child: Row(
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.exclamationTriangle,
-                                    color: Colors.red,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Please verify your account for full service access. \u26A1",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            color: EPColors.appBlackColor),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
               const SizedBox(
                 height: 20,
               ),
@@ -211,7 +167,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
               children: [
                 Image.asset(
                   introModel.image,
-                  width: 20,
+                  width: 25,
                 ),
                 const SizedBox(
                   height: 10,
@@ -257,11 +213,12 @@ class _MainScreenState extends State<MainScreen> with MainView {
 
   @override
   void onError(String message) {
-   if(mounted){
-     showEPStatusDialog(context, success: false, message: message, callback: () {
-       Navigator.pop(context);
-     });
-   }
+    if (mounted) {
+      showEPStatusDialog(context, success: false, message: message,
+          callback: () {
+        Navigator.pop(context);
+      });
+    }
   }
 
   @override

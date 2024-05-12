@@ -8,7 +8,6 @@ import '../../../Constant/image.dart';
 import '../../../DataLayer/controllers/dashboard_controller.dart';
 import '../../CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import '../../CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import '../../utils/vesrion_dialog.dart';
 import '../history/history_screen.dart';
 import '../settings/setting_screen.dart';
 import 'main_dashboard.dart';
@@ -121,8 +120,8 @@ class _NavUIState extends State<NavUI> with DashboardView {
 
   @override
   void onVersionCheck() {
-    versionDialog(context,
-        androidLink: _dashBoardController.appSettings?.googleUrl,
-        iosLink: _dashBoardController.appSettings?.iosUrl);
+    // versionDialog(context,
+    //     androidLink: _dashBoardController.appSettings?.googleUrl,
+    //     iosLink: _dashBoardController.appSettings?.iosUrl);
   }
 }

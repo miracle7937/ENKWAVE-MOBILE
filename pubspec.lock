@@ -85,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  awesome_dialog:
+    dependency: "direct main"
+    description:
+      name: awesome_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.1"
   base58check:
     dependency: transitive
     description:
@@ -222,8 +229,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: a3021e6fb1f13384e146aa809dafec182c239511
-      resolved-ref: a3021e6fb1f13384e146aa809dafec182c239511
+      ref: e88fabb6b563aabbfed429ca6b260cc129876944
+      resolved-ref: e88fabb6b563aabbfed429ca6b260cc129876944
       url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
     source: git
     version: "0.0.1"
@@ -823,6 +830,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.0"
+  simple_animations:
+    dependency: transitive
+    description:
+      name: simple_animations
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.2.0"
   sky_engine:
     dependency: transitive
     description: flutter

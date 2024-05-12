@@ -133,7 +133,8 @@ class TransferController with ChangeNotifier {
         }
         pageState = PageState.loaded;
         notifyListeners();
-      }).catchError((v) {
+      }).catchError((v, _) {
+        print(_);
         pageState = PageState.loaded;
         notifyListeners();
         _onBankTransfer.onError(v.toString());

@@ -1,24 +1,18 @@
 import 'package:enk_pay_project/Constant/colors.dart';
-import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/DataLayer/controllers/buy_airtime_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selector_widget/airtime_selector.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../DataLayer/model/bank_list_response.dart';
-import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
 import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
-import '../../utils/money_formatter.dart';
 import '../transfers/widget/pin_verification_dialog.dart';
 
 class BuyAirtimeScreen extends StatefulWidget {
@@ -43,7 +37,6 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
 
   @override
   void initState() {
-    getPhoneNumber();
     super.initState();
   }
 
@@ -55,9 +48,7 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   late AirtimeController _airtimeController;
   @override
   Widget build(BuildContext context) {
-    _airtimeController = Provider.of<AirtimeController>(context)
-      ..setView(this)
-      ..getWallet();
+    _airtimeController = Provider.of<AirtimeController>(context)..setView(this);
     return EPScaffold(
         // state: AppState(pageState: _airtimeController.pageState),
         appBar: EPAppBar(
@@ -85,47 +76,6 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                       },
                     ),
                   ),
-                  EPDropdownButton<UserWallet>(
-                      itemsListTitle: "Select Account",
-                      iconSize: 22,
-                      value: _airtimeController.selectedUserWallet,
-                      hint: const Text(""),
-                      isExpanded: true,
-                      underline: const Divider(),
-                      searchMatcher: (item, text) {
-                        return item.title!
-                            .toLowerCase()
-                            .contains(text.toLowerCase());
-                      },
-                      onChanged: (v) {
-                        _airtimeController.selectWallet = v;
-                        setState(() {});
-                      },
-                      items: (_airtimeController.userWallet ?? [])
-                          .map(
-                            (e) => DropdownMenuItem(
-                                value: e,
-                                child: Row(
-                                  children: [
-                                    Text(e.title.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline3!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: EPColors.appBlackColor)),
-                                    const Spacer(),
-                                    Text(amountFormatter(e.amount.toString()),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline3!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: EPColors.appBlackColor)),
-                                  ],
-                                )),
-                          )
-                          .toList()),
                   Row(
                     children: [
                       Expanded(
@@ -142,49 +92,10 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                           },
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          selectContact();
-                        },
-                        child: const FaIcon(
-                          FontAwesomeIcons.addressBook,
-                        ),
-                      )
                     ],
                   ),
                   const SizedBox(
                     height: 2,
-                  ),
-                  Row(
-                    children: [
-                      TextClickButton(
-                        title: "Select mobile number",
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .headline3!
-                            .copyWith(
-                                color: EPColors.appMainColor,
-                                fontWeight: FontWeight.w500),
-                        onTap: () async {
-                          String? phoneNumber =
-                              await LocalDataStorage.getPhone();
-                          phoneNumberController.text = phoneNumber!;
-                          _airtimeController.setPhone = phoneNumber;
-                        },
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      const FaIcon(
-                        Icons.person,
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
                   ),
                   EPForm(
                     controller: amountController,
@@ -224,7 +135,6 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
       return;
     }
     showPhoneList(context, contacts!, (v) {
-      // phoneNumberController.text = PhoneNumber.format(v.phoneNumbers);
       phoneNumberController.text = v.phoneNumbers?.first ?? "";
     });
   }

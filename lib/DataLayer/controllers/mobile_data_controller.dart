@@ -16,6 +16,8 @@ import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:enk_pay_project/UILayer/utils/format_phone_number.dart';
 
 import '../../Constant/validation.dart';
+import '../model/data_model_response.dart';
+import '../model/data_request_model.dart';
 import '../model/mobile_data_product_model/buy_data_model.dart';
 
 //MobileDataFetch
@@ -25,6 +27,13 @@ class MobileDataController extends ProductController with MobileDataFetch {
   NetworkSelector? _networkSelector;
   BuyDataModel buyDataModel = BuyDataModel();
   UserWallet? userWallet;
+  List<AirtimeDataPlan>? listOfPlan;
+  AirtimeDataPlan? selectedPlan;
+  String? phoneNumber;
+  set setSelectedPlan(v) {
+    selectedPlan = v;
+    notifyListeners();
+  }
 
   pickWallet(value) {
     buyDataModel.wallet = value.key;
@@ -37,11 +46,10 @@ class MobileDataController extends ProductController with MobileDataFetch {
     buyDataModel.pin = v;
   }
 
-  set setPackage(BasePackage v) {
-    basePackage = v;
-    buyDataModel.variationCode = v.serviceCode;
-    buyDataModel.serviceId = v.getServiceID;
-    buyDataModel.amount = v.dataAmount;
+  set setPackage(AirtimeDataPlan v) {
+    selectedPlan = v;
+    buyDataModel.productId = v.productId;
+    buyDataModel.amount = v.amount;
   }
 
   set setNetworkSelector(NetworkSelector v) {
@@ -54,6 +62,11 @@ class MobileDataController extends ProductController with MobileDataFetch {
   set setPhoneNumber(v) {
     _mobileNumber = v;
     buyDataModel.phone = PhoneNumber.format(v);
+    getDataPlan(v);
+  }
+
+  set setNetworkType(v) {
+    buyDataModel.network = getServiceId(v).toUpperCase();
   }
 
   get mobileNumber => _mobileNumber;
@@ -86,7 +99,23 @@ class MobileDataController extends ProductController with MobileDataFetch {
   }
 
   validateDataForm() {
-    print(buyDataModel.toJson());
+    if (phoneNumber == null) {
+      _onMobileDataView.onError("Please provide your phone number");
+      return;
+    }
+    if (!ValidationController().isValidPhoneNumber(phoneNumber)) {
+      _onMobileDataView.onError("Please provide a valid number");
+      return;
+    }
+    if (selectedPlan == null) {
+      _onMobileDataView.onError("Please selcet a data plan");
+      return;
+    }
+
+    _onMobileDataView.onPInVerify();
+  }
+
+  validateDataForm2() {
     if (basePackage == null) {
       _onMobileDataView
           .onError("Please select the data plan you subscribing for");
@@ -154,9 +183,55 @@ class MobileDataController extends ProductController with MobileDataFetch {
     return <UserWallet>[];
   }
 
+  getDataPlan(String phone) {
+    pageState = PageState.loading;
+    notifyListeners();
+    phoneNumber = phone;
+    MobileDataRepository().getDataPlan({"phone": phone}).then((value) {
+      if (value.status == true) {
+        listOfPlan = value.data;
+      } else {
+        _onMobileDataView.onError(value.message!);
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).catchError((v, _) {
+      log(_.toString());
+      pageState = PageState.loaded;
+      notifyListeners();
+      _onMobileDataView.onError(v.toString());
+    });
+  }
+
+  onBuyMobileAirtime() {
+    var data = DataRequestModel();
+    data.amount = selectedPlan?.amount;
+    data.phoneNumber = phoneNumber;
+    data.productId = selectedPlan?.productId;
+    data.network = buyDataModel.network;
+
+    pageState = PageState.loading;
+    notifyListeners();
+    MobileDataRepository().buyData(data.toJson()).then((value) {
+      log(value.toString());
+      if (true == value.status) {
+        _onMobileDataView.onSuccess(value.message!);
+      } else {
+        _onMobileDataView.onError(value.message!);
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    }).catchError((v) {
+      pageState = PageState.loaded;
+      notifyListeners();
+      _onMobileDataView.onError(v.toString());
+    });
+  }
+
   void clearData() {
     _networkSelector = null;
     basePackage = null;
+    listOfPlan = null;
     clearResponse();
   }
 }

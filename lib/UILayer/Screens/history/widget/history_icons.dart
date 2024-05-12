@@ -20,20 +20,20 @@ class _HistoryIconState extends State<HistoryIcon> {
   _getIcon(TransactionEnum transactionEnum) {
     String image;
     switch (transactionEnum) {
-      case TransactionEnum.cashOut:
+      case TransactionEnum.TRANSFERIN:
         image = EPImages.inwardTransaction;
         break;
-      case TransactionEnum.selfCashOutTransfer:
-        image = EPImages.inwardTransaction;
-        break;
-      case TransactionEnum.bankTransfer:
+      case TransactionEnum.TRANSFEROUT:
         image = EPImages.outwardIcon;
         break;
-      case TransactionEnum.enkPayTransfer:
-        image = EPImages.outwardIcon;
+      case TransactionEnum.BILLS:
+        image = EPImages.billsIcon;
         break;
-      case TransactionEnum.virtualFundWallet:
-        image = EPImages.inwardTransaction;
+      case TransactionEnum.REFUND:
+        image = EPImages.refundIcon;
+        break;
+      case TransactionEnum.POS:
+        image = EPImages.posIcons;
         break;
       default:
         image = EPImages.billsIcon;

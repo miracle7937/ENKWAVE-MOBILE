@@ -115,8 +115,9 @@ class SignInController extends ChangeNotifier {
 
       pageState = PageState.loaded;
       notifyListeners();
-    } catch (e) {
+    } catch (e, _) {
       print(e);
+      print(_);
       pageState = PageState.loaded;
       notifyListeners();
       _view?.onError(e.toString() ?? "");
@@ -249,8 +250,12 @@ class SignInController extends ChangeNotifier {
       if (isNotEmpty(_credentialModel.password)) {
         data["password"] = _credentialModel.password;
       }
-
       data["pin"] = pin;
+
+      // String? token = await FirebaseMessaging.instance.getToken();
+      // userCredentialModel.token = token;
+      // data["device_id"] = token;
+      // log("FCM TOKEN => $token");
 
       var result = await AuthRepository().pinLogin(data);
       if (result.status == true) {

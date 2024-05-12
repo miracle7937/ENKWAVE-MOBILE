@@ -30,7 +30,7 @@ class EPImages {
   static String pinLock = "$root/pin_lock.png";
   static String bgImage = "$root/bg_image.png";
   static String splashScreenLogo = "$root/spalshscreen_logo.png";
-  static String testIcon = "$root/test_logo.png";
+  static String testIcon = "$root/logo.png";
 
   static String errorLottie = "$root/error-lottie.json";
   static String loader = "$root/loader.json";
@@ -64,8 +64,10 @@ class EPImages {
   static String requestDevice = "$root/request_device.png";
   static String businessInfoIcon = "$root/business_info_icon.png";
   static String inwardTransaction = "$root/inward_transaction.png";
+  static String refundIcon = "$root/refund_icon.png";
   static String outwardIcon = "$root/outward_icon.png";
   static String billsIcon = "$root/bills_icon.png";
+  static String posIcons = "$root/pos_icon.png";
 
   static String simCard = "$root/sim_card.png";
   static String mobilePhone = "$root/mobile_phone.png";

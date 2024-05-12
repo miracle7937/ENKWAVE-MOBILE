@@ -16,4 +16,10 @@ class PackageRepository {
         await _serverRequest.getData(path: AppRoute.getCablePlan);
     return responseData.data;
   }
+
+  Future<Map> getBillCategories() async {
+    var responseData =
+        await _serverRequest.getData(path: AppRoute.getCategories);
+    return responseData.data;
+  }
 }

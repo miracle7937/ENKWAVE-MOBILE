@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
 import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +13,8 @@ import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/model/login_response_model.dart';
 import '../../../services/service_initialization.dart';
 import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
+import '../bill_payment/bill_payment_screen.dart';
+import '../data_screen/buy_data_screen_2.dart';
 import '../v_cards_screen/loader_page.dart';
 import '../v_cards_screen/v_card_request_screen.dart';
 import '../v_cards_screen/v_card_screen.dart';
@@ -63,10 +63,8 @@ class DashBoardBuilder {
       dashBoardData.add(
         IntroModel(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const BillPaymentSelection()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const BillPaymentScreen()));
             },
             title: "Pay Bills",
             subTitle: "Pay all local bills instantly",
@@ -78,7 +76,7 @@ class DashBoardBuilder {
         IntroModel(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const BuyDataScreen()));
+                  MaterialPageRoute(builder: (_) => const BuyDataScreenNew()));
             },
             title: "Buy Data",
             subTitle: "Buy data instantly all network available",
@@ -97,7 +95,7 @@ class DashBoardBuilder {
             image: EPImages.byAirtime),
       );
     }
-    if (appPermission?.vcard == 1) {
+    if (appPermission?.vcard == 3) {
       dashBoardData.add(IntroModel(
         newFeature: true,
         title: "Virtual Card",

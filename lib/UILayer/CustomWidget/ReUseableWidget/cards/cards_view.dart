@@ -1,10 +1,10 @@
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/money_formatter.dart';
+import '../ep_button.dart';
 
 class DashBoardCard extends StatefulWidget {
   final String? amount, bonusWallet;
@@ -41,6 +41,7 @@ class _DashBoardCardState extends State<DashBoardCard> {
                       "Total Balance",
                       style: Theme.of(context).textTheme.headline4!.copyWith(
                           fontWeight: FontWeight.w500,
+                          fontSize: 14,
                           color: EPColors.appWhiteColor),
                     ),
                     FutureBuilder<bool>(
@@ -61,7 +62,7 @@ class _DashBoardCardState extends State<DashBoardCard> {
                                         .textTheme
                                         .subtitle1!
                                         .copyWith(
-                                            fontSize: 12,
+                                            fontSize: 22,
                                             fontWeight: FontWeight.bold,
                                             color: EPColors.appWhiteColor),
                                   ),
@@ -82,151 +83,39 @@ class _DashBoardCardState extends State<DashBoardCard> {
                   ],
                 ),
                 const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      "Bonus Balance",
-                      style: Theme.of(context).textTheme.headline4!.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: EPColors.appWhiteColor),
+                    ContainButton(
+                      bgColor: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(7.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_downward_outlined,
+                              color: EPColors.appMainColor,
+                              size: 15,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                              "CASH IN",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 10,
+                                      color: EPColors.appMainColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: widget.cashIn,
                     ),
-                    FutureBuilder<bool>(
-                        initialData: true,
-                        future: LocalDataStorage.getHideBonus(),
-                        builder: (_, snap) => InkWell(
-                              onTap: () {
-                                LocalDataStorage.saveHideBonus(!snap.data!);
-                                setState(() {});
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    snap.data!
-                                        ? "${amountFormatter(widget.bonusWallet)}"
-                                        : hideAmountString(widget.amount!),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: EPColors.appWhiteColor),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Icon(
-                                    snap.data!
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: EPColors.appWhiteColor,
-                                    size: 15,
-                                    // size: 22,
-                                  ),
-                                ],
-                              ),
-                            )),
                   ],
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                ContainButton(
-                  bgColor: Colors.pink,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.wallet,
-                          color: Colors.white,
-                          size: 15,
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        Text(
-                          "CASH OUT",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: EPColors.appWhiteColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: widget.cashOut,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ContainButton(
-                  bgColor: Colors.green,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.arrow_downward_outlined,
-                          color: Colors.white,
-                          size: 15,
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        Text(
-                          "CASH IN",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 10,
-                                  color: EPColors.appWhiteColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: widget.cashIn,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ContainButton(
-                  bgColor: Colors.purpleAccent,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.forward_outlined,
-                          color: Colors.white,
-                          size: 15,
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        Text(
-                          "EP TRANSFER",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: EPColors.appWhiteColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: widget.enkPayTransfer,
-                )
               ],
             ),
           ],

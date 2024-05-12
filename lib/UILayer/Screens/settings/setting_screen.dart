@@ -1,12 +1,8 @@
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
-import 'package:enk_pay_project/UILayer/Screens/request_device/request_device_main_page.dart';
-import 'package:enk_pay_project/UILayer/Screens/settings/update_bank_info/update_account_information.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_pin_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/settings/user_account_verification/verification_main_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/widget/setting_tabs.dart';
-import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_widget.dart';
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +16,6 @@ import '../../utils/sync_keys.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
 import 'manage_beneficiary/beneficiaries_page.dart';
-import 'manage_terminals/manage_terminals_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   final VoidCallback? onRefresh;
@@ -180,17 +175,17 @@ class _SettingScreenState extends State<SettingScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                           ),
                         ),
-                        VerificationWidget(
-                          isVerifyCompleted: snapshot.data?.isStatusCompleted(),
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const VerificationMainScreen()));
-                            widget.onRefresh!();
-                          },
-                        )
+                        // VerificationWidget(
+                        //   isVerifyCompleted: snapshot.data?.isStatusCompleted(),
+                        //   onTap: () async {
+                        //     await Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (_) =>
+                        //                 const VerificationMainScreen()));
+                        //     widget.onRefresh!();
+                        //   },
+                        // )
                       ],
                     ),
                   );
@@ -215,35 +210,17 @@ class _SettingScreenState extends State<SettingScreen> {
                 onTap: () async {
                   SyncKeys().init(context, showLoader: true);
                 }),
-            SettingTabs(
-              image: EPImages.requestDevice,
-              title: "Request for a new device",
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const RequestDevicePage())),
-            ),
+            // SettingTabs(
+            //   image: EPImages.requestDevice,
+            //   title: "Request for a new device",
+            //   onTap: () => Navigator.push(context,
+            //       MaterialPageRoute(builder: (_) => const RequestDevicePage())),
+            // ),
             SettingTabs(
               image: EPImages.requestDevice,
               title: "Manage Beneficiary",
               onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => BeneficiariesPage())),
-            ),
-            SettingTabs(
-              image: EPImages.updateBankAccount,
-              title: "Update Bank Account information",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => UpdateAccountScreen(
-                            refresh: widget.onRefresh,
-                          ))),
-            ),
-            SettingTabs(
-              image: EPImages.manageTerminal,
-              title: "Manage Terminals",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const ManageTerminalScreen())),
+                  MaterialPageRoute(builder: (_) => const BeneficiariesPage())),
             ),
             SettingTabs(
               image: EPImages.customerCare,
@@ -273,50 +250,6 @@ class _SettingScreenState extends State<SettingScreen> {
                               .clearAll();
                         }).onError((error, stackTrace) {
                           setState(() => isLogout = false);
-                          Provider.of<DashBoardController>(context,
-                                  listen: false)
-                              .clearAll();
-                          LocalDataStorage.clearUser();
-                          Navigator.pushNamed(context, "/");
-                        });
-                      });
-                    },
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 18),
-                    child: Row(
-                      children: [
-                        CircularProgressIndicator(
-                          color: EPColors.appMainColor,
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                  ),
-            isDeleteAccount == false
-                ? SettingTabs(
-                    image: EPImages.deleteAccount,
-                    title: "Delete Account",
-                    onTap: () {
-                      showAlertDialog(context,
-                          message:
-                              "Are You sure you want to delete your account?",
-                          onTap: () {
-                        Navigator.pop(context);
-                        setState(() => isDeleteAccount = true);
-                        SignInController().deleteAccount().then((value) {
-                          //if request is true delete account
-                          if (value == true) {
-                            setState(() => isDeleteAccount = false);
-                            LocalDataStorage.clearUser();
-                            Navigator.pushNamed(context, "/");
-                            Provider.of<DashBoardController>(context,
-                                    listen: false)
-                                .clearAll();
-                          }
-                        }).onError((error, stackTrace) {
-                          setState(() => isDeleteAccount = false);
                           Provider.of<DashBoardController>(context,
                                   listen: false)
                               .clearAll();

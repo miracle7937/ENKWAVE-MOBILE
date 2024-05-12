@@ -38,7 +38,9 @@ class HistoryListTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        transactionData?.title ?? "",
+                        getEnumName(getTransactionEnum(
+                                transactionData!.transactionType!)) ??
+                            "",
                         style: Theme.of(context)
                             .textTheme
                             .headline1!

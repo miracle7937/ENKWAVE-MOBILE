@@ -40,7 +40,7 @@ class AirtimeController with ChangeNotifier {
 
   set setAirtimeType(NetworkSelector value) {
     airTimeRouteSelector = value;
-    buyAirtimeModel.serviceId = getServiceId(value);
+    buyAirtimeModel.serviceId = getServiceId(value).toUpperCase();
   }
 
   set setAmount(String v) {
@@ -99,10 +99,6 @@ class AirtimeController with ChangeNotifier {
     }
     if (!ValidationController().isValidPhoneNumber(buyAirtimeModel.phone)) {
       _view!.onError("Please provide a valid number");
-      return;
-    }
-    if (isEmpty(buyAirtimeModel.wallet)) {
-      _view!.onError("Please select account");
       return;
     }
 

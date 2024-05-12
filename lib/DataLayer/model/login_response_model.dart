@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class LoginResponseModel {
   bool? status;
   String? message;
@@ -162,7 +164,7 @@ class UserData {
     email = json['email'];
     image = json['image'];
     type = json['type'];
-    role = json['role'];
+    role = json['role'].toString();
     pin = json['pin'];
     isPhoneVerified = json['is_phone_verified'];
     isEmailVerified = json['is_email_verified'];
@@ -293,7 +295,9 @@ class UserData {
   }
 
   bool userHaveAccount() {
-    print("hhhhhhhhhhhhhh ${virtualBankList}");
+    if (kDebugMode) {
+      print("hhhhhhhhhhhhhh ${virtualBankList}");
+    }
     return virtualBankList?.isNotEmpty ?? true;
   }
 

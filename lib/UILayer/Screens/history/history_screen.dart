@@ -85,43 +85,42 @@ class HistoryScreen extends StatelessWidget with HistoryView {
                         .map((e) => HistoryListTile(
                               transactionData: e,
                               onTap: () {
-                                print(e.transactionType);
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (builder) => TransferStatusPage(
                                           refTransId: e.refTransId,
                                         )));
-                                // if (getTransactionEnum(
-                                //         e.transactionType!) ==
-                                //     TransactionEnum.bankTransfer) {
-                                //   Navigator.of(context).push(
-                                //       MaterialPageRoute(
-                                //           builder: (builder) =>
-                                //               TransferStatusPage(
-                                //                 refTransId: e.refTransId,
-                                //               )));
-                                // }
                               },
                             ))
                         .toList(),
                   ))
                 : SizedBox(
                     height: MediaQuery.of(context).size.height * 0.35,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: ListView(
                       children: [
-                        const FaIcon(
-                          FontAwesomeIcons.list,
-                          size: 50,
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "Empty Record",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1!
-                              .copyWith(fontWeight: FontWeight.w300),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const FaIcon(
+                                FontAwesomeIcons.list,
+                                size: 50,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                "Empty Record",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1!
+                                    .copyWith(fontWeight: FontWeight.w300),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

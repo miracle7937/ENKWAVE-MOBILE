@@ -2,9 +2,10 @@ class BuyDataModel {
   String? wallet;
   String? amount;
   String? variationCode;
-  String? serviceId;
+  String? productId;
   String? phone;
   String? pin;
+  String? network;
 
   BuyDataModel({wallet, amount, variationCode, serviceId, phone, pin});
 
@@ -12,9 +13,10 @@ class BuyDataModel {
     wallet = json['wallet'];
     amount = json['amount'];
     variationCode = json['variation_code'];
-    serviceId = json['service_id'];
+    productId = json['product_id'];
     phone = json['phone'];
     pin = json['pin'];
+    network = json['network'];
   }
 
   Map<String, dynamic> toJson() {
@@ -22,9 +24,10 @@ class BuyDataModel {
     data['wallet'] = wallet;
     data['amount'] = amount;
     data['variation_code'] = variationCode;
-    data['service_id'] = serviceId;
-    data['phone'] = phone;
+    data['product_id'] = productId;
+    data['phoneNumber'] = phone;
     data['pin'] = pin;
+    data['network'] = network;
     return data;
   }
 }

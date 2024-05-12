@@ -9,7 +9,7 @@ String getServiceId(NetworkSelector non) {
     case NetworkSelector.airtel:
       return "airtel";
     default:
-      return "etisalat";
+      return "9MOBILE";
   }
 }
 

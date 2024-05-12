@@ -3,7 +3,6 @@ import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/cards/cards_view.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_in_app.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_to_other_bank.dart';
 import 'package:enk_pay_project/UILayer/utils/screen_navigation.dart';
 import 'package:flutter/material.dart';
@@ -41,13 +40,13 @@ class TransfersMainScreen extends StatelessWidget {
                 await pushToNextScreen(context, const TransferToOtherBank());
               },
             ),
-            CardSelectCard(
-              image: EPImages.inAppTransfer,
-              title: "Transfer to Enkpay users",
-              onTap: () async {
-                await pushToNextScreen(context, const TransferInApp());
-              },
-            ),
+            // CardSelectCard(
+            //   image: EPImages.inAppTransfer,
+            //   title: "Transfer to Enkpay users",
+            //   onTap: () async {
+            //     await pushToNextScreen(context, const TransferInApp());
+            //   },
+            // ),
           ],
         );
       },

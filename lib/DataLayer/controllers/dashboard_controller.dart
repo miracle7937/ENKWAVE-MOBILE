@@ -88,6 +88,7 @@ class DashBoardController with ChangeNotifier {
     await DashboardRepository().getHistory().then((result) {
       if (result.status == true) {
         queryTransactionData = result.transactionData!;
+        transactionData = result.transactionData!;
         isHistoryLoading = true;
       }
       pageState = PageState.loaded;
@@ -150,32 +151,25 @@ class DashBoardController with ChangeNotifier {
     }
     queryTransactionData = transactionData
         .where((item) =>
-            item.transactionType!.toLowerCase().contains(query.toLowerCase()) ||
-            item.title!.toLowerCase().contains(query.toLowerCase()))
+            item.transactionType!.toLowerCase().contains(query.toLowerCase()))
         .toList();
     notifyListeners();
   }
 
   filterByTransactionType(TransactionEnum query) {
+    print(query);
+
     if (isEmpty(query.name)) {
       queryTransactionData = transactionData;
     }
-    if (query == TransactionEnum.all) {
+    if (query == TransactionEnum.ALL) {
       queryTransactionData = transactionData;
-    } else if (query == TransactionEnum.billsPayment) {
-      queryTransactionData = transactionData
-          .where((item) => item.transactionType!
-              .toLowerCase()
-              .contains("billsPayment".toLowerCase()))
-          .toList();
     } else {
       queryTransactionData = transactionData
-          .where((item) => item.transactionType!
-              .toLowerCase()
-              .contains(query.name.toLowerCase()))
+          .where((item) => item.transactionType == query.name)
           .toList();
     }
-
+    print(transactionData);
     notifyListeners();
   }
 

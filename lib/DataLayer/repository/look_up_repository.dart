@@ -2,6 +2,7 @@ import 'package:enk_pay_project/Constant/routes.dart';
 import 'package:enk_pay_project/DataLayer/model/look_data.dart';
 import 'package:enk_pay_project/DataLayer/model/look_up/lookup_model.dart';
 
+import '../model/form_validation_response.dart';
 import '../request.dart';
 
 class LookUPRepository {
@@ -10,5 +11,11 @@ class LookUPRepository {
     var responseData = await _serverRequest.postData(
         path: AppRoute.lookUp, body: lookData.toJson());
     return LookupModel.fromJson(responseData.data);
+  }
+
+  Future<FormValidationResponse> billCustomer(Map data) async {
+    var responseData =
+        await _serverRequest.postData(path: AppRoute.validate, body: data);
+    return FormValidationResponse.fromJson(responseData.data);
   }
 }

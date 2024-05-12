@@ -1,6 +1,7 @@
 class AppRoute {
   // static String baseRoute = "https://test.enkpay.com/api";
-  static String baseRoute = "https://enkpayapp.enkwave.com/api";
+  // static String baseRoute = "https://enkpayapp.enkwave.com/api";
+  static String baseRoute = "http://192.64.115.75:8000/api/agent";
 
   static String signUp = "$baseRoute/register";
   static String logINPhone = "$baseRoute/phone-login";
@@ -23,7 +24,7 @@ class AppRoute {
   static String getAllState = "$baseRoute/get-states";
   static String getLga = "$baseRoute/get-lga";
   static String transferProperties = "$baseRoute/transfer-properties";
-  static String verifyAccount = "$baseRoute/resolve-bank";
+  static String verifyAccount = "$baseRoute/resolve-account";
   static String verifyBillAccount = "$baseRoute/verify-account";
 
   static String transferOfBank = "$baseRoute/bank-transfer";
@@ -72,9 +73,15 @@ class AppRoute {
 
   static String billingProducts = "$baseRoute/get-data-plan";
   static String getCablePlan = "$baseRoute/get-cable-plan";
+  static String getCategories = "$baseRoute/get-categories";
   static String buyData = "$baseRoute/buy-data";
+  static String payBill = "$baseRoute/pay-bill";
+  static String getBiller = "$baseRoute/get-biller";
+  static String getBillerType = "$baseRoute/get-biller-type";
+  static String getDataPlan = "$baseRoute/get-data-plans";
   static String buyAirtime = "$baseRoute/buy-airtime";
   static String lookUp = "$baseRoute/verify-account";
+  static String validate = "$baseRoute/validate";
   static String electricCompany = "$baseRoute/electric-company";
   static String buyPower = "$baseRoute/buy-power";
 

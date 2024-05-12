@@ -245,7 +245,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
         setState(() {
           amount = v.getAmount!;
           descriptionController.text = v.getDesc!;
-          mobileDataController.setPackage = v;
+          // mobileDataController.setPackage = v;
         });
       });
     }

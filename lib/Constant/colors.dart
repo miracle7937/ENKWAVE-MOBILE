@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class EPColors {
-  static Color appMainColor = const Color(0XFF011142);
+  static Color appMainColor = const Color(0XFFfb6514);
   // static Color appMainColor = const Color(0XFF673E66);
-  static Color appMainLightColor = const Color(0XFFf021eb);
+  static Color appMainLightColor = const Color(0XFFfb6514).withOpacity(0.3);
   static Color appGreyColor = Colors.grey;
   static Color appWhiteColor = Colors.white;
   static Color appBlackColor = Colors.black;

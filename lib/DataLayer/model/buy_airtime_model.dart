@@ -5,7 +5,14 @@ class BuyAirtimeModel {
   String? phone;
   String? pin;
 
-  BuyAirtimeModel({wallet, amount, variationCode, serviceId, phone, pin});
+  BuyAirtimeModel({
+    wallet,
+    amount,
+    variationCode,
+    serviceId,
+    phone,
+    pin,
+  });
 
   BuyAirtimeModel.fromJson(Map<String, dynamic> json) {
     wallet = json['wallet'];
@@ -19,7 +26,7 @@ class BuyAirtimeModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['wallet'] = wallet;
     data['amount'] = amount;
-    data['service_id'] = serviceId;
+    data['network'] = serviceId;
     data['phone'] = phone;
     data['pin'] = pin;
     return data;

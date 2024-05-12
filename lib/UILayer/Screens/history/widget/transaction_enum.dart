@@ -1,12 +1,4 @@
-enum TransactionEnum {
-  all,
-  billsPayment,
-  bankTransfer,
-  enkPayTransfer,
-  selfCashOutTransfer,
-  virtualFundWallet,
-  cashOut,
-}
+enum TransactionEnum { ALL, BILLS, TRANSFEROUT, TRANSFERIN, REFUND, POS }
 
 // POS Transaction - CashOut
 // Inapp transfer - EnkPayTransfer
@@ -22,26 +14,20 @@ enum TransactionEnum {
 
 TransactionEnum getTransactionEnum(String transactionType) {
   TransactionEnum? value;
-  if (transactionType.toLowerCase() ==
-      TransactionEnum.selfCashOutTransfer.name.toLowerCase()) {
-    value = TransactionEnum.selfCashOutTransfer;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.enkPayTransfer.name.toLowerCase()) {
-    value = TransactionEnum.enkPayTransfer;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.cashOut.name.toLowerCase()) {
-    value = TransactionEnum.cashOut;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.bankTransfer.name.toLowerCase()) {
-    value = TransactionEnum.bankTransfer;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.billsPayment.name.toLowerCase()) {
-    value = TransactionEnum.billsPayment;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.virtualFundWallet.name.toLowerCase()) {
-    value = TransactionEnum.virtualFundWallet;
+  if (transactionType == TransactionEnum.ALL.name) {
+    value = TransactionEnum.ALL;
+  } else if (transactionType == TransactionEnum.BILLS.name) {
+    value = TransactionEnum.BILLS;
+  } else if (transactionType == TransactionEnum.TRANSFEROUT.name) {
+    value = TransactionEnum.TRANSFEROUT;
+  } else if (transactionType == TransactionEnum.TRANSFERIN.name) {
+    value = TransactionEnum.TRANSFERIN;
+  } else if (transactionType == TransactionEnum.REFUND.name) {
+    value = TransactionEnum.REFUND;
+  } else if (transactionType == TransactionEnum.POS.name) {
+    value = TransactionEnum.POS;
   } else {
-    value = TransactionEnum.all;
+    value = TransactionEnum.ALL;
   }
   return value;
 }
@@ -49,26 +35,21 @@ TransactionEnum getTransactionEnum(String transactionType) {
 String getEnumName(TransactionEnum transactionType) {
   String? value;
   switch (transactionType) {
-    case TransactionEnum.cashOut:
-      value = "POS TRANSACTION";
+    case TransactionEnum.POS:
+      value = "POS";
       break;
-    case TransactionEnum.billsPayment:
+    case TransactionEnum.BILLS:
       value = "BILLS";
       break;
-    case TransactionEnum.virtualFundWallet:
-      value = "FUND WALLET";
+    case TransactionEnum.TRANSFEROUT:
+      value = "TRANSFER OUT";
       break;
-    case TransactionEnum.selfCashOutTransfer:
-      value = "CASH OUT";
+    case TransactionEnum.TRANSFERIN:
+      value = "TRANSFER IN";
       break;
-    case TransactionEnum.enkPayTransfer:
-      value = "ENKPAY TRANSFER";
+    case TransactionEnum.REFUND:
+      value = "REFUND";
       break;
-
-    case TransactionEnum.bankTransfer:
-      value = "BANK TRANSFER";
-      break;
-
     default:
       value = "ALL";
   }

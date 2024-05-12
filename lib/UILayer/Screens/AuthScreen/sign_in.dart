@@ -9,7 +9,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
-import 'package:enk_pay_project/UILayer/Screens/AuthScreen/select_verification_method_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -212,42 +211,42 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                 const SizedBox(
                   height: 15,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextClickButton(
-                      title: "No Account Yet? ",
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(
-                              color: EPColors.appGreyColor,
-                              fontWeight: FontWeight.w500),
-                      onTap: () {},
-                    ),
-                    TextClickButton(
-                      title: "Create your account",
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: EPColors.appMainColor),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    const SelectVerificationMethodScreen()));
-
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (_) => const RegistrationScreen()));
-                      },
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     TextClickButton(
+                //       title: "No Account Yet? ",
+                //       textStyle: Theme.of(context)
+                //           .textTheme
+                //           .headline3!
+                //           .copyWith(
+                //               color: EPColors.appGreyColor,
+                //               fontWeight: FontWeight.w500),
+                //       onTap: () {},
+                //     ),
+                //     TextClickButton(
+                //       title: "Create your account",
+                //       textStyle: Theme.of(context)
+                //           .textTheme
+                //           .headline3!
+                //           .copyWith(
+                //               fontWeight: FontWeight.bold,
+                //               color: EPColors.appMainColor),
+                //       onTap: () {
+                //         Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //                 builder: (_) =>
+                //                     const SelectVerificationMethodScreen()));
+                //
+                //         // Navigator.push(
+                //         //     context,
+                //         //     MaterialPageRoute(
+                //         //         builder: (_) => const RegistrationScreen()));
+                //       },
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(
                   height: 50,
                 ),

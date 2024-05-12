@@ -17,7 +17,7 @@
 
 
     <application
-        android:label="SAMWINTOY"
+        android:label="Falcon Agency"
         android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true"
         tools:replace="android:icon,android:label"
