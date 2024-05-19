@@ -1,4 +1,4 @@
-enum TransactionEnum { ALL, BILLS, TRANSFEROUT, TRANSFERIN, REFUND, POS }
+enum TransactionEnum { ALL, BILLS, TRANSFEROUT, TRANSFERIN, REVERSED, POS }
 
 // POS Transaction - CashOut
 // Inapp transfer - EnkPayTransfer
@@ -22,8 +22,8 @@ TransactionEnum getTransactionEnum(String transactionType) {
     value = TransactionEnum.TRANSFEROUT;
   } else if (transactionType == TransactionEnum.TRANSFERIN.name) {
     value = TransactionEnum.TRANSFERIN;
-  } else if (transactionType == TransactionEnum.REFUND.name) {
-    value = TransactionEnum.REFUND;
+  } else if (transactionType == TransactionEnum.REVERSED.name) {
+    value = TransactionEnum.REVERSED;
   } else if (transactionType == TransactionEnum.POS.name) {
     value = TransactionEnum.POS;
   } else {
@@ -47,11 +47,11 @@ String getEnumName(TransactionEnum transactionType) {
     case TransactionEnum.TRANSFERIN:
       value = "TRANSFER IN";
       break;
-    case TransactionEnum.REFUND:
-      value = "REFUND";
+    case TransactionEnum.REVERSED:
+      value = "REVERSED";
       break;
     default:
-      value = "ALL";
+      value = "Transaction";
   }
 
   return value;

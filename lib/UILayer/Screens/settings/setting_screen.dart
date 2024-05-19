@@ -15,7 +15,6 @@ import '../../utils/show_alert_dialog.dart';
 import '../../utils/sync_keys.dart';
 import 'business_info_screen.dart';
 import 'customer_care_screen.dart';
-import 'manage_beneficiary/beneficiaries_page.dart';
 
 class SettingScreen extends StatefulWidget {
   final VoidCallback? onRefresh;
@@ -216,12 +215,12 @@ class _SettingScreenState extends State<SettingScreen> {
             //   onTap: () => Navigator.push(context,
             //       MaterialPageRoute(builder: (_) => const RequestDevicePage())),
             // ),
-            SettingTabs(
-              image: EPImages.requestDevice,
-              title: "Manage Beneficiary",
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const BeneficiariesPage())),
-            ),
+            // SettingTabs(
+            //   image: EPImages.requestDevice,
+            //   title: "Manage Beneficiary",
+            //   onTap: () => Navigator.push(context,
+            //       MaterialPageRoute(builder: (_) => const BeneficiariesPage())),
+            // ),
             SettingTabs(
               image: EPImages.customerCare,
               title: "Contact customer care",

@@ -29,7 +29,7 @@ class _HistoryIconState extends State<HistoryIcon> {
       case TransactionEnum.BILLS:
         image = EPImages.billsIcon;
         break;
-      case TransactionEnum.REFUND:
+      case TransactionEnum.REVERSED:
         image = EPImages.refundIcon;
         break;
       case TransactionEnum.POS:

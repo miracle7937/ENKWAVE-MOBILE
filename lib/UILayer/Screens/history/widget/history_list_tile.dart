@@ -124,19 +124,25 @@ class HistoryListTile extends StatelessWidget {
     switch (status) {
       case 0:
         return "Pending";
-      case 1:
+      case 2:
         return "Successful";
-      default:
+      case 3:
+        return "Failed";
+      case 4:
         return "Reversed";
+      default:
+        return "Unknown";
     }
   }
 
   Color statusColor(num? status) {
     switch (status) {
       case 0:
-        return Colors.red;
-      case 1:
+        return Colors.orange;
+      case 2:
         return Colors.green;
+      case 3:
+        return Colors.red;
       default:
         return Colors.orange;
     }

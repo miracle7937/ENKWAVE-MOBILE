@@ -296,7 +296,7 @@ class UserData {
 
   bool userHaveAccount() {
     if (kDebugMode) {
-      print("hhhhhhhhhhhhhh ${virtualBankList}");
+      print(" ${virtualBankList}");
     }
     return virtualBankList?.isNotEmpty ?? true;
   }

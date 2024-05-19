@@ -92,7 +92,7 @@ class BillPaymentController extends ProductController with BillCategoriesFetch {
       if (value.status == true) {
         billPaymentModel.fieldsValue["customerName"] = value.data?.name;
         billPaymentModel.fieldsValue["otherField"] = value.data?.otherField;
-        _view?.onBillValidate("Your payment is for this, ${value.data?.name}.");
+        _view?.onBillValidate("Your payment is for, ${value.data?.name}.");
       } else {
         _view?.onError(value.message ?? "Error");
       }
