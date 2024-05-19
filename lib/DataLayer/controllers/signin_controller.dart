@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -6,6 +8,8 @@ import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/device_info.dart';
 import '../../UILayer/utils/format_phone_number.dart';
+import '../../UILayer/utils/sync_keys.dart';
+import '../../services/navigation_service.dart';
 import '../LocalData/local_data_storage.dart';
 import '../model/generic_model_response.dart';
 import '../model/login_response_model.dart';
@@ -56,8 +60,15 @@ class SignInController extends ChangeNotifier {
     LocalDataStorage.saveUserData(result.data!);
     LocalDataStorage.saveUserPermission(result.permission);
     LocalDataStorage.saveUserAppSettings(result.appSettings);
-    print("DataCon ${result.terminalConfig}");
+    log("DataCon ${result.terminalConfig}");
     LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+    try {
+      SyncKeys().init(
+        NavigationService.navigatorKey.currentState!.context,
+      );
+    } catch (e) {
+      log("Injecting logs fails======================> ${e}");
+    }
   }
 
   logIn() async {
@@ -72,9 +83,9 @@ class SignInController extends ChangeNotifier {
       data["email"] = userCredentialModel.email;
     }
 
-    String? token = await FirebaseMessaging.instance.getToken();
-    userCredentialModel.token = token;
-    data["device_id"] = token;
+    // String? token = await FirebaseMessaging.instance.getToken();
+    // userCredentialModel.token = token;
+    // data["device_id"] = token;
 
     String? deviceID = await DeviceInfo.getDeviceID();
     String? deviceName = await DeviceInfo.getDeviceName();

@@ -34,7 +34,6 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
   void dispose() {
     super.dispose();
     transferController?.disposeAll();
-    Provider.of<TransferController>(context, listen: false).getLocation();
   }
 
   @override
