@@ -73,7 +73,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
-                            child: Image.asset(EPImages.appIcon),
+                            child: Image.asset(EPImages.logoIcon),
                           ),
                           const SizedBox(
                             height: 10,
@@ -181,12 +181,14 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
     switch (status) {
       case 0:
         return "Pending";
-      case 1:
+      case 2:
         return "Successful";
       case 3:
+        return "Failed";
+      case 4:
         return "Reversed";
       default:
-        return "Failed";
+        return "Unknown";
     }
   }
 
@@ -194,12 +196,12 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
     switch (status) {
       case 0:
         return Colors.orange;
-      case 1:
+      case 2:
         return Colors.green;
-      case 4:
-        return Colors.orange;
-      default:
+      case 3:
         return Colors.red;
+      default:
+        return Colors.orange;
     }
   }
 

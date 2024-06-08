@@ -5,7 +5,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../AuthScreen/select_verification_method_screen.dart';
 import '../AuthScreen/sign_in.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -88,17 +87,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 }
                 // onTap: ,
                 ),
-            EPButton(
-              bgColor: Colors.grey,
-              title: "SIGN UP",
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) =>
-                            const SelectVerificationMethodScreen()));
-              },
-            ),
+            // EPButton(
+            //   bgColor: Colors.grey,
+            //   title: "SIGN UP",
+            //   onTap: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (_) =>
+            //                 const SelectVerificationMethodScreen()));
+            //   },
+            // ),
             const Spacer(
               flex: 1,
             ),

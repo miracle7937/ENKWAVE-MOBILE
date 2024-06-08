@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(10),
                 child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.1,
-                    child: Image.asset(EPImages.testIcon)),
+                    child: Image.asset(EPImages.logoIcon)),
               ),
             ],
           ),

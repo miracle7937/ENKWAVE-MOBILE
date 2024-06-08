@@ -129,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                               child: EPForm(
                             controller: _emailController,
                             enabledBorderColor: EPColors.appGreyColor,
-                            hintText: "Enter email e.g. enkwave@email.com",
+                            hintText: "Enter email e.g. etop@email.com",
                             onChange: (v) {
                               authController.setEmail(v);
                             },

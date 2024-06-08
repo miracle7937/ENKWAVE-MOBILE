@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
 import 'package:enk_pay_project/DataLayer/repository/airtime_repository.dart';
-import 'package:enk_pay_project/DataLayer/request.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,14 +80,11 @@ class AirtimeController with ChangeNotifier {
       } else {
         _view!.onSuccess(value.message!);
       }
-    }).catchError((error) {
+    }).catchError((error, _) {
+      log(error.toString());
+      log(_.toString());
       pageState = PageState.loaded;
       notifyListeners();
-
-      if (error is HttpException) {
-        _view!.onError(error.getMessage);
-        return;
-      }
       _view!.onError(error.toString());
     });
   }
