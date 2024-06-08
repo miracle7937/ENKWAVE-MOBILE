@@ -15,8 +15,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_multi_formatter/formatters/formatter_extension_methods.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +31,7 @@ class BuyDataScreen extends StatefulWidget {
 }
 
 class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
-  late List<Contact> contacts;
+  late List<Contact>? contacts;
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController selectedBankController = TextEditingController();
@@ -50,12 +49,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
   }
 
   getPhoneNumber() async {
-    if (await FlutterContacts.requestPermission()) {
-      // Get all contacts (lightly fetched)
-      contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-      );
-    }
+    contacts = await FlutterContactPicker().selectContacts();
   }
 
   late MobileDataController mobileDataController;
@@ -198,8 +192,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
                                       color: EPColors.appGreyColor)),
                         ),
                         Center(
-                          child: Text(
-                              amountFormatterWithoutDecimal(amount),
+                          child: Text(amountFormatterWithoutDecimal(amount),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2!
@@ -259,9 +252,12 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
   }
 
   void selectContact() async {
-    showPhoneList(context, contacts, (v) {
-      phoneNumberController.text = v.phones.first.number;
-      mobileDataController.setPhoneNumber = v.phones.first.number;
+    if (contacts == null) {
+      return;
+    }
+    showPhoneList(context, contacts!, (v) {
+      phoneNumberController.text = v.phoneNumbers?.first ?? "";
+      mobileDataController.setPhoneNumber = v.phoneNumbers?.first ?? "";
     });
   }
 

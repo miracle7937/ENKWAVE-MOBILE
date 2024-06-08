@@ -52,6 +52,7 @@ class EPImages {
   static String cloudImageUpload = "$root/cloud_image_upload.png";
   static String posRealDevice = "$root/pos_real_device.png";
   static String changePinIcon = "$root/change_pin-icon.png";
+  static String eod = "$root/eod.png";
   static String settingsBg = "$root/settings_bg.png";
   static String userMale = "$root/user_male.png";
   static String logOut = "$root/log_out.png";
@@ -86,4 +87,6 @@ class EPImages {
   static String cardView = "$root/card_view.png";
   static String cardCredit = "$root/card_credit.png";
   static String cardDebit = "$root/card_debit.png";
+  static String beneficiary = "$root/beneficiary.png";
+  static String syncKey = "$root/sync_key.png";
 }

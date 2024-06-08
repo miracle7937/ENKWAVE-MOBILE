@@ -38,15 +38,16 @@ dependencies:
   intl: ^0.17.0
   pin_code_fields: ^7.3.0
   animated_bottom_navigation_bar: ^0.3.2
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   provider: ^6.0.2
   http: ^0.13.4
   flare_flutter: ^3.0.2
   webview_flutter: ^3.0.0
   flutter_multi_formatter: ^2.5.1
   lottie: ^1.2.2
-#  modal_bottom_sheet: ^2.0.1
-  flutter_contacts: ^1.1.6
+
+  flutter_native_contact_picker: ^0.0.6
+#  flutter_contacts: ^1.1.6
   local_auth: ^1.1.11
   flutter_pin_code_fields: ^1.2.0
   timeago:
@@ -56,7 +57,7 @@ dependencies:
   flutter_image_compress: ^1.0.0-nullsafety
   geolocator: ^9.0.2
   screenshot: ^1.3.0
-  share_plus: ^6.3.2
+  share_plus: ^6.0.0
 #  firebase_messaging: ^11.0.2
 #  firebase_core: ^2.4.1
 
@@ -68,13 +69,16 @@ dependencies:
   flip_card:
   device_info_plus: ^8.2.2
   shared_preferences: ^2.2.0
+  flutter_riverpod: ^1.0.4
+
 
 
   etop_pos_plugin:
     git:
       url: git@github.com:miracle7937/e-top-horizon-plugin.git
-      ref: c3ed631623de07ff7f2453a15ca53a90cbd37fc7
-      
+      ref: a3021e6fb1f13384e146aa809dafec182c239511
+
+
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1

@@ -24,13 +24,11 @@ class LoginResponseModel {
     permission = json['permission'] != null
         ? APPPermission.fromJson(json['permission'])
         : null;
-
     appSettings =
         json['setting'] != null ? AppSettings.fromJson(json['setting']) : null;
-
-    terminalConfig = json['tid_config'] != null
-        ? TerminalConfig.fromJson(json['tid_config'])
-        : null;
+    if (json['tid_config'] != null) {
+      terminalConfig = TerminalConfig.fromJson(json['tid_config']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +36,7 @@ class LoginResponseModel {
     map['status'] = status;
     map['message'] = message;
     map['isNewDevice'] = isNewDevice;
+    map['tid_config'] = terminalConfig;
     if (data != null) {
       map['data'] = data!.toJson();
     }
@@ -423,10 +422,10 @@ class TerminalInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['merchantNo'] = this.merchantNo;
-    data['terminalNo'] = this.terminalNo;
-    data['merchantName'] = this.merchantName;
-    data['deviceSN'] = this.deviceSN;
+    data['merchantNo'] = merchantNo;
+    data['terminalNo'] = terminalNo;
+    data['merchantName'] = merchantName;
+    data['deviceSN'] = deviceSN;
     return data;
   }
 }
@@ -434,35 +433,56 @@ class TerminalInfo {
 class TerminalConfig {
   String? ip;
   String? port;
-  bool? ssl;
+  String? ssl;
   String? compKey1;
   String? compKey2;
+  String? baseUrl;
+  String? logoUrl;
+  String? showLoader;
 
-  TerminalConfig({
-    this.ip,
-    this.port,
-    this.ssl,
-    this.compKey1,
-    this.compKey2,
-  });
+  TerminalConfig(
+      {this.ip,
+      this.port,
+      this.ssl,
+      this.compKey1,
+      this.compKey2,
+      this.baseUrl,
+      this.logoUrl,
+      showLoader});
 
-  factory TerminalConfig.fromJson(Map<String, dynamic> json) {
-    return TerminalConfig(
-      ip: json['ip'],
-      port: json['port'],
-      ssl: json['ssl'] == "true",
-      compKey1: json['compKey1'],
-      compKey2: json['compKey2'],
-    );
+  TerminalConfig.fromJson(Map<String, dynamic> json) {
+    ip = json['ip'];
+    port = json['port'];
+    ssl = json['ssl'];
+    compKey1 = json['compKey1'];
+    compKey2 = json['compKey2'];
+    baseUrl = json['baseUrl'];
+    logoUrl = json['logoUrl'];
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'ip': ip,
-      'port': port,
-      'ssl': ssl.toString(), // Convert bool to string
-      'compKey1': compKey1,
-      'compKey2': compKey2,
-    };
+  Map<String, String?> toJson() {
+    final Map<String, String?> data = <String, String?>{};
+    data['ip'] = ip;
+    data['port'] = port;
+    data['ssl'] = ssl;
+    data['compKey1'] = compKey1;
+    data['compKey2'] = compKey2;
+    data['baseUrl'] = baseUrl;
+    data['logoUrl'] = logoUrl;
+    data['showLoader'] = showLoader;
+    return data;
+  }
+
+  setShowLoader(String v) {
+    showLoader = v;
+  }
+
+  bool get hasNull {
+    return ip == null ||
+        port == null ||
+        ssl == null ||
+        compKey1 == null ||
+        compKey2 == null ||
+        baseUrl == null;
   }
 }

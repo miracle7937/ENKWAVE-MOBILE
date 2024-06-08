@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
 import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Constant/image.dart';
 import '../../../Constant/package_info.dart';
 import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/controllers/signin_controller.dart';
@@ -35,29 +35,28 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   final _passwordController = TextEditingController();
   late SignInController authController;
   bool isBiometricEnable = false;
-  UserCredentialModel? _credentialModel;
 
   @override
   void initState() {
     super.initState();
     checkBiometric();
-    credentialInit();
-  }
-
-  credentialInit() async {
-    LocalDataStorage.getUserCredential().then((value) {
-      if (value != null) {
-        _phoneController.text = value.phone ?? "";
-        _emailController.text = value.email ?? "";
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authController.initCredential();
+      credentialInit();
     });
   }
 
-  checkBiometric() async {
-    if (mounted) {
-      isBiometricEnable = await BiometricController.isBiometricEnable();
-      // setState(() {});
+  credentialInit() async {
+    UserCredentialModel? _credentialModel =
+        await LocalDataStorage.getUserCredential();
+    if (_credentialModel != null) {
+      onSetUserCredential(_credentialModel);
     }
+  }
+
+  checkBiometric() async {
+    isBiometricEnable = await BiometricController.isBiometricEnable();
+    setState(() {});
   }
 
   @override
@@ -173,61 +172,43 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
                 EPButton(
                   title: "LOG IN",
                   onTap: () async {
-                    // authController.validateSIGNInForm();
-
-                    Future<String?> _getId() async {
-                      var deviceInfo = DeviceInfoPlugin();
-                      if (Platform.isIOS) {
-                        // import 'dart:io'
-                        var iosDeviceInfo = await deviceInfo.iosInfo;
-                        return iosDeviceInfo
-                            .identifierForVendor; // unique ID on iOS
-                      } else if (Platform.isAndroid) {
-                        var androidDeviceInfo = await deviceInfo.androidInfo;
-                        return androidDeviceInfo
-                            .identifierForVendor; // unique ID on Android
-                      }
-                    }
-
-                    String? deviceId = await _getId();
-
-                    print(deviceId);
+                    authController.validateSIGNInForm();
                   },
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                // SizedBox(
-                //   height: MediaQuery.of(context).size.height * 0.25,
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       EPButtonWithBoarder(
-                //         title: authController.loginWithPhoneNumber
-                //             ? "Login with email"
-                //             : "Login with phone number",
-                //         onTap: () {
-                //           credentialInit();
-                //           authController.setLoginType(
-                //               !authController.loginWithPhoneNumber);
-                //         },
-                //       ),
-                //       isBiometricEnable
-                //           ? InkWell(
-                //               splashColor: EPColors.appMainColor,
-                //               onTap: () async {
-                //                 // final fcmToken = await FirebaseMessaging.instance.getToken();
-                //                 //
-                //                 // debugPrint(fcmToken);
-                //                 authController.biometricLogin();
-                //               },
-                //               child: Image.asset(Platform.isAndroid
-                //                   ? EPImages.fingerPrint
-                //                   : EPImages.faceID))
-                //           : Container(),
-                //     ],
-                //   ),
-                // ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      EPButtonWithBoarder(
+                        title: authController.loginWithPhoneNumber
+                            ? "Login with email"
+                            : "Login with phone number",
+                        onTap: () {
+                          credentialInit();
+                          authController.setLoginType(
+                              !authController.loginWithPhoneNumber);
+                        },
+                      ),
+                      isBiometricEnable
+                          ? InkWell(
+                              splashColor: EPColors.appMainColor,
+                              onTap: () async {
+                                // final fcmToken = await FirebaseMessaging.instance.getToken();
+                                //
+                                // debugPrint(fcmToken);
+                                authController.biometricLogin();
+                              },
+                              child: Image.asset(Platform.isAndroid
+                                  ? EPImages.fingerPrint
+                                  : EPImages.faceID))
+                          : Container(),
+                    ],
+                  ),
+                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -315,10 +296,8 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
 
   @override
   void onSetUserCredential(UserCredentialModel userCredentialModel) {
-    // if (isNotEmpty(userCredentialModel.email)) {
-    //   authController.setLoginType(false);
-    // }
-    // _emailController.text = userCredentialModel.email ?? "";
+    _emailController.text = userCredentialModel.email ?? "";
     _phoneController.text = userCredentialModel.phone ?? "";
+    setState(() {});
   }
 }

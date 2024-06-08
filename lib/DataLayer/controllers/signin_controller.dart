@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../Constant/string_values.dart';
@@ -5,6 +7,8 @@ import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/device_info.dart';
 import '../../UILayer/utils/format_phone_number.dart';
+import '../../UILayer/utils/sync_keys.dart';
+import '../../services/navigation_service.dart';
 import '../LocalData/local_data_storage.dart';
 import '../model/generic_model_response.dart';
 import '../model/login_response_model.dart';
@@ -13,27 +17,20 @@ import '../repository/auth_repository.dart';
 import 'biomertic_controller.dart';
 
 class SignInController extends ChangeNotifier {
-  SignInController() {
-    setDefault();
-  }
   UserCredentialModel userCredentialModel = UserCredentialModel();
   PageState pageState = PageState.loaded;
   LOGINView? _view;
   ForgetPasswordView? _forgetPasswordView;
+  PinSignInView? _pinSignInView;
 
   late bool loginWithPhoneNumber = true;
 
-  setDefault() async {
-    LocalDataStorage.getUserCredential().then((value) {
-      if (value != null) {
-        userCredentialModel.phone = PhoneNumber.format(value.phone ?? "");
-        userCredentialModel.email = (value.email ?? "").replaceAll(' ', '');
-      }
-    });
-  }
-
   set forgetView(ForgetPasswordView forgetPasswordView) {
     _forgetPasswordView = forgetPasswordView;
+  }
+
+  set pinView(PinSignInView pinSignInView) {
+    _pinSignInView = pinSignInView;
   }
 
   set view(LOGINView v) {
@@ -58,11 +55,17 @@ class SignInController extends ChangeNotifier {
     notifyListeners();
   }
 
-  saveData(LoginResponseModel result) {
-    LocalDataStorage.saveUserData(result.data!);
-    LocalDataStorage.saveUserPermission(result.permission);
-    LocalDataStorage.saveUserAppSettings(result.appSettings);
-    LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+  saveData(LoginResponseModel result) async {
+    await LocalDataStorage.saveUserData(result.data!);
+    await LocalDataStorage.saveUserPermission(result.permission);
+    await LocalDataStorage.saveUserAppSettings(result.appSettings);
+    await LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+    try {
+      SyncKeys().init(NavigationService.navigatorKey.currentState!.context,
+          showLoader: false);
+    } catch (e) {
+      log("Injecting logs fails======================> ${e}");
+    }
   }
 
   logIn() async {
@@ -96,6 +99,7 @@ class SignInController extends ChangeNotifier {
       var result = await AuthRepository()
           .login(credentialModel!.toJson(), phoneLogin: loginWithPhoneNumber);
       if (result.status == true) {
+        print(result);
         //save user
         saveData(result);
         _view?.onSuccess(result.message ?? "");
@@ -108,9 +112,11 @@ class SignInController extends ChangeNotifier {
           _view?.onError(result.message ?? "");
         }
       }
+
       pageState = PageState.loaded;
       notifyListeners();
-    } catch (e, v) {
+    } catch (e) {
+      print(e);
       pageState = PageState.loaded;
       notifyListeners();
       _view?.onError(e.toString() ?? "");
@@ -220,6 +226,49 @@ class SignInController extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  pinSignIn(String pin) async {
+    try {
+      UserData? userData = await LocalDataStorage.getUserData();
+      pageState = PageState.loading;
+      notifyListeners();
+
+      UserCredentialModel? _credentialModel =
+          await LocalDataStorage.getUserCredential();
+      debugPrint(_credentialModel!.toJson().toString());
+      Map data = {};
+      if (isNotEmpty(_credentialModel.phone)) {
+        data["phone"] = _credentialModel.phone;
+        loginWithPhoneNumber = true;
+      } else if (isNotEmpty(_credentialModel.email)) {
+        data["email"] = _credentialModel.email;
+        loginWithPhoneNumber = false;
+      }
+      // loginWithPhoneNumber  determine the route to push the auth data ;
+
+      if (isNotEmpty(_credentialModel.password)) {
+        data["password"] = _credentialModel.password;
+      }
+
+      data["pin"] = pin;
+
+      var result = await AuthRepository().pinLogin(data);
+      if (result.status == true) {
+        //save user
+        saveData(result);
+        _pinSignInView?.onSuccess(result.message ?? "");
+      } else {
+        _pinSignInView?.onError(result.message ?? "");
+      }
+      pageState = PageState.loaded;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      pageState = PageState.loaded;
+      notifyListeners();
+      _view?.onError(e.toString() ?? "");
+    }
+  }
 }
 
 abstract class LOGINView {
@@ -231,6 +280,11 @@ abstract class LOGINView {
 }
 
 abstract class ForgetPasswordView {
+  void onSuccess(String message);
+  void onError(String message);
+}
+
+abstract class PinSignInView {
   void onSuccess(String message);
   void onError(String message);
 }

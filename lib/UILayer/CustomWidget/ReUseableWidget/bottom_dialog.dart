@@ -7,7 +7,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.d
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selection_listBottom_sheet.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -283,7 +283,7 @@ void showPhoneList(BuildContext context, List<Contact> recipients,
     hasSearch: true,
     searchMatcher: (Contact recipient, String b) {
       return [
-        recipient.displayName,
+        recipient.fullName,
       ].any((String? it) => it!.contains(b));
     },
     title: "Mobile Number",
@@ -293,7 +293,7 @@ void showPhoneList(BuildContext context, List<Contact> recipients,
       //${r.phones.first.number.toString()}
       return DropdownMenuItem(
         child: Text(
-          "${r.displayName} ",
+          "${r.fullName} ",
           style: Theme.of(context).textTheme.bodyText1,
         ),
       );

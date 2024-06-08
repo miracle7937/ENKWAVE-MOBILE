@@ -222,6 +222,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
               children: [
                 Image.asset(
                   introModel.image,
+                  width: 20,
                 ),
                 const SizedBox(
                   height: 10,
@@ -230,6 +231,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                   introModel.title,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                       fontWeight: FontWeight.w700,
+                      fontSize: 10,
                       color: EPColors.appBlackColor),
                 ),
                 const SizedBox(
@@ -253,7 +255,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
-                    "New",
+                    "New+",
                     style: Theme.of(context).textTheme.headline3!.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold),
                   ),

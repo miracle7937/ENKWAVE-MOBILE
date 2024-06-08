@@ -23,6 +23,14 @@ class AuthRepository {
     return LoginResponseModel.fromJson(responseData.data);
   }
 
+  Future<LoginResponseModel> pinLogin(
+    Map map,
+  ) async {
+    var responseData =
+        await ServerRequest().postData(path: AppRoute.pinLogin, body: map);
+    return LoginResponseModel.fromJson(responseData.data);
+  }
+
   static Future<LoginResponseModel> sendOTP(
       Map map, bool isSelectPhoneVerification) async {
     var responseData = await ServerRequest().postData(

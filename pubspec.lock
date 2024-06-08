@@ -222,8 +222,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c3ed631623de07ff7f2453a15ca53a90cbd37fc7
-      resolved-ref: c3ed631623de07ff7f2453a15ca53a90cbd37fc7
+      ref: a3021e6fb1f13384e146aa809dafec182c239511
+      resolved-ref: a3021e6fb1f13384e146aa809dafec182c239511
       url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
     source: git
     version: "0.0.1"
@@ -358,13 +358,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_contacts:
-    dependency: "direct main"
-    description:
-      name: flutter_contacts
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.6"
   flutter_image_compress:
     dependency: "direct main"
     description:
@@ -393,6 +386,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.11.1"
+  flutter_native_contact_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_native_contact_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
   flutter_pin_code_fields:
     dependency: "direct main"
     description:
@@ -407,6 +407,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.15"
+  flutter_riverpod:
+    dependency: "direct main"
+    description:
+      name: flutter_riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -437,7 +444,7 @@ packages:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.2.0"
+    version: "10.4.0"
   geolocator:
     dependency: "direct main"
     description:
@@ -746,6 +753,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.5"
+  riverpod:
+    dependency: transitive
+    description:
+      name: riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   screenshot:
     dependency: "direct main"
     description:
@@ -835,6 +849,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
+  state_notifier:
+    dependency: transitive
+    description:
+      name: state_notifier
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2+1"
   stream_channel:
     dependency: transitive
     description:
