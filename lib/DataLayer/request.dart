@@ -123,7 +123,7 @@ class ServerRequest {
         headers: header,
       )
           .timeout(
-        const Duration(seconds: 20),
+        const Duration(seconds: 60),
         onTimeout: () {
           throw TimeoutException('process time out');
         },
