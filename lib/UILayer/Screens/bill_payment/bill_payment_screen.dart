@@ -61,6 +61,8 @@ class _BillPaymentScreenState extends State<BillPaymentScreen>
                 return item.name!.toLowerCase().contains(text.toLowerCase());
               },
               onChanged: (v) {
+                //clear fisrt
+                billPaymentController.billFormResponse.data = [];
                 billPaymentController.setSelectedCategory = v;
               },
               items: (billPaymentController.categoryData ?? [])
@@ -197,23 +199,32 @@ class BillFormBuilder extends StatelessWidget {
         itemCount: data.length ?? 0,
         itemBuilder: (_, index) {
           if ((data[index].items == null)) {
-            return EPForm(
-              inputFormatters: [
-                if (["customerPhone", "amount"].contains(data[index].fieldName))
-                  FilteringTextInputFormatter.digitsOnly,
-              ],
-              hintText: data[index].fieldDescription,
-              enabledBorderColor: EPColors.appGreyColor,
-              keyboardType: TextInputType.phone,
-              onChange: (v) {
-                billPaymentController.setDynamicData(data[index].fieldName!, v);
-              },
-            );
+            bool isValidation = data[index].validation == "Y";
+            return (isValidation)
+                ? EPForm(
+                    inputFormatters: (["customerPhone", "amount"]
+                            .contains(data[index].fieldName))
+                        ? [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ]
+                        : null,
+                    hintText: data[index].fieldDescription,
+                    enabledBorderColor: EPColors.appGreyColor,
+                    keyboardType: (["customerPhone", "amount"]
+                            .contains(data[index].fieldName))
+                        ? TextInputType.number
+                        : TextInputType.text,
+                    onChange: (v) {
+                      billPaymentController.setDynamicData(
+                          data[index].fieldName!, v);
+                    },
+                  )
+                : Container();
           }
           return EPDropdownButton<Items>(
               itemsListTitle: data[index].fieldDescription,
               iconSize: 22,
-              hint: const Text(""),
+              hint: Text(data[index].fieldDescription ?? ""),
               isExpanded: true,
               underline: const Divider(),
               value:

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/product_controller.dart';
 import 'package:enk_pay_project/DataLayer/model/bill_categories.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
@@ -47,15 +48,18 @@ class BillPaymentController extends ProductController with BillCategoriesFetch {
   }
 
   setDynamicItem(String key, Items value) {
+    print(key);
     var billPayment = billPaymentModel.fieldsValue;
     billPayment[key] = value.itemId;
     items[key] = value;
     billPaymentModel.serviceId = value.itemId;
+    if (isNotEmpty(value.amount)) {
+      billPayment['amount'] = value.amount;
+    }
     notifyListeners();
   }
 
   setDynamicData(String key, String value) {
-    print(key);
     var billPayment = billPaymentModel.fieldsValue;
     billPayment[key] = value;
     notifyListeners();
@@ -115,6 +119,7 @@ class BillPaymentController extends ProductController with BillCategoriesFetch {
   onBuyBill() {
     pageState = PageState.loading;
     notifyListeners();
+    print(billPaymentModel.toJson());
     BillRepository().buyBill(billPaymentModel.toJson()).then((value) {
       log(value.toString());
       if (true == value.status) {

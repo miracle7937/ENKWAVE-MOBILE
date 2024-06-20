@@ -88,6 +88,7 @@ class HistoryScreen extends StatelessWidget with HistoryView {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (builder) => TransferStatusPage(
                                           refTransId: e.refTransId,
+                                          transactionTitle: e.transactionType,
                                         )));
                               },
                             ))

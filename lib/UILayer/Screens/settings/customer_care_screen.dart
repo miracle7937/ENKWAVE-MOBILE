@@ -33,68 +33,70 @@ class _CustomerCareScreenState extends State<CustomerCareScreen>
       appBar: EPAppBar(
         title: const Text("Customer Care"),
       ),
-      builder: (_) => Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          GreyBGCard(
-            color: EPColors.appMainColor,
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      "We are available",
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Monday  - Sunday",
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Text(
-                  "8:00am - 4:00pm",
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
-              ],
+      builder: (_) => SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          _contactUSView(context,
-              title: controller?.contactUsData?.email,
-              icon: const FaIcon(FontAwesomeIcons.mailBulk),
-              launcher: ContactLauncher.email),
-          _contactUSView(context,
-              title: controller?.contactUsData?.phone,
-              icon: const FaIcon(FontAwesomeIcons.phone),
-              launcher: ContactLauncher.phone),
-          _contactUSView(context,
-              title: controller?.contactUsData?.whatsapp,
-              icon: const FaIcon(FontAwesomeIcons.whatsapp)),
-          _contactUSView(context,
-              title: controller?.contactUsData?.facebook,
-              icon: const FaIcon(FontAwesomeIcons.facebook)),
-          _contactUSView(context,
-              title: controller?.contactUsData?.twitter,
-              icon: const FaIcon(FontAwesomeIcons.twitter)),
-          _contactUSView(context,
-              title: controller?.contactUsData?.instagram,
-              icon: const FaIcon(FontAwesomeIcons.instagram)),
-        ],
+            GreyBGCard(
+              color: EPColors.appMainColor,
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        "We are available",
+                        style: Theme.of(context).textTheme.headline3!.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Monday  - Sunday",
+                        style: Theme.of(context).textTheme.headline3!.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Text(
+                    "8:00am - 4:00pm",
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            _contactUSView(context,
+                title: controller?.contactUsData?.email,
+                icon: const FaIcon(FontAwesomeIcons.mailBulk),
+                launcher: ContactLauncher.email),
+            _contactUSView(context,
+                title: controller?.contactUsData?.phone,
+                icon: const FaIcon(FontAwesomeIcons.phone),
+                launcher: ContactLauncher.phone),
+            _contactUSView(context,
+                title: controller?.contactUsData?.whatsapp,
+                icon: const FaIcon(FontAwesomeIcons.whatsapp)),
+            _contactUSView(context,
+                title: controller?.contactUsData?.facebook,
+                icon: const FaIcon(FontAwesomeIcons.facebook)),
+            _contactUSView(context,
+                title: controller?.contactUsData?.twitter,
+                icon: const FaIcon(FontAwesomeIcons.twitter)),
+            _contactUSView(context,
+                title: controller?.contactUsData?.instagram,
+                icon: const FaIcon(FontAwesomeIcons.instagram)),
+          ],
+        ),
       ),
     );
   }

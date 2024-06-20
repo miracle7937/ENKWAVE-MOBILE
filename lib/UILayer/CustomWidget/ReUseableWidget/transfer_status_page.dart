@@ -212,6 +212,7 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
         "Recipient Bank": myProvider.transactionStatusModel?.receiverBank ?? "",
         "Recipient Account Number":
             myProvider.transactionStatusModel?.receiverAccountNo ?? "",
+        "Note": myProvider.transactionStatusModel?.note ?? "",
         "Transaction Amount": amountFormatter(
                 myProvider.transactionStatusModel?.amount.toString()) ??
             "",

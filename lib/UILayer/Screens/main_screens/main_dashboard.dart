@@ -176,7 +176,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                   introModel.title,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                       fontWeight: FontWeight.w700,
-                      fontSize: 10,
+                      fontSize: 12,
                       color: EPColors.appBlackColor),
                 ),
                 const SizedBox(
@@ -187,6 +187,7 @@ class _MainScreenState extends State<MainScreen> with MainView {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
                         fontWeight: FontWeight.w400,
+                        fontSize: 8,
                       ),
                 ),
               ],
