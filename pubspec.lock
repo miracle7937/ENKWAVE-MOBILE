@@ -229,8 +229,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "26b5ad9d8398368b5d6e0c45f7d39f676d619429"
-      resolved-ref: "26b5ad9d8398368b5d6e0c45f7d39f676d619429"
+      ref: "42d0cd238af37057f11b9bca3cd3997f0923c0d6"
+      resolved-ref: "42d0cd238af37057f11b9bca3cd3997f0923c0d6"
       url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
     source: git
     version: "0.0.1"
@@ -472,7 +472,7 @@ packages:
       name: geolocator_apple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.6"
+    version: "2.3.7"
   geolocator_platform_interface:
     dependency: transitive
     description:
@@ -514,7 +514,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.7"
+    version: "4.2.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -780,7 +780,7 @@ packages:
       name: share_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.0"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -77,7 +77,7 @@ dependencies:
   etop_pos_plugin:
     git:
       url: git@github.com:miracle7937/e-top-horizon-plugin.git
-      ref: 26b5ad9d8398368b5d6e0c45f7d39f676d619429
+      ref: 42d0cd238af37057f11b9bca3cd3997f0923c0d6
 
 
 
