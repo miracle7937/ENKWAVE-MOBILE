@@ -5,7 +5,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.d
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
-import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -166,7 +165,6 @@ class _TransferStatusPageState extends State<TransferStatusPage> {
                       "merchantName": userData?.terminalInfo?.merchantName
                     };
                     map["data"] = transactionMap(myProvider);
-                    EtopPosPlugin().reprint(map: map);
                   },
                 ),
               ],

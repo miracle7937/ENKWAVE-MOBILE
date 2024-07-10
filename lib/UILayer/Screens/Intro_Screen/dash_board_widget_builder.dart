@@ -5,7 +5,6 @@ import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
-import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Constant/string_values.dart';
@@ -35,10 +34,7 @@ class DashBoardBuilder {
               await LocalDataStorage.getTerminalConfig();
           log(userData!.terminalInfo!.toJson().toString());
           log(terminalConfig!.toJson().toString());
-          EtopPosPlugin().ePayment(
-              context: context,
-              terminalInfo: userData.terminalInfo?.toJson(),
-              userID: userData.id);
+
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (_) => const PosAmountScreen()));
         },
@@ -172,10 +168,6 @@ class DashBoardBuilder {
                 message: "Terminal not profile for pos transaction");
             return;
           }
-          EtopPosPlugin().openEOD(
-              context: context,
-              userID: userData!.id!,
-              baseRoute: terminalConfig!.baseUrl!);
         }));
 
     return dashBoardData;

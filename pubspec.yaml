@@ -40,7 +40,7 @@ dependencies:
   animated_bottom_navigation_bar: ^0.3.2
   font_awesome_flutter: ^10.1.0
   provider: ^6.0.2
-  http: ^0.13.4
+  http:
   flare_flutter: ^3.0.2
   webview_flutter: ^3.0.0
   flutter_multi_formatter: ^2.5.1
@@ -74,10 +74,10 @@ dependencies:
 
 
 
-  etop_pos_plugin:
-    git:
-      url: git@github.com:miracle7937/e-top-horizon-plugin.git
-      ref: 42d0cd238af37057f11b9bca3cd3997f0923c0d6
+#  etop_pos_plugin:
+#    git:
+#      url: git@github.com:miracle7937/e-top-horizon-plugin.git
+#      ref: 42d0cd238af37057f11b9bca3cd3997f0923c0d6
 
 
 

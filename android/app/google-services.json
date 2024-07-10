@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:954513786385:android:7e2b420c1aa8de887e93b0",
         "android_client_info": {
-          "package_name": "com.enk_pay_project.mobileapp"
+          "package_name": "com.example.enk_pay_project"
         }
       },
       "oauth_client": [],

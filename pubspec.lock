@@ -225,15 +225,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  etop_pos_plugin:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "42d0cd238af37057f11b9bca3cd3997f0923c0d6"
-      resolved-ref: "42d0cd238af37057f11b9bca3cd3997f0923c0d6"
-      url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
-    source: git
-    version: "0.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -1032,5 +1023,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.2 <3.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=3.3.0"

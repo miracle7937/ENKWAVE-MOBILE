@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../DataLayer/LocalData/local_data_storage.dart';
@@ -22,7 +21,5 @@ class SyncKeys {
       return;
     }
     terminalConfig?.setShowLoader(showLoader.toString());
-    EtopPosPlugin().prepDevice(
-        userData!.terminalInfo!.terminalNo!, terminalConfig!.toJson());
   }
 }
