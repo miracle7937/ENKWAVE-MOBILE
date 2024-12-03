@@ -197,22 +197,22 @@ class DashBoardBuilder {
               userID: userData!.id!,
               baseRoute: terminalConfig!.baseUrl!);
         }));
-    dashBoardData.add(
-      IntroModel(
-          title: "Balance Inquiry",
-          subTitle: "check a customer balance ",
-          image: EPImages.transferIcon,
-          onTap: () async {
-            var data = {
-              "amount": "0",
-              "accountType": "00",
-            };
-            UserData? userData = await LocalDataStorage.getUserData();
-            EtopPosPlugin().balanceInquiry(
-              userData!.terminalInfo!.toJson()..addAll(data),
-            );
-          }),
-    );
+    // dashBoardData.add(
+    //   IntroModel(
+    //       title: "Balance Inquiry",
+    //       subTitle: "check a customer balance ",
+    //       image: EPImages.transferIcon,
+    //       onTap: () async {
+    //         var data = {
+    //           "amount": "0",
+    //           "accountType": "00",
+    //         };
+    //         UserData? userData = await LocalDataStorage.getUserData();
+    //         EtopPosPlugin().balanceInquiry(
+    //           userData!.terminalInfo!.toJson()..addAll(data),
+    //         );
+    //       }),
+    // );
     return dashBoardData;
   }
 }
