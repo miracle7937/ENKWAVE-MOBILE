@@ -44,6 +44,24 @@ class DashBoardBuilder {
         },
       ));
     }
+
+    dashBoardData.add(
+      IntroModel(
+          onTap: () async {
+            UserData? userData = await LocalDataStorage.getUserData();
+            TerminalConfig? terminalConfig =
+                await LocalDataStorage.getTerminalConfig();
+            log(userData!.terminalInfo!.toJson().toString());
+            log(terminalConfig!.toJson().toString());
+            // amount
+            var json = userData.terminalInfo!.toJson();
+            json["amount"] = "0";
+            EtopPosPlugin().balanceInquiry(json);
+          },
+          title: "Check Balance",
+          subTitle: "check your card balance",
+          image: EPImages.balanceInquiry),
+    );
     if (appPermission?.bankTransfer == 1) {
       dashBoardData.add(
         IntroModel(

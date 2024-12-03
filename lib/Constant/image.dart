@@ -90,4 +90,5 @@ class EPImages {
   static String cardDebit = "$root/card_debit.png";
   static String beneficiary = "$root/beneficiary.png";
   static String syncKey = "$root/sync_key.png";
+  static String balanceInquiry = "$root/balance_inquiry.png";
 }

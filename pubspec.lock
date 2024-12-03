@@ -222,8 +222,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2877a52c2ae0bf6e649b0571b739cc5c3feac07d"
-      resolved-ref: "2877a52c2ae0bf6e649b0571b739cc5c3feac07d"
+      ref: "32161e88cbef53204d6f25372713c96fdccb2113"
+      resolved-ref: "32161e88cbef53204d6f25372713c96fdccb2113"
       url: "git@github.com:miracle7937/e-top-horizon-plugin.git"
     source: git
     version: "0.0.1"
