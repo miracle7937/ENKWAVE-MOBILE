@@ -76,8 +76,8 @@ dependencies:
   etop_pos_plugin:
     git:
       url: git@github.com:miracle7937/e-top-horizon-plugin.git
-      ref: ca3965df413341595f738c9b79a0cb1cca186baf
-#      enkwave_pos
+      ref: 32161e88cbef53204d6f25372713c96fdccb2113
+#      small_horizon_pay
 
 
 
