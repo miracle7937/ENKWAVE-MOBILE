@@ -15,8 +15,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataLayer/model/bank_list_response.dart';
@@ -31,7 +29,7 @@ class BuyDataScreen extends StatefulWidget {
 }
 
 class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
-  late List<Contact>? contacts;
+  // late List<Contact>? contacts;
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController selectedBankController = TextEditingController();
@@ -44,12 +42,7 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
 
   @override
   void initState() {
-    getPhoneNumber();
     super.initState();
-  }
-
-  getPhoneNumber() async {
-    contacts = await FlutterContactPicker().selectContacts();
   }
 
   late MobileDataController mobileDataController;
@@ -137,17 +130,6 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
                       },
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      selectContact();
-                    },
-                    child: const FaIcon(
-                      FontAwesomeIcons.addressBook,
-                    ),
-                  )
                 ],
               ),
               Row(children: [
@@ -249,16 +231,6 @@ class _BuyDataScreenState extends State<BuyDataScreen> with OnMobileDataView {
         });
       });
     }
-  }
-
-  void selectContact() async {
-    if (contacts == null) {
-      return;
-    }
-    showPhoneList(context, contacts!, (v) {
-      phoneNumberController.text = v.phoneNumbers?.first ?? "";
-      mobileDataController.setPhoneNumber = v.phoneNumbers?.first ?? "";
-    });
   }
 
   @override

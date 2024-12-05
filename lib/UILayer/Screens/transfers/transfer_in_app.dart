@@ -11,8 +11,6 @@ import 'package:enk_pay_project/UILayer/Screens/transfers/widget/pin_verificatio
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Constant/string_values.dart';
@@ -33,15 +31,9 @@ class _TransferInAppState extends State<TransferInApp>
     with InternalTransferView {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController amountController = TextEditingController();
-  late List<Contact>? contacts;
-
-  getPhoneNumber() async {
-    contacts = await FlutterContactPicker().selectContacts();
-  }
 
   @override
   void initState() {
-    getPhoneNumber();
     super.initState();
   }
 
@@ -137,20 +129,6 @@ class _TransferInAppState extends State<TransferInApp>
                   },
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              Center(
-                child: InkWell(
-                  onTap: () {
-                    selectContact();
-                  },
-                  child: const FaIcon(
-                    FontAwesomeIcons.addressBook,
-                  ),
-                  // child: Image.asset(EPImages.contactIcon),
-                ),
-              )
             ],
           ),
           isNotEmpty(transferController!.searchName)
@@ -207,16 +185,6 @@ class _TransferInAppState extends State<TransferInApp>
         ],
       ),
     );
-  }
-
-  void selectContact() async {
-    if (contacts == null) {
-      return;
-    }
-    showPhoneList(context, contacts!, (v) {
-      phoneNumberController.text = v.phoneNumbers?.first ?? "";
-      transferController!.phoneNumber = v.phoneNumbers?.first ?? "";
-    });
   }
 
   @override

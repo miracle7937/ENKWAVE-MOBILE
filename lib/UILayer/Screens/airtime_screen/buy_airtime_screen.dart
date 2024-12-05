@@ -11,7 +11,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold
 import 'package:enk_pay_project/UILayer/utils/airtime_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -31,9 +30,9 @@ class BuyAirtimeScreen extends StatefulWidget {
 class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
   TextEditingController amountController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  final FlutterContactPicker _contactPicker = FlutterContactPicker();
-
-  late List<Contact>? contacts;
+  // final FlutterContactPicker _contactPicker = FlutterContactPicker();
+  //
+  // late List<Contact>? contacts;
 
   @override
   void dispose() {
@@ -43,13 +42,7 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
 
   @override
   void initState() {
-    getPhoneNumber();
     super.initState();
-  }
-
-  getPhoneNumber() async {
-    // Get all contacts (lightly fetched)
-    contacts = await _contactPicker.selectContacts();
   }
 
   late AirtimeController _airtimeController;
@@ -142,17 +135,15 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                           },
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          selectContact();
-                        },
-                        child: const FaIcon(
-                          FontAwesomeIcons.addressBook,
-                        ),
-                      )
+
+                      // InkWell(
+                      //   onTap: () {
+                      //     selectContact();
+                      //   },
+                      //   child: const FaIcon(
+                      //     FontAwesomeIcons.addressBook,
+                      //   ),
+                      // )
                     ],
                   ),
                   const SizedBox(
@@ -217,16 +208,6 @@ class _BuyAirtimeScreenState extends State<BuyAirtimeScreen> with AirtimeView {
                 ],
               ),
             ));
-  }
-
-  void selectContact() async {
-    if (contacts == null) {
-      return;
-    }
-    showPhoneList(context, contacts!, (v) {
-      // phoneNumberController.text = PhoneNumber.format(v.phoneNumbers);
-      phoneNumberController.text = v.phoneNumbers?.first ?? "";
-    });
   }
 
   @override

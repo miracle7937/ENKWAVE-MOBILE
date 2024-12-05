@@ -7,7 +7,6 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.d
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selection_listBottom_sheet.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -277,30 +276,30 @@ void showListOFDataPackage(BuildContext context, List<BasePackage>? recipients,
   );
 }
 
-void showPhoneList(BuildContext context, List<Contact> recipients,
-    ValueChanged<Contact> valueChanged) {
-  showIVBottomSheetList<Contact>(
-    hasSearch: true,
-    searchMatcher: (Contact recipient, String b) {
-      return [
-        recipient.fullName,
-      ].any((String? it) => it!.contains(b));
-    },
-    title: "Mobile Number",
-    context: context,
-    items: recipients,
-    itemBuilder: (Contact r) {
-      //${r.phones.first.number.toString()}
-      return DropdownMenuItem(
-        child: Text(
-          "${r.fullName} ",
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-      );
-    },
-    onItemSelected: valueChanged,
-  );
-}
+// void showPhoneList(BuildContext context, List<Contact> recipients,
+//     ValueChanged<Contact> valueChanged) {
+//   showIVBottomSheetList<Contact>(
+//     hasSearch: true,
+//     searchMatcher: (Contact recipient, String b) {
+//       return [
+//         recipient.fullName,
+//       ].any((String? it) => it!.contains(b));
+//     },
+//     title: "Mobile Number",
+//     context: context,
+//     items: recipients,
+//     itemBuilder: (Contact r) {
+//       //${r.phones.first.number.toString()}
+//       return DropdownMenuItem(
+//         child: Text(
+//           "${r.fullName} ",
+//           style: Theme.of(context).textTheme.bodyText1,
+//         ),
+//       );
+//     },
+//     onItemSelected: valueChanged,
+//   );
+// }
 
 void showBeneficiaryList(BuildContext context, List<Beneficariy> recipients,
     ValueChanged<Beneficariy> valueChanged) {
