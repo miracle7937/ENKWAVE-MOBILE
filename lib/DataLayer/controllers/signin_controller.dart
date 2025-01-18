@@ -115,8 +115,9 @@ class SignInController extends ChangeNotifier {
 
       pageState = PageState.loaded;
       notifyListeners();
-    } catch (e) {
+    } catch (e, _) {
       print(e);
+      print(_);
       pageState = PageState.loaded;
       notifyListeners();
       _view?.onError(e.toString() ?? "");
