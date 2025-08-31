@@ -25,7 +25,7 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
   /// this widget will be use for each digit
   Widget numButton(int number) {
     return Padding(
-      padding: const EdgeInsets.only(top: 14),
+      padding: const EdgeInsets.only(top: 10),
       child: TextButton(
         onPressed: () {
           setState(() {

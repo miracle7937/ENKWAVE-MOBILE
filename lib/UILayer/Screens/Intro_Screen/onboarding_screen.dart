@@ -32,10 +32,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 },
                 itemCount: ConstantString.introItems.length,
                 itemBuilder: (context, i) => Lottie.asset(
-                  ConstantString.introItems[i].image,
-                ),
+                    ConstantString.introItems[i].image,
+                    height: 20,
+                    width: 20),
               ),
-              height: MediaQuery.of(context).size.height * 0.45,
+              height: MediaQuery.of(context).size.height * 0.25,
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -47,8 +48,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
                             margin: const EdgeInsets.symmetric(vertical: 16.0),
-                            width: 10,
-                            height: 10,
+                            width: 5,
+                            height: 5,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                               color: index == initialPage

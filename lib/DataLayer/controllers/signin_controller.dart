@@ -80,9 +80,10 @@ class SignInController extends ChangeNotifier {
       data["email"] = userCredentialModel.email;
     }
 
+    String? token = "";
     // String? token = await FirebaseMessaging.instance.getToken();
-    // userCredentialModel.token = token;
-    // data["device_id"] = token;
+    userCredentialModel.token = token;
+    data["token"] = token;
 
     String? deviceID = await DeviceInfo.getDeviceID();
     String? deviceName = await DeviceInfo.getDeviceName();
@@ -96,10 +97,10 @@ class SignInController extends ChangeNotifier {
     try {
       pageState = PageState.loading;
       notifyListeners();
+      credentialModel?.deviceIdentifier = "";
       var result = await AuthRepository()
           .login(credentialModel!.toJson(), phoneLogin: loginWithPhoneNumber);
       if (result.status == true) {
-        print(result);
         //save user
         saveData(result);
         _view?.onSuccess(result.message ?? "");
@@ -251,6 +252,10 @@ class SignInController extends ChangeNotifier {
       }
 
       data["pin"] = pin;
+
+      String? token = "";
+      userCredentialModel.token = token;
+      data["token"] = token;
 
       var result = await AuthRepository().pinLogin(data);
       if (result.status == true) {

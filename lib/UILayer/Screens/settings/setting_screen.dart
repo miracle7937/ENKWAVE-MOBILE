@@ -69,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const SizedBox(
-                                        height: 20,
+                                        height: 5,
                                       ),
                                       Row(
                                         crossAxisAlignment:
@@ -156,7 +156,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                                           .textTheme
                                                           .headline4!
                                                           .copyWith(
-                                                              fontSize: 12,
+                                                              fontSize: 10,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400,

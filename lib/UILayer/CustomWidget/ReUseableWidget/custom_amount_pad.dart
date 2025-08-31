@@ -131,7 +131,7 @@ class _AmountScreenState extends State<AmountScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: AspectRatio(
-              aspectRatio: .7,
+              aspectRatio: .8,
               child: Wrap(
                 children: Iterable<int>.generate(12).map(
                   (e) {
