@@ -1,38 +1,41 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
-import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/widget/pin_verification_dialog.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_success_sheet.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_form_section.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_ui.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_recipient_widgets.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_wallet_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
-import '../../../Constant/image.dart';
-import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
 import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
+import '../../utils/loader_widget.dart';
 import '../../utils/money_formatter.dart';
+import '../../utils/naira_amount_formatter.dart';
+import '../../utils/screen_navigation.dart';
 import '../../utils/status_screen.dart';
 
 class TransferToOtherBank extends StatefulWidget {
-  const TransferToOtherBank({Key? key}) : super(key: key);
+  const TransferToOtherBank({super.key});
 
   @override
-  _TransferToOtherBankState createState() => _TransferToOtherBankState();
+  State<TransferToOtherBank> createState() => _TransferToOtherBankState();
 }
 
 class _TransferToOtherBankState extends State<TransferToOtherBank>
     with OnBankTransfer {
-  TextEditingController selectedBankController = TextEditingController();
-  TextEditingController accountController = TextEditingController();
-  TransferController? transferController;
-  UserWallet? selectedUserWallet;
-  bool saveBeneficiary = false;
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  TransferController? _transferController;
 
   @override
   void initState() {
@@ -44,329 +47,442 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
 
   @override
   void dispose() {
+    _transferController?.disposeAll();
+    _accountController.dispose();
+    _amountController.dispose();
     super.dispose();
-    transferController?.disposeAll();
-    Provider.of<TransferController>(context, listen: false).getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    transferController = Provider.of<TransferController>(context)
-      ..onSetTransferView = this
-      ..getListOFBank();
-    return EPScaffold(
-      appBar: EPAppBar(
-        title: const Text(
-          "Bank Transfer",
-        ),
-      ),
-      builder: (_) => SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Transfer money from your account to a separate bank account",
-              style: Theme.of(context).textTheme.headline3!.copyWith(
-                  fontWeight: FontWeight.w400, color: EPColors.appBlackColor),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            EPDropdownButton<UserWallet>(
-                itemsListTitle: "Select Account",
-                iconSize: 22,
-                value: transferController?.selectedUserWallet,
-                hint: const Text(""),
-                isExpanded: true,
-                underline: const Divider(),
-                searchMatcher: (item, text) {
-                  return item.title!.toLowerCase().contains(text.toLowerCase());
-                },
-                onChanged: (v) {
-                  transferController?.selectWallet = v;
-                  setState(() {});
-                },
-                items: transferController?.userWallet
-                    .map(
-                      (e) => DropdownMenuItem(
-                          value: e,
+    return Consumer<TransferController>(
+      builder: (context, controller, _) {
+        _transferController = controller
+          ..onSetTransferView = this
+          ..getListOFBank();
+
+        final loading = controller.pageState == PageState.loading &&
+            controller.listOfBank.isEmpty;
+        final scheme = Theme.of(context).colorScheme;
+        final hasTotal = isNotEmpty(controller.getTotal());
+
+        return EPScaffold(
+          appBar: EPAppBar(
+            title: const Text('Bank Transfer'),
+          ),
+          builder: (_) {
+            if (loading) {
+              return const Center(child: LoaderWidget());
+            }
+
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: scheme.primary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: scheme.primary.withValues(alpha: 0.15),
+                            ),
+                          ),
                           child: Row(
                             children: [
-                              Text(e.title.toString(),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: scheme.primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.account_balance_rounded,
+                                  color: scheme.primary,
+                                  size: 22,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Send to any Nigerian bank instantly',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline3!
-                                      .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: EPColors.appBlackColor)),
-                              const Spacer(),
-                              Text(amountFormatter(e.amount.toString()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3!
-                                      .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: EPColors.appBlackColor)),
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.35,
+                                        color: scheme.onSurface
+                                            .withValues(alpha: 0.9),
+                                      ),
+                                ),
+                              ),
                             ],
-                          )),
-                    )
-                    .toList()),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Spacer(),
-                  InkWell(
-                    onTap: () => setBeneficiary(
-                        (transferController?.getBeneficary ?? [])),
-                    child: Row(
-                      children: [
-                        Image.asset(EPImages.beneficiary),
-                        const SizedBox(
-                          width: 10,
+                          ),
                         ),
-                        Text("Send to Beneficiary",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 11,
-                                    color: EPColors.appBlackColor))
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            EPDropdownButton<Bank>(
-                itemsListTitle: "Select Bank",
-                iconSize: 22,
-                value: transferController?.selectedBank,
-                hint: const Text(""),
-                isExpanded: true,
-                underline: const Divider(),
-                searchMatcher: (item, text) {
-                  return item.bankName!
-                      .toLowerCase()
-                      .contains(text.toLowerCase());
-                },
-                onChanged: (v) {
-                  transferController?.setBank = v;
-                  setState(() {});
-                },
-                items: (transferController?.listOfBank ?? [])
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.bankName.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: EPColors.appBlackColor)),
-                      ),
-                    )
-                    .toList()),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: EPForm(
-                    controller: accountController,
-                    hintText: "Account number",
-                    enabledBorderColor: EPColors.appGreyColor,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(10),
-                    ],
-                    onChange: (v) {
-                      transferController?.selectAccount = v;
-                      if (v.length >= 10) {
-                        transferController?.bankAccountVerification();
-                      }
-                    },
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: EPButton(
-                    title: "Verify",
-                    onTap: () {
-                      transferController?.bankAccountVerification();
-                    },
-                  ),
-                )
-              ],
-            ),
-            isNotEmpty(transferController?.accountName)
-                ? ContainButton(
-                    bgColor: EPColors.appMainColor,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 10),
-                      child: Row(
-                        children: [
-                          Text(
-                            (transferController?.accountName ?? ""),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
+                        const SizedBox(height: 20),
+                        const TransferSectionHeader(
+                          step: 1,
+                          title: 'Pay from',
+                          subtitle: 'Select wallet for this transfer',
+                        ),
+                        TransferWalletPicker(
+                          wallets: controller.userWallet,
+                          selected: controller.selectedUserWallet,
+                          onSelected: (w) => controller.selectWallet = w,
+                        ),
+                        const SizedBox(height: 22),
+                        TransferSectionHeader(
+                          step: 2,
+                          title: 'Recipient',
+                          subtitle: 'Bank account details',
+                          trailing: TextButton(
+                            onPressed: () => _pickBeneficiary(controller),
+                            style: TextButton.styleFrom(
+                              foregroundColor: EPColors.appMainColor,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  EPImages.beneficiary,
+                                  width: 16,
+                                  height: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                const Text(
+                                  'Saved',
+                                  style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.white),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        TransferFormCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'Bank',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                              const SizedBox(height: 6),
+                              BankSelectorField(
+                                selectedBank: controller.selectedBank,
+                                banks: controller.listOfBank,
+                                onSelected: (b) => controller.setBank = b,
+                              ),
+                              const SizedBox(height: 14),
+                              Text(
+                                'Account number',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: TransferInputField(
+                                      controller: _accountController,
+                                      hintText: '10-digit account',
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      onChanged: (v) {
+                                        controller.selectAccount = v;
+                                        if (v.length < 10) {
+                                          controller.clearVerifyFeedback();
+                                        } else if (v.length == 10) {
+                                          controller.bankAccountVerification();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  SizedBox(
+                                    height: 48,
+                                    width: 88,
+                                    child: FilledButton(
+                                      onPressed: controller.isVerifyingAccount
+                                          ? null
+                                          : () => controller
+                                              .bankAccountVerification(
+                                              showDialogOnError: true,
+                                            ),
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: EPColors.appMainColor,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: controller.isVerifyingAccount
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : const Text(
+                                              'Verify',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (isNotEmpty(controller.verifyError) &&
+                                  !controller.isVerifyingAccount) ...[
+                                const SizedBox(height: 10),
+                                Text(
+                                  controller.verifyError!,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: EPColors.appDanger,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                              if (isNotEmpty(controller.accountName)) ...[
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: EPColors.appSuccess
+                                        .withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.verified_rounded,
+                                        color: EPColors.appSuccess,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          controller.accountName ?? '',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                            color: EPColors.appSuccess,
+                                            height: 1.25,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Save beneficiary',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(fontSize: 12),
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.8,
+                                    child: CupertinoSwitch(
+                                      activeTrackColor: EPColors.appMainColor,
+                                      value: controller.bankTransferModel
+                                              .beneficiary ??
+                                          false,
+                                      onChanged: (v) =>
+                                          controller.setBeneficiary = v,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const TransferSectionHeader(
+                          step: 3,
+                          title: 'Payment details',
+                        ),
+                        TransferFormCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'Amount',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                              const SizedBox(height: 6),
+                              TransferInputField(
+                                controller: _amountController,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(12),
+                                  NairaAmountInputFormatter(),
+                                ],
+                                onChanged: (v) => controller.selectAmount = v,
+                              ),
+                              const SizedBox(height: 14),
+                              Text(
+                                'Narration',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                              const SizedBox(height: 6),
+                              TransferInputField(
+                                hintText: 'Payment description (optional)',
+                                onChanged: (v) => controller.setNarration = v,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Transfer fee: ${amountFormatter(controller.getTransferCharge().toString())}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (hasTotal) ...[
+                          const SizedBox(height: 16),
+                          TransferSummaryCard(
+                            label: 'Total debit',
+                            amount: amountFormatter(controller.getTotal()),
+                            feeLabel:
+                                'Includes ${amountFormatter(controller.getTransferCharge().toString())} fee',
                           ),
                         ],
-                      ),
-                    ),
-                  )
-                : Column(),
-            Container(
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("Add as beneficiary",
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
-                          color: EPColors.appBlackColor)),
-                  Transform.scale(
-                    scale: 0.6,
-                    child: CupertinoSwitch(
-                      activeColor: EPColors.appMainColor,
-                      value:
-                          (transferController?.bankTransferModel.beneficiary ??
-                              false),
-                      onChanged: (v) => transferController?.setBeneficiary = v,
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                EPForm(
-                  hintText: "Enter Amount",
-                  enabledBorderColor: EPColors.appGreyColor,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(10),
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  onChange: (v) {
-                    transferController?.selectAmount = v;
-                  },
                 ),
-                Text(
-                    "Charges: ${amountFormatter(transferController?.getTransferCharge().toString())}",
-                    style: Theme.of(context).textTheme.headline4!.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: EPColors.appBlackColor)),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    border: Border(
+                      top: BorderSide(color: context.borderColor),
+                    ),
+                  ),
+                  child: EPButton(
+                    loading: controller.pageState == PageState.loading &&
+                        !controller.isVerifyingAccount,
+                    title: 'Continue',
+                    onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      controller.validateTransferForm();
+                    },
+                  ),
+                ),
               ],
-            ),
-            EPForm(
-              hintText: "Narration",
-              enabledBorderColor: EPColors.appGreyColor,
-              onChange: (v) {
-                transferController?.setNarration = v;
-              },
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.1,
-            ),
-            isNotEmpty(transferController?.getTotal())
-                ? Column(
-                    children: [
-                      Center(
-                        child: Text("Amount",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    color: EPColors.appGreyColor)),
-                      ),
-                      Center(
-                        child: Text(
-                            "${amountFormatter(transferController?.getTotal())}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 40,
-                                    color: EPColors.appBlackColor)),
-                      ),
-                    ],
-                  )
-                : Container(),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.05,
-            ),
-            EPButton(
-              loading: transferController?.pageState == PageState.loading,
-              title: "Continue",
-              onTap: () {
-                FocusNode().unfocus();
-                transferController?.validateTransferForm();
-              },
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
-  setBeneficiary(List<Beneficariy> recipients) {
-    showBeneficiaryList(context, recipients, (Beneficariy beneficariy) {
-      print("MIMI ${beneficariy.toJson()}");
-      TransferController transferController =
-          Provider.of<TransferController>(context, listen: false);
-      transferController.bankTransferModel.bankCode = beneficariy.bankCode;
-      transferController.bankTransferModel.accountNumber = beneficariy.acctNo;
-      transferController.setBank = transferController.listOfBank
-          .firstWhere((element) => element.bankCbnCode == beneficariy.bankCode);
-      accountController.text = beneficariy.acctNo.toString();
-      transferController.bankAccountVerification();
+  void _pickBeneficiary(TransferController controller) {
+    showBeneficiaryList(context, controller.getBeneficary, (beneficiary) {
+      controller.bankTransferModel.bankCode = beneficiary.bankCode;
+      controller.bankTransferModel.accountNumber = beneficiary.acctNo;
+      controller.setBank = controller.listOfBank.firstWhere(
+        (b) => b.bankCbnCode == beneficiary.bankCode,
+      );
+      _accountController.text = beneficiary.acctNo.toString();
+      controller.bankAccountVerification(showDialogOnError: true);
+      setState(() {});
     });
   }
 
   @override
-  onError(String message) {
+  void onError(String message) {
     showEPStatusDialog(context, success: false, message: message, callback: () {
       Navigator.pop(context);
     });
   }
 
   @override
-  onSuccess(String message) {
+  void onSuccess(String message) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => StatusScreen(
-                  title: message,
-                  onTap: () {},
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (_) => StatusScreen(title: message, onTap: () {}),
+      ),
+    );
   }
 
   @override
-  onTransferPinVerification() {
+  void onTransferPinVerification() {
     showPinDialog(context, onVerification: (status, message, pin) async {
       Navigator.pop(context);
       if (status == true) {
-        transferController?.setPin = pin;
+        _transferController?.setPin = pin;
         onTransfer();
       } else {
         onError(message);
@@ -375,18 +491,22 @@ class _TransferToOtherBankState extends State<TransferToOtherBank>
   }
 
   @override
-  onTransferSuccess(String message) {
-    showEPStatusDialog(context, success: true, message: message, callback: () {
-      Navigator.pop(context);
-      Navigator.pop(context);
-    });
+  void onTransferSuccess(String message) {
+    final controller = _transferController!;
+    showBankTransferSuccessSheet(
+      context,
+      message: message,
+      transfer: controller.bankTransferModel,
+      refTransId: controller.lastTransferRefId,
+      onDone: () => popToHome(context),
+    );
   }
 
   @override
-  onTransfer() {
-    transferController?.bankTransfer();
+  void onTransfer() {
+    _transferController?.bankTransfer();
   }
 
   @override
-  onPreview(String message) {}
+  void onPreview(String message) {}
 }

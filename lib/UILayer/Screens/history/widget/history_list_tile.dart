@@ -1,159 +1,221 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/UILayer/Screens/history/widget/history_icons.dart';
 import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_enum.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_status_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../Constant/colors.dart';
 import '../../../../DataLayer/model/history_model.dart';
 import '../../../utils/money_formatter.dart';
 import '../../../utils/time_ago_util.dart';
-import 'history_icons.dart';
 
 class HistoryListTile extends StatelessWidget {
   final TransactionData? transactionData;
   final VoidCallback? onTap;
-  const HistoryListTile({Key? key, this.transactionData, this.onTap})
-      : super(key: key);
+  final VoidCallback? onDispute;
+
+  const HistoryListTile({
+    super.key,
+    this.transactionData,
+    this.onTap,
+    this.onDispute,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    final tx = transactionData!;
+    final statusColor = TransactionStatusUi.color(tx.status);
+
+    return Material(
+      color: context.cardFill,
+      elevation: 0,
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: [
-            HistoryIcon(
-              transactionEnum:
-                  getTransactionEnum(transactionData!.transactionType!),
+        borderRadius: BorderRadius.circular(16),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: context.borderColor.withValues(alpha: 0.85),
             ),
-            // const Icon(Icons.doorbell),
-            const SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        transactionData?.title ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(color: Colors.black, fontSize: 13),
-                      ),
-                      const Spacer(),
-                      Text(
-                        amountFormatter(transactionData?.amount.toString()),
-                        style: Theme.of(context).textTheme.headline1!.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.w300),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: Text(
-                      transactionData?.note ?? "",
-                      style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color: EPColors.appBlackColor,
-                          fontWeight: FontWeight.w300),
+            boxShadow: context.isDarkMode
+                ? null
+                : [
+                    BoxShadow(
+                      color: EPColors.appMainColor.withValues(alpha: 0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  Row(
+                  ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HistoryIcon(
+                  transactionEnum:
+                      getTransactionEnum(tx.transactionType ?? ''),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(6)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.clock,
-                                  color: Colors.white,
-                                  size: 10,
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  TimeUtilAgo.format(
-                                      transactionData!.createdAt!),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(
-                                          fontSize: 10,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w300),
-                                ),
-                              ],
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              formatTransactionTitle(tx.title),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15,
+                                  ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  amountFormatter(tx.amount?.toString()),
+                                  maxLines: 1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w800,
+                                        color: EPColors.appMainColor,
+                                        fontSize: 15,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      status(context, transactionData?.status)
+                      if ((tx.note ?? '').trim().isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          tx.note!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: context.mutedText,
+                                fontWeight: FontWeight.w400,
+                              ),
+                        ),
+                      ],
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.schedule_rounded,
+                            size: 14,
+                            color: context.mutedText,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: tx.createdAt != null
+                                ? Text(
+                                    TimeUtilAgo.format(tx.createdAt!),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: context.mutedText,
+                                          fontSize: 11,
+                                        ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: _StatusChip(
+                                  label: TransactionStatusUi.label(tx.status),
+                                  color: statusColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  const Divider()
+                ),
+                if (onDispute != null) ...[
+                  Material(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: onDispute,
+                      borderRadius: BorderRadius.circular(10),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.gavel_rounded,
+                          color: Colors.orange,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                 ],
-              ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: context.mutedText.withValues(alpha: 0.6),
+                  size: 22,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+}
 
-  String transactionAmount(TransactionData v) {
-    if (v.credit == 0) {
-      return v.debit.toString();
-    }
-    return v.credit.toString();
-  }
+class _StatusChip extends StatelessWidget {
+  final String label;
+  final Color color;
 
-  String statusString(num? status) {
-    switch (status) {
-      case 0:
-        return "Pending";
-      case 1:
-        return "Successful";
-      default:
-        return "Reversed";
-    }
-  }
+  const _StatusChip({required this.label, required this.color});
 
-  Color statusColor(num? status) {
-    switch (status) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      default:
-        return Colors.orange;
-    }
-  }
-
-  status(BuildContext context, num? status) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-          color: statusColor(status), borderRadius: BorderRadius.circular(5)),
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: Center(
-          child: Text(
-            statusString(status),
-            style: Theme.of(context)
-                .textTheme
-                .headline4!
-                .copyWith(color: Colors.white, fontWeight: FontWeight.w300),
-          ),
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

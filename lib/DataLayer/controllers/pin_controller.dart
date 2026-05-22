@@ -32,7 +32,7 @@ class PinVerificationController extends ChangeNotifier {
   }
 }
 
-abstract class PinView {
+abstract mixin class PinView {
   onSuccess(String message);
   onError(String message);
 }

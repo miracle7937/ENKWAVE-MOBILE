@@ -1,17 +1,15 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:enk_pay_project/Constant/Static_model/intro_model.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/airtime_screen/buy_airtime_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_selection_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/data_screen/buy_data_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_main_screen.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/service_options_sheet.dart';
+import 'package:enk_pay_project/UILayer/utils/pos_launch_helper.dart';
 import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Constant/string_values.dart';
-import '../../../DataLayer/LocalData/local_data_storage.dart';
 import '../../../DataLayer/model/login_response_model.dart';
 import '../../../services/service_initialization.dart';
 import '../../CustomWidget/ReUseableWidget/snack_bar.dart';
@@ -24,23 +22,19 @@ class DashBoardBuilder {
       APPPermission? appPermission, BuildContext context) {
     List<IntroModel> dashBoardData = [];
     if ((Platform.isAndroid && appPermission?.pos != 1) ||
-        DeviceServiceInit.androidInfo?.model == DeviceServiceInit.telpoDevice) {
+        DeviceServiceInit.isTelpoDevice) {
       dashBoardData.add(IntroModel(
         title: "POS",
         subTitle: "Cash in instantly with MPOS/POS",
         image: EPImages.posIcon,
         onTap: () async {
-          UserData? userData = await LocalDataStorage.getUserData();
-          TerminalConfig? terminalConfig =
-              await LocalDataStorage.getTerminalConfig();
-          log(userData!.terminalInfo!.toJson().toString());
-          log(terminalConfig!.toJson().toString());
+          final ready = await PosLaunchHelper.prepare(context);
+          if (ready == null) return;
           EtopPosPlugin().ePayment(
-              context: context,
-              terminalInfo: userData.terminalInfo?.toJson(),
-              userID: userData.id);
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (_) => const PosAmountScreen()));
+            context: context,
+            terminalInfo: ready.user.terminalInfo?.toJson(),
+            userID: ready.user.id,
+          );
         },
       ));
     }
@@ -48,14 +42,10 @@ class DashBoardBuilder {
     dashBoardData.add(
       IntroModel(
           onTap: () async {
-            UserData? userData = await LocalDataStorage.getUserData();
-            TerminalConfig? terminalConfig =
-                await LocalDataStorage.getTerminalConfig();
-            log(userData!.terminalInfo!.toJson().toString());
-            log(terminalConfig!.toJson().toString());
-            // amount
-            var json = userData.terminalInfo!.toJson();
-            json["amount"] = "0";
+            final ready = await PosLaunchHelper.prepare(context);
+            if (ready == null) return;
+            final json = ready.user.terminalInfo!.toJson();
+            json['amount'] = '0';
             EtopPosPlugin().balanceInquiry(json);
           },
           title: "Check Balance",
@@ -68,24 +58,14 @@ class DashBoardBuilder {
             title: "Transfer",
             subTitle: "Instant Bank transfer",
             image: EPImages.transferIcon,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const TransfersMainScreen()));
-            }),
+            onTap: () => showTransferOptionsSheet(context)),
       );
     }
 
     if (appPermission?.bills == 1) {
       dashBoardData.add(
         IntroModel(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const BillPaymentSelection()));
-            },
+            onTap: () => showBillPaymentOptionsSheet(context),
             title: "Pay Bills",
             subTitle: "Pay all local bills instantly",
             image: EPImages.payBill),
@@ -180,22 +160,21 @@ class DashBoardBuilder {
         subTitle: "Print end of day pos transactions",
         image: EPImages.eod,
         onTap: () async {
-          UserData? userData = await LocalDataStorage.getUserData();
-          TerminalConfig? terminalConfig =
-              await LocalDataStorage.getTerminalConfig();
-          print(
-              "++++++++++++++++++USERID =${userData?.id} ++++++++++++++++++++");
-          print(
-              "++++++++++++++++++baseURL =${terminalConfig?.baseUrl} ++++++++++++++++++++");
-          if (isEmpty(terminalConfig?.baseUrl)) {
-            snackBar(context,
-                message: "Terminal not profile for pos transaction");
+          final ready = await PosLaunchHelper.prepare(context, prepDevice: false);
+          if (ready == null) return;
+          if (isEmpty(ready.config.baseUrl)) {
+            snackBar(
+              context,
+              message: 'Set API base URL in Terminal configuration',
+              forError: true,
+            );
             return;
           }
           EtopPosPlugin().openEOD(
-              context: context,
-              userID: userData!.id!,
-              baseRoute: terminalConfig!.baseUrl!);
+            context: context,
+            userID: ready.user.id!,
+            baseRoute: ready.config.baseUrl!,
+          );
         }));
     // dashBoardData.add(
     //   IntroModel(

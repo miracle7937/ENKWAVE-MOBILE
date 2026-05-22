@@ -9,7 +9,7 @@ enum TransactionEnum {
 }
 
 // POS Transaction - CashOut
-// Inapp transfer - EnkPayTransfer
+// Inapp transfer
 // Virtual account cash in - VirtualFundWallet
 // Bank Transfer - BankTransfer
 // Cable - VasCable
@@ -20,13 +20,19 @@ enum TransactionEnum {
 // Insurance - VasEducation
 // Terminal Vas Transaction - VasfromTerminal
 
+String _normalizeTransactionTypeKey(String transactionType) {
+  return transactionType.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+}
+
 TransactionEnum getTransactionEnum(String transactionType) {
   TransactionEnum? value;
+  final key = _normalizeTransactionTypeKey(transactionType);
   if (transactionType.toLowerCase() ==
       TransactionEnum.selfCashOutTransfer.name.toLowerCase()) {
     value = TransactionEnum.selfCashOutTransfer;
-  } else if (transactionType.toLowerCase() ==
-      TransactionEnum.enkPayTransfer.name.toLowerCase()) {
+  } else if (key == 'enkpaytransfer' ||
+      key == 'inapptransfer' ||
+      key == TransactionEnum.enkPayTransfer.name.toLowerCase()) {
     value = TransactionEnum.enkPayTransfer;
   } else if (transactionType.toLowerCase() ==
       TransactionEnum.cashOut.name.toLowerCase()) {
@@ -62,7 +68,7 @@ String getEnumName(TransactionEnum transactionType) {
       value = "CASH OUT";
       break;
     case TransactionEnum.enkPayTransfer:
-      value = "ENKPAY TRANSFER";
+      value = "INAPP TRANSFER";
       break;
 
     case TransactionEnum.bankTransfer:
@@ -74,4 +80,14 @@ String getEnumName(TransactionEnum transactionType) {
   }
 
   return value;
+}
+
+/// Maps legacy API titles (e.g. Enkpay Transfer) to the current label.
+String formatTransactionTitle(String? title) {
+  if (title == null || title.trim().isEmpty) return '';
+  final key = _normalizeTransactionTypeKey(title);
+  if (key == 'enkpaytransfer' || key == 'inapptransfer') {
+    return 'Inapp Transfer';
+  }
+  return title;
 }

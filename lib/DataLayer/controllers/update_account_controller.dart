@@ -104,7 +104,7 @@ class UpdateAccountController extends ChangeNotifier {
   }
 }
 
-abstract class UpdateAccountView {
+abstract mixin class UpdateAccountView {
   onSuccess(String message);
   onError(String message);
   onPinVerification();

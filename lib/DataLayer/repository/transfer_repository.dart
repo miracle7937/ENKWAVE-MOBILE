@@ -5,6 +5,7 @@ import 'package:enk_pay_project/DataLayer/model/generic_model_response.dart';
 import 'package:enk_pay_project/DataLayer/model/in_app_transfer_model.dart';
 import 'package:enk_pay_project/DataLayer/model/in_app_user_response_model.dart';
 
+import '../../Constant/api_timeouts.dart';
 import '../model/account_verification_model.dart';
 import '../model/transaction_status_model.dart';
 import '../model/wallet_model_response.dart';
@@ -13,15 +14,20 @@ import '../request.dart';
 class TransferRepository {
   //get List of banks
   Future<TransferProperties> fetchTransferProperties() async {
-    var responseData =
-        await ServerRequest().getData(path: AppRoute.transferProperties);
+    var responseData = await ServerRequest().getData(
+      path: AppRoute.transferProperties,
+      timeout: ApiTimeouts.bankOperation,
+    );
     return TransferProperties.fromJson(responseData.data);
   }
 
   Future<GenericResponse> bankTransfer(
       BankTransferModel bankTransferModel) async {
     var responseData = await ServerRequest().postData(
-        path: AppRoute.transferOfBank, body: bankTransferModel.toJson());
+      path: AppRoute.transferOfBank,
+      body: bankTransferModel.toJson(),
+      timeout: ApiTimeouts.bankOperation,
+    );
     return GenericResponse.fromJson(responseData.data);
   }
 
@@ -39,8 +45,11 @@ class TransferRepository {
 
   static Future<AccountVerificationResponse> verifyBankAccount(
       Map<String, dynamic> map) async {
-    var response =
-        await ServerRequest().postData(path: AppRoute.verifyAccount, body: map);
+    var response = await ServerRequest().postData(
+      path: AppRoute.verifyAccount,
+      body: map,
+      timeout: ApiTimeouts.bankOperation,
+    );
     return AccountVerificationResponse.fromJson(response.data);
   }
 

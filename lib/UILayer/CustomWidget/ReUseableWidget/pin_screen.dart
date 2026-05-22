@@ -1,3 +1,4 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/DataLayer/controllers/set_pin_controller.dart';
@@ -71,9 +72,12 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
           height: 10,
         ),
         Text(
-          widget.title ?? 'Enter Your Transaction Pin'.toUpperCase(),
-          style: Theme.of(context).textTheme.headline5!.copyWith(
-              fontWeight: FontWeight.w600, color: EPColors.appMainColor),
+          widget.title ?? 'Enter your transaction PIN',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
         ),
         const SizedBox(
           height: 15,
@@ -97,10 +101,8 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: EPColors.appMainColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(5),
-                          ),
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       width: 40,
@@ -129,9 +131,9 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                               child: Text(
                                 ("clear").toString(),
                                 style: TextStyle(
-                                  color: EPColors.appMainColor,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               onPressed: () {
@@ -161,9 +163,9 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                               child: Text(
                                 (values[9]).toString(),
                                 style: TextStyle(
-                                  color: EPColors.appMainColor,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               onPressed: () {
@@ -188,7 +190,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                                 child: Center(
                                     child: FaIcon(
                                   Icons.arrow_back_ios_sharp,
-                                  color: EPColors.appMainColor,
+                                  color: Theme.of(context).colorScheme.primary,
                                 )),
                               ),
                               onPressed: () {
@@ -210,7 +212,7 @@ class _PinScreenWidgetState extends State<PinScreenWidget> {
                               child: Text(
                                 (values[e.toInt()]).toString(),
                                 style: TextStyle(
-                                  color: EPColors.appMainColor,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontSize: 25.0,
                                   fontWeight: FontWeight.bold,
                                 ),

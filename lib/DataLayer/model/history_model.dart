@@ -55,6 +55,7 @@ class TransactionData {
   String? senderBank;
   String? senderAccountNo;
   String? receiverName;
+  String? receiverBank;
   String? reveiverAccountNo;
   String? title;
 
@@ -86,6 +87,7 @@ class TransactionData {
       senderBank,
       senderAccountNo,
       receiverName,
+      receiverBank,
       reveiverAccountNo,
       title});
 
@@ -117,6 +119,7 @@ class TransactionData {
     senderBank = json['sender_bank'];
     senderAccountNo = json['sender_account_no'];
     receiverName = json['receiver_name'];
+    receiverBank = json['receiver_bank'];
     reveiverAccountNo = json['reveiver_account_no'];
     title = json['title'];
   }

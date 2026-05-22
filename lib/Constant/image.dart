@@ -12,8 +12,8 @@ class EPImages {
   static String homeIcon = "$root/home.png";
   static String female = "$root/female.png";
   static String successJson = "$root/success.json";
-  static String successAnimation = "$root/success.flr";
-  static String errorAnimation = "$root/error.flr";
+  static String successAnimation = "$root/success.json";
+  static String errorAnimation = "$root/error-lottie.json";
 
   //dashboardIcon
   static String posIcon = "$root/posIcon.png";

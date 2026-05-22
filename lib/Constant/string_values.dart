@@ -86,6 +86,9 @@ class ConstantString {
   static String credential = "user-data-credential";
   static String userPermission = "userPermission";
   static String appSettings = "Settings";
+  static String themeModeKey = "theme_mode";
+  static String orgSlugKey = "org_slug";
+  static String orgBrandingKey = "org_branding";
 }
 
 /// Returns [true] if [s] is either null or empty.

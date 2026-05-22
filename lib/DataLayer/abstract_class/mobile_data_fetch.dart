@@ -5,7 +5,7 @@ import 'package:enk_pay_project/DataLayer/model/mobile_data_product_model/n9mobi
 
 import '../model/bank_list_response.dart';
 
-abstract class MobileDataFetch {
+abstract mixin class MobileDataFetch {
   List<N9MobileDataModel>? get9mobileDataProduct();
   List<MtnMobileDataModel>? getMTNDataProduct();
   List<GloMobileDataModel>? getGloDataProduct();

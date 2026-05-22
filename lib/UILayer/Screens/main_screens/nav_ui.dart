@@ -3,6 +3,7 @@ import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.d
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Constant/app_theme.dart';
 import '../../../Constant/colors.dart';
 import '../../../Constant/image.dart';
 import '../../../DataLayer/controllers/dashboard_controller.dart';
@@ -22,36 +23,23 @@ class NavUI extends StatefulWidget {
 
 class _NavUIState extends State<NavUI> with DashboardView {
   late DashBoardController _dashBoardController;
-  int _bottomNavIndex = 2;
-  List<Widget> get getViews => [
+  int _tabIndex = 2;
+
+  List<Widget> get _pages => [
         const HistoryScreen(),
-        SettingScreen(
-          onRefresh: () {
-            refresh();
-          },
-        ),
-        MainScreen(
-          onRefresh: () {
-            refresh();
-          },
-        ),
+        SettingScreen(onRefresh: refresh),
+        MainScreen(onRefresh: refresh),
       ];
-  refresh() {
+
+  static const _titles = ['History', 'Settings', 'Home'];
+
+  void refresh() {
     _dashBoardController.fetchDashboardData(refresh: true);
   }
 
-  List<String> title = [
-    "History",
-    "Settings",
-    "Home",
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   int _backButtonCounter = 0;
+
+  int get _navBarActiveIndex => _tabIndex == 2 ? 0 : _tabIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +47,14 @@ class _NavUIState extends State<NavUI> with DashboardView {
         Provider.of<DashBoardController>(context, listen: true)
           ..fetchDashboardData()
           ..setView = this;
-    return WillPopScope(
-      onWillPop: () async {
+
+    final scheme = Theme.of(context).colorScheme;
+    final isHome = _tabIndex == 2;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
         if (_backButtonCounter < 1) {
           _backButtonCounter++;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -69,41 +63,74 @@ class _NavUIState extends State<NavUI> with DashboardView {
               duration: Duration(seconds: 2),
             ),
           );
-          return false;
         } else {
-          return true;
+          Navigator.of(context).pop();
         }
       },
       child: EPScaffold(
+        backgroundColor: scheme.surface,
         appBar: EPAppBar(
           centerTitle: true,
-          title: Text(title[_bottomNavIndex].toUpperCase()),
-          leading: Container(),
+          backgroundColor:
+              context.isDarkMode ? EPColors.appMainDark : scheme.primary,
+          title: Text(
+            _titles[_tabIndex],
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
+              fontSize: 17,
+            ),
+          ),
+          leading: const SizedBox.shrink(),
         ),
         state: AppState(pageState: _dashBoardController.pageState),
-        floatingActionButton: FloatingActionButton(
-          child: Image.asset(EPImages.homeIcon),
-          backgroundColor: EPColors.appMainColor,
-          onPressed: () async {
-            setState(() {
-              _bottomNavIndex = 2;
-            });
-          },
+        floatingActionButton: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: scheme.primary.withValues(alpha: 0.35),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: FloatingActionButton(
+            elevation: 0,
+            child: Image.asset(EPImages.homeIcon, width: 26),
+            backgroundColor:
+                isHome ? EPColors.appMainLightColor : scheme.primary,
+            onPressed: () => setState(() => _tabIndex = 2),
+          ),
         ),
-        builder: (context) => getViews[_bottomNavIndex],
+        builder: (context) => _pages[_tabIndex],
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: AnimatedBottomNavigationBar(
-          icons: const [Icons.toc_rounded, Icons.person],
-          activeIndex: _bottomNavIndex,
-          gapLocation: GapLocation.center,
-          notchSmoothness: NotchSmoothness.verySmoothEdge,
-          leftCornerRadius: 20,
-          rightCornerRadius: 20,
-          iconSize: 40,
-          onTap: (index) {
-            setState(() => _bottomNavIndex = index);
-          },
-          //other params
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: context.cardFill,
+            border: Border(
+              top: BorderSide(color: context.borderColor),
+            ),
+          ),
+          child: AnimatedBottomNavigationBar(
+            icons: const [
+              Icons.receipt_long_outlined,
+              Icons.settings_outlined,
+            ],
+            activeIndex: _navBarActiveIndex,
+            activeColor: scheme.primary,
+            inactiveColor: context.mutedText,
+            elevation: 0,
+            backgroundColor: context.cardFill,
+            gapLocation: GapLocation.center,
+            notchSmoothness: NotchSmoothness.softEdge,
+            leftCornerRadius: 0,
+            rightCornerRadius: 0,
+            iconSize: 24,
+            splashColor: scheme.primary.withValues(alpha: 0.1),
+            splashSpeedInMilliseconds: 200,
+            onTap: (index) => setState(() => _tabIndex = index),
+          ),
         ),
       ),
     );

@@ -1,0 +1,4 @@
+storePassword=Tolulope2580
+keyPassword=Tolulope2580
+keyAlias=upload
+storeFile=../upload-keystore.jks

@@ -1,5 +1,5 @@
-import 'package:enk_pay_project/Constant/colors.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/Constant/image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,179 +8,132 @@ import '../CustomWidget/ReUseableWidget/bottom_dialog.dart';
 import '../CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import '../Screens/AuthScreen/sign_in.dart';
 import '../Screens/main_screens/nav_ui.dart';
+import 'pin_input_widgets.dart';
 
 class PinCodeWidget extends StatefulWidget {
-  const PinCodeWidget({
-    Key? key,
-  }) : super(key: key);
+  const PinCodeWidget({super.key});
 
   @override
   State<PinCodeWidget> createState() => _PinCodeWidgetState();
 }
 
 class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
-  String enteredPin = '';
-  bool isPinVisible = false;
+  String _enteredPin = '';
+  late SignInController _signInController;
 
-  /// this widget will be use for each digit
-  Widget numButton(int number) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: TextButton(
-        onPressed: () {
-          setState(() {
-            if (enteredPin.length < 4) {
-              enteredPin += number.toString();
-            }
-            print(enteredPin);
-            if (enteredPin.length >= 4) {
-              signInController.pinSignIn(enteredPin);
-              //do request here
-              enteredPin = "";
-            }
-          });
-        },
-        child: Text(
-          number.toString(),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
+  void _onDigit(String digit) {
+    if (_enteredPin.length >= 4) return;
+    setState(() => _enteredPin += digit);
+    if (_enteredPin.length == 4) {
+      final pin = _enteredPin;
+      _enteredPin = '';
+      _signInController.pinSignIn(pin);
+    }
   }
 
-  late SignInController signInController;
+  void _onBackspace() {
+    if (_enteredPin.isEmpty) return;
+    setState(() => _enteredPin = _enteredPin.substring(0, _enteredPin.length - 1));
+  }
+
   @override
   Widget build(BuildContext context) {
-    signInController = Provider.of<SignInController>(context)..pinView = this;
+    _signInController = Provider.of<SignInController>(context)..pinView = this;
+    final scheme = Theme.of(context).colorScheme;
+    final onSurface = scheme.onSurface;
+
     return EPScaffold(
-      state: AppState(pageState: signInController.pageState),
-      backgroundColor: Colors.white,
+      state: AppState(pageState: _signInController.pageState),
+      backgroundColor: scheme.surface,
       builder: (context) => SafeArea(
         child: Column(
           children: [
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (builder) => const SignInScreen()));
-                  },
-                  child: const Icon(
-                    Icons.logout,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                ),
-              ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                tooltip: 'Sign in with password',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SignInScreen()),
+                  );
+                },
+                icon: Icon(Icons.logout_rounded, color: onSurface),
+              ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const Spacer(),
-                    const Center(
-                      child: Text(
-                        'Enter Your Pin',
-                        style: TextStyle(
-                          fontSize: 32,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final compact = constraints.maxHeight < 520;
+                    final lockSize = compact ? 56.0 : 72.0;
+                    final lockPad = compact ? 12.0 : 16.0;
 
-                    /// pin code area
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          4,
-                          (index) {
-                            return Container(
-                              margin: const EdgeInsets.all(6.0),
-                              width: isPinVisible ? 50 : 16,
-                              height: isPinVisible ? 50 : 16,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.0),
-                                color: index < enteredPin.length
-                                    ? isPinVisible
-                                        ? EPColors.appMainColor
-                                        : EPColors.appMainColor
-                                    : CupertinoColors.activeBlue
-                                        .withOpacity(0.1),
+                    return Column(
+                      children: [
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: lockSize,
+                                height: lockSize,
+                                padding: EdgeInsets.all(lockPad),
+                                decoration: BoxDecoration(
+                                  color: scheme.primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Image.asset(
+                                  EPImages.pinLock,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                              child: isPinVisible && index < enteredPin.length
-                                  ? Center(
-                                      child: Text(
-                                        enteredPin[index],
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-
-                    /// digits
-                    for (var i = 0; i < 3; i++)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            3,
-                            (index) => numButton(1 + 3 * i + index),
-                          ).toList(),
-                        ),
-                      ),
-
-                    /// 0 digit with back remove
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const TextButton(onPressed: null, child: SizedBox()),
-                          numButton(0),
-                          TextButton(
-                            onPressed: () {
-                              setState(
-                                () {
-                                  if (enteredPin.isNotEmpty) {
-                                    enteredPin = enteredPin.substring(
-                                        0, enteredPin.length - 1);
-                                  }
-                                },
-                              );
-                            },
-                            child: const Icon(
-                              Icons.backspace,
-                              color: Colors.black,
-                              size: 24,
-                            ),
+                              SizedBox(height: compact ? 12 : 24),
+                              Text(
+                                'Enter your PIN',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: onSurface,
+                                      letterSpacing: -0.3,
+                                      fontSize: compact ? 20 : null,
+                                    ),
+                              ),
+                              SizedBox(height: compact ? 4 : 8),
+                              Text(
+                                'Use your 4-digit security PIN',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: context.mutedText,
+                                      fontSize: compact ? 13 : null,
+                                    ),
+                              ),
+                              SizedBox(height: compact ? 16 : 28),
+                              PinDots(
+                                length: 4,
+                                filled: _enteredPin.length,
+                                activeColor: scheme.primary,
+                                emptyColor: context.borderColor,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const Spacer(
-                      flex: 4,
-                    ),
-                  ],
+                        ),
+                        PinKeypad(
+                          compact: compact,
+                          onDigit: _onDigit,
+                          onBackspace: _onBackspace,
+                        ),
+                        SizedBox(height: compact ? 8 : 24),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -192,7 +145,9 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with PinSignInView {
 
   @override
   void onError(String message) {
-    showEPStatusDialog(context, success: false, message: message, callback: () {
+    setState(() => _enteredPin = '');
+    showEPStatusDialog(context,
+        success: false, message: message, callback: () {
       Navigator.pop(context);
     });
   }

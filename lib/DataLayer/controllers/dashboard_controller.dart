@@ -9,6 +9,7 @@ import '../../Constant/package_info.dart';
 import '../../Constant/string_values.dart';
 import '../../UILayer/Screens/history/widget/transaction_enum.dart';
 import '../LocalData/local_data_storage.dart';
+import '../services/session_sync_service.dart';
 import '../model/history_model.dart';
 import '../repository/dashboard_repository.dart';
 
@@ -53,11 +54,12 @@ class DashBoardController with ChangeNotifier {
         if (refresh == true) {
           notifyListeners();
         }
-        LoginResponseModel result = await DashboardRepository().fetch();
-
-        if (result.data != null) {
+        final result = await SessionSyncService.fetchFromServer();
+        final synced = await SessionSyncService.persist(result);
+        if (synced != null) {
+          userData = synced;
+        } else if (result.data != null) {
           userData = result.data!;
-          LocalDataStorage.saveUserData(userData);
         }
         pageState = PageState.loaded;
         notifyListeners();
@@ -210,20 +212,73 @@ class DashBoardController with ChangeNotifier {
     startDate = null;
     endDate = null;
   }
+
+  bool isCreatingStaticVa = false;
+
+  Future<bool> createStaticVirtualAccount(String provider) async {
+    isCreatingStaticVa = true;
+    notifyListeners();
+    try {
+      final body = await DashboardRepository().createStaticVirtualAccount(
+        provider: provider,
+      );
+      final ok = body['status'] == true || body['status'] == 1;
+      if (ok) {
+        final list = body['user_virtual_account_list'];
+        if (list is List) {
+          userData.virtualBankList = list
+              .map((e) => VirtualBank.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList();
+          await LocalDataStorage.saveUserData(userData);
+        }
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      rethrow;
+    } finally {
+      isCreatingStaticVa = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> logDispute({
+    required int transactionId,
+    required String reason,
+  }) async {
+    try {
+      final result = await DashboardRepository().logDispute(
+        transactionId: transactionId,
+        reason: reason,
+      );
+      if (result.status == true) {
+        _historyView.onSuccess(
+          result.message ?? 'Dispute logged successfully.',
+        );
+        return true;
+      }
+      _historyView.onError(result.message ?? 'Could not log dispute.');
+      return false;
+    } catch (e) {
+      _historyView.onError(e.toString());
+      return false;
+    }
+  }
 }
 
-abstract class DashboardView {
+abstract mixin class DashboardView {
   void onSuccess(String message);
   void onError(String message);
   void onVersionCheck();
 }
 
-abstract class HistoryView {
+abstract mixin class HistoryView {
   void onSuccess(String message);
   void onError(String message);
 }
 
-abstract class MainView {
+abstract mixin class MainView {
   void onSuccess(String message);
   void onError(String message);
   void onAccountCreateSuccess(String message);

@@ -73,12 +73,12 @@ class ManageTerminalController with ChangeNotifier {
   }
 }
 
-abstract class OnGetTerminal {
+abstract mixin class OnGetTerminal {
   onSuccess(String? message);
   onError(String? message);
 }
 
-abstract class OnTerminalHistory {
+abstract mixin class OnTerminalHistory {
   onSuccess(String? message);
   onError(String? message);
 }

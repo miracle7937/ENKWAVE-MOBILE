@@ -324,7 +324,8 @@ class EPScaffoldState extends State<EPScaffold> {
           endDrawer: widget.endDrawer,
           bottomNavigationBar: widget.bottomNavigationBar,
           bottomSheet: widget.bottomSheet,
-          backgroundColor: widget.backgroundColor ?? Colors.white,
+          backgroundColor: widget.backgroundColor ??
+              Theme.of(context).scaffoldBackgroundColor,
           resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
           primary: widget.primary ?? false,
           extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,

@@ -321,7 +321,7 @@ class _SelectionListBottomSheetState<T>
               ),
         border: widget.hasSearch ? _kDefaultNavBarBorder : null,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         trailing: widget.hasSearch
             ? GestureDetector(
                 key: const Key('close_icon_key'),

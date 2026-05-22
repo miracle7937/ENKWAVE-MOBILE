@@ -1,4 +1,4 @@
-abstract class OnCableTV {
+abstract mixin class OnCableTV {
   onPreview();
   onPInVerify();
   onBuyData();

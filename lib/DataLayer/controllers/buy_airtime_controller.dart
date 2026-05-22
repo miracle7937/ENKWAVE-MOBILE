@@ -116,7 +116,7 @@ class AirtimeController with ChangeNotifier {
   }
 }
 
-abstract class AirtimeView {
+abstract mixin class AirtimeView {
   void onSuccess(String message);
   void onError(String message);
   void onPInVerify();

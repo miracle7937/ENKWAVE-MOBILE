@@ -40,46 +40,39 @@ class _AmountScreenState extends State<AmountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //     vertical: 10,
-          //   ),
-          //   child: SizedBox(
-          //     height: 50,
-          //     width: 50,
-          //     // child: Image.asset(IVImages.ivShieldColored),
-          //   ),
-          // ),
-          const SizedBox(
-            height: 10,
-          ),
+    final amountStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: EPColors.appMainColor,
+        );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+          const SizedBox(height: 8),
           Text(
             'Enter Your Transaction Amount',
-            style: Theme.of(context).textTheme.headline1!.copyWith(
-                fontWeight: FontWeight.w600, color: EPColors.appMainColor),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: EPColors.appMainColor,
+                ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 12),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "NGN ",
-                    style: Theme.of(context).textTheme.headline1!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: EPColors.appMainColor),
+                    'NGN ',
+                    style: amountStyle,
                   ),
-                  Text(
+                  Flexible(
+                    child: Text(
                     controller.text,
-                    style: Theme.of(context).textTheme.overline!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: EPColors.appMainColor),
+                    overflow: TextOverflow.ellipsis,
+                    style: amountStyle?.copyWith(fontSize: 22),
+                  ),
                   ),
                   //
                   // TextFormField(
@@ -129,126 +122,78 @@ class _AmountScreenState extends State<AmountScreen> {
           //   ),
           // ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: AspectRatio(
-              aspectRatio: .8,
-              child: Wrap(
-                children: Iterable<int>.generate(12).map(
-                  (e) {
-                    switch (e.toInt()) {
-                      case 9:
-                        {
-                          return FractionallySizedBox(
-                            widthFactor: 1 / 3,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: TextButton(
-                                child: Text(
-                                  ("clear").toString(),
-                                  style: TextStyle(
-                                    color: EPColors.appMainColor,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  clearAll();
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          );
-                          // return FractionallySizedBox(
-                          //   widthFactor: 1 / 3,
-                          //   child: AspectRatio(
-                          //     aspectRatio: 1,
-                          //     child: Container(
-                          //       child: Text("C"),
-                          //     ),
-                          //   ),
-                          // );
-                        }
-                      case 10:
-                        {
-                          return FractionallySizedBox(
-                            widthFactor: 1 / 3,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: TextButton(
-                                child: Text(
-                                  (values[9]).toString(),
-                                  style: TextStyle(
-                                    color: EPColors.appMainColor,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    addChar(values[9]);
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                      case 11:
-                        {
-                          return FractionallySizedBox(
-                            widthFactor: 1 / 3,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: TextButton(
-                                child: SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: Center(
-                                      child: FaIcon(
-                                    Icons.arrow_back_ios_sharp,
-                                    color: EPColors.appMainColor,
-                                  )),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    undoLastInput();
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                      default:
-                        {
-                          return FractionallySizedBox(
-                            widthFactor: 1 / 3,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: TextButton(
-                                child: Text(
-                                  (values[e.toInt()]).toString(),
-                                  style: TextStyle(
-                                    color: EPColors.appMainColor,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    addChar(values[e.toInt()]);
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                    }
-                  },
-                ).toList(),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 6,
+                crossAxisSpacing: 6,
+                childAspectRatio: 1.35,
               ),
+              itemCount: 12,
+              itemBuilder: (context, e) {
+                switch (e) {
+                  case 9:
+                    return TextButton(
+                      onPressed: () {
+                        clearAll();
+                        setState(() {});
+                      },
+                      child: Text(
+                        'clear',
+                        style: TextStyle(
+                          color: EPColors.appMainColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    );
+                  case 10:
+                    return TextButton(
+                      onPressed: () {
+                        setState(() => addChar(values[9]));
+                      },
+                      child: Text(
+                        values[9].toString(),
+                        style: TextStyle(
+                          color: EPColors.appMainColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    );
+                  case 11:
+                    return TextButton(
+                      onPressed: () {
+                        setState(() => undoLastInput());
+                      },
+                      child: FaIcon(
+                        Icons.arrow_back_ios_sharp,
+                        color: EPColors.appMainColor,
+                        size: 20,
+                      ),
+                    );
+                  default:
+                    return TextButton(
+                      onPressed: () {
+                        setState(() => addChar(values[e]));
+                      },
+                      child: Text(
+                        values[e].toString(),
+                        style: TextStyle(
+                          color: EPColors.appMainColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                }
+              },
             ),
           ),
         ],
-      ),
     );
   }
 

@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationUsageDescription</key>
-	<string>This app requires access your location.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires access your location when in use.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -18,8 +12,10 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>ENKPAY</string>
 	<key>CFBundleName</key>
-	<string>enk_pay_project</string>
+	<string>ENKPAY</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -38,6 +34,37 @@
 	<string>This app requires access to the files library.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>$(PRODUCT_NAME) Authentication with TouchId or FaceID</string>
+	<key>NSLocationUsageDescription</key>
+	<string>ENKPAY uses your location to verify where transfers and payment transactions are made, helping protect your account and detect suspicious activity.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ENKPAY uses your location while you are using the app to add latitude and longitude to transfers and payment transactions for security, compliance, and fraud prevention.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>ENKPAY uses your location only to verify transfers and payment transactions for security, compliance, and fraud prevention.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>ENKPAY uses your location while you are using the app to verify transfers and payment transactions for security, compliance, and fraud prevention.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneDelegateClassName</key>
+					<string>FlutterSceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

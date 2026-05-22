@@ -96,12 +96,12 @@ class RequestDeviceController extends ChangeNotifier {
   }
 }
 
-abstract class RequestDeviceView {
+abstract mixin class RequestDeviceView {
   onSuccess(String message);
   onError(String message);
 }
 
-abstract class OrderDeviceView {
+abstract mixin class OrderDeviceView {
   onSuccess(String message);
   onError(String message);
 }

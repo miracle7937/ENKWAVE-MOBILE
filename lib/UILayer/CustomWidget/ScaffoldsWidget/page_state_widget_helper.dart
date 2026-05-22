@@ -1,6 +1,9 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/Constant/text_theme_compat.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -34,19 +37,15 @@ class EPPageStateWidget extends StatelessWidget {
     switch ((pageState ?? PageState.loaded)) {
       case PageState.loading:
         pageBody = loadingWidget ??
-            Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Center(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.5,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Lottie.asset(EPImages.loader),
+            ColoredBox(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: SizedBox.expand(
+                child: LoaderWidget(
+                  message: textUnderLoader ?? 'Loading',
+                  showCard: true,
                 ),
               ),
             );
-
         break;
       case PageState.loaded:
         if (builder != null) {
@@ -156,7 +155,7 @@ class _ErrorWidget extends StatelessWidget {
           Text(
             "Something went wrong",
             style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                  color: Colors.black87,
+                  color: context.primaryText,
                   fontSize: 18,
                 ),
           ),

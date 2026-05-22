@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../../Constant/string_values.dart';
+import 'branding_controller.dart';
+import '../../core/whitelabel/organization_request_fields.dart';
 import '../../Constant/validation.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import '../../UILayer/utils/device_info.dart';
@@ -10,6 +13,7 @@ import '../../UILayer/utils/format_phone_number.dart';
 import '../../UILayer/utils/sync_keys.dart';
 import '../../services/navigation_service.dart';
 import '../LocalData/local_data_storage.dart';
+import '../services/session_sync_service.dart';
 import '../model/generic_model_response.dart';
 import '../model/login_response_model.dart';
 import '../model/user_credential_model.dart';
@@ -56,15 +60,36 @@ class SignInController extends ChangeNotifier {
   }
 
   saveData(LoginResponseModel result) async {
-    await LocalDataStorage.saveUserData(result.data!);
+    await SessionSyncService.persist(result);
     await LocalDataStorage.saveUserPermission(result.permission);
     await LocalDataStorage.saveUserAppSettings(result.appSettings);
-    await LocalDataStorage.saveTerminalConfig(result.terminalConfig);
+    await _refreshBrandingFromLogin(result);
     try {
-      SyncKeys().init(NavigationService.navigatorKey.currentState!.context,
-          showLoader: false);
+      final ctx = NavigationService.navigatorKey.currentContext;
+      if (ctx != null) {
+        SyncKeys().init(ctx, showLoader: false);
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final deferred = NavigationService.navigatorKey.currentContext;
+          if (deferred != null) {
+            SyncKeys().init(deferred, showLoader: false);
+          }
+        });
+      }
     } catch (e) {
       log("Injecting logs fails======================> ${e}");
+    }
+  }
+
+  Future<void> _refreshBrandingFromLogin(LoginResponseModel result) async {
+    final businessId = result.data?.organizationBusinessId;
+    if (businessId == null || businessId.isEmpty) return;
+    try {
+      final ctx = NavigationService.navigatorKey.currentContext;
+      if (ctx == null) return;
+      await ctx.read<BrandingController>().loadByBusinessId(businessId, silent: true);
+    } catch (e) {
+      log('Branding refresh after login: $e');
     }
   }
 
@@ -93,13 +118,25 @@ class SignInController extends ChangeNotifier {
     loginLogic(userCredentialModel);
   }
 
+  Map<String, dynamic> _withOrganizationContext(Map data) {
+    final payload = Map<String, dynamic>.from(data);
+    final ctx = NavigationService.navigatorKey.currentContext;
+    if (ctx != null) {
+      payload.addAll(
+        organizationRequestFields(ctx.read<BrandingController>()),
+      );
+    }
+    return payload;
+  }
+
   loginLogic(UserCredentialModel? credentialModel) async {
     try {
       pageState = PageState.loading;
       notifyListeners();
       credentialModel?.deviceIdentifier = "";
+      final body = _withOrganizationContext(credentialModel!.toJson());
       var result = await AuthRepository()
-          .login(credentialModel!.toJson(), phoneLogin: loginWithPhoneNumber);
+          .login(body, phoneLogin: loginWithPhoneNumber);
       if (result.status == true) {
         //save user
         saveData(result);
@@ -257,7 +294,7 @@ class SignInController extends ChangeNotifier {
       userCredentialModel.token = token;
       data["token"] = token;
 
-      var result = await AuthRepository().pinLogin(data);
+      var result = await AuthRepository().pinLogin(_withOrganizationContext(data));
       if (result.status == true) {
         //save user
         saveData(result);
@@ -276,7 +313,7 @@ class SignInController extends ChangeNotifier {
   }
 }
 
-abstract class LOGINView {
+abstract mixin class LOGINView {
   void onSuccess(String message);
   void onError(String message);
   void onNewDevice(String message);
@@ -284,12 +321,12 @@ abstract class LOGINView {
   void onValidate();
 }
 
-abstract class ForgetPasswordView {
+abstract mixin class ForgetPasswordView {
   void onSuccess(String message);
   void onError(String message);
 }
 
-abstract class PinSignInView {
+abstract mixin class PinSignInView {
   void onSuccess(String message);
   void onError(String message);
 }

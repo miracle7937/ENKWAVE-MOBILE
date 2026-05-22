@@ -124,13 +124,13 @@ class EmailPhoneVerificationController with ChangeNotifier {
   }
 }
 
-abstract class RequestOTPView {
+abstract mixin class RequestOTPView {
   void onSuccess(String message);
   void onError(String message);
   void onFormValid();
 }
 
-abstract class OTPAuthUserView {
+abstract mixin class OTPAuthUserView {
   void onSuccess(String message);
   void onError(String message);
   void onVerify(String message);

@@ -9,11 +9,11 @@ class LocalDataStorage {
   // static const _storage = FlutterSecureStorage();
 
   static saveTerminalConfig(TerminalConfig? config) async {
-    final SharedPreferences _storage = await SharedPreferences.getInstance();
-
-    _storage.setString(
+    if (config == null) return;
+    final SharedPreferences storage = await SharedPreferences.getInstance();
+    await storage.setString(
       ConstantString.terminalConfig,
-      json.encode(config!.toJson()),
+      json.encode(config.toJson()),
     );
   }
 

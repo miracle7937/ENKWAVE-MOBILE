@@ -23,8 +23,9 @@ class BiometricController {
   static Future<bool> authenticate() async {
     try {
       final bool didAuthenticate = await auth.authenticate(
-          localizedReason: 'Please authenticate to access application',
-          biometricOnly: true);
+        localizedReason: 'Please authenticate to access application',
+        options: const AuthenticationOptions(biometricOnly: true),
+      );
       return didAuthenticate;
     } catch (e) {
       return false;

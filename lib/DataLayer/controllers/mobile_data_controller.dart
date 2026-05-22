@@ -104,54 +104,47 @@ class MobileDataController extends ProductController with MobileDataFetch {
     _onMobileDataView.onPInVerify();
   }
 
+  bool get _productsLoaded {
+    final s = allProductMap['status'];
+    return s == true || s?.toString() == 'true';
+  }
+
+  List<T> _mapPlans<T>(
+    String key,
+    T Function(Map<String, dynamic> json) fromJson,
+  ) {
+    if (!_productsLoaded) return <T>[];
+    final raw = allProductMap[key];
+    if (raw is! List) return <T>[];
+    return raw
+        .whereType<Map>()
+        .map((e) => fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
   @override
   List<N9MobileDataModel> get9mobileDataProduct() {
-    if (allProductMap["status"] == true) {
-      return (allProductMap["9mobile_data"] as List)
-          .map((data) => N9MobileDataModel.fromJson(data))
-          .toList();
-    }
-    return <N9MobileDataModel>[];
+    return _mapPlans('9mobile_data', N9MobileDataModel.fromJson);
   }
 
   @override
   List<AirtelMobileDataModel> getAirtelDataProduct() {
-    if (allProductMap["status"] == true) {
-      return (allProductMap["airtel_data"] as List)
-          .map((data) => AirtelMobileDataModel.fromJson(data))
-          .toList();
-    }
-    return <AirtelMobileDataModel>[];
+    return _mapPlans('airtel_data', AirtelMobileDataModel.fromJson);
   }
 
   @override
   List<GloMobileDataModel> getGloDataProduct() {
-    if (allProductMap["status"] == true) {
-      return (allProductMap["glo_data"] as List)
-          .map((data) => GloMobileDataModel.fromJson(data))
-          .toList();
-    }
-    return <GloMobileDataModel>[];
+    return _mapPlans('glo_data', GloMobileDataModel.fromJson);
   }
 
   @override
   List<MtnMobileDataModel>? getMTNDataProduct() {
-    if (allProductMap["status"] == true) {
-      return (allProductMap["mtn_data"] as List)
-          .map((data) => MtnMobileDataModel.fromJson(data))
-          .toList();
-    }
-    return <MtnMobileDataModel>[];
+    return _mapPlans('mtn_data', MtnMobileDataModel.fromJson);
   }
 
   @override
   List<UserWallet> getAccount() {
-    if (allProductMap["status"] == true) {
-      return (allProductMap["account"] as List)
-          .map((data) => UserWallet.fromJson(data))
-          .toList();
-    }
-    return <UserWallet>[];
+    return _mapPlans('account', UserWallet.fromJson);
   }
 
   void clearData() {

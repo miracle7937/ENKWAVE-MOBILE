@@ -101,7 +101,7 @@ class BeneficiaryController extends ChangeNotifier {
   }
 }
 
-abstract class BeneficiaryView {
+abstract mixin class BeneficiaryView {
   onSuccess(String message);
   onError(String message);
 }

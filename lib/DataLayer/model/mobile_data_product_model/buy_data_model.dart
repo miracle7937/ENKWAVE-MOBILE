@@ -21,6 +21,7 @@ class BuyDataModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['wallet'] = wallet;
     data['amount'] = amount;
+    data['variation_amount'] = amount;
     data['variation_code'] = variationCode;
     data['service_id'] = serviceId;
     data['phone'] = phone;

@@ -1,287 +1,252 @@
 import 'dart:io';
 
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
+import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
+import 'package:enk_pay_project/DataLayer/controllers/transfer_status_controller.dart';
+import 'package:enk_pay_project/DataLayer/model/transaction_status_model.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/modern_receipt_widgets.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/snack_bar.dart';
+import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_status_ui.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/utils/money_formatter.dart';
+import 'package:enk_pay_project/UILayer/utils/time_ago_util.dart';
 import 'package:etop_pos_plugin/etop_pos_plugin.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../Constant/image.dart';
-import '../../../DataLayer/LocalData/local_data_storage.dart';
-import '../../../DataLayer/controllers/transfer_status_controller.dart';
-import '../../../DataLayer/model/login_response_model.dart';
-import '../../utils/time_ago_util.dart';
-import 'ep_button.dart';
-
 class TransferStatusPage extends StatefulWidget {
   final VoidCallback? onTap;
   final String? refTransId;
   final String? transactionTitle;
-  const TransferStatusPage(
-      {Key? key, this.onTap, this.refTransId, this.transactionTitle})
-      : super(key: key);
+
+  const TransferStatusPage({
+    super.key,
+    this.onTap,
+    this.refTransId,
+    this.transactionTitle,
+  });
 
   @override
   State<TransferStatusPage> createState() => _TransferStatusPageState();
 }
 
 class _TransferStatusPageState extends State<TransferStatusPage> {
-  ScreenshotController screenshotController = ScreenshotController();
-  XFile? file;
-  TransferStatusController? controller;
+  final ScreenshotController _screenshotController = ScreenshotController();
+  TransferStatusController? _controller;
+
   @override
   void dispose() {
+    _controller?.clearAll();
     super.dispose();
-    controller?.clearAll();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TransferStatusController>(
-        builder: (context, myProvider, child) {
-      myProvider.getTransaction(widget.refTransId!);
-      controller = myProvider;
-      return EPScaffold(
-        appBar: EPAppBar(),
-        state: AppState(
-            pageState: myProvider.pageState,
-            noDataMessage: myProvider.transactionStatusModel?.message),
-        builder: (_) => SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Column(
-              children: [
-                Screenshot(
-                  controller: screenshotController,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+      builder: (context, provider, _) {
+        _controller = provider..getTransaction(widget.refTransId!);
+
+        final model = provider.transactionStatusModel;
+
+        return EPScaffold(
+          appBar: EPAppBar(
+            title: const Text('Receipt'),
+          ),
+          state: AppState(
+            pageState: provider.pageState,
+            noDataMessage: model?.message,
+          ),
+          builder: (_) {
+            if (model == null) return const SizedBox.shrink();
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Screenshot(
+                    controller: _screenshotController,
+                    child: ModernReceiptCard(
+                      status: model.status,
+                      title: widget.transactionTitle ?? 'Bank transfer',
+                      amountText: amountFormatter(model.amount?.toString()),
+                      dateText: model.date != null
+                          ? TimeUtilAgo.format2(model.date!)
+                          : null,
+                      subtitle:
+                          "Actual credit time is subject to the recipient's bank.",
+                      footerNote: model.message?.trim().isNotEmpty == true
+                          ? model.message
+                          : 'If the receiver is not credited within 10 minutes, '
+                              'contact support with the reference below.',
+                      details: _buildDetails(model),
+                    ),
+                  ),
+                  if (model.message != null &&
+                      model.message!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: EPColors.appMainColor.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: EPColors.appMainColor.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 10,
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 20,
+                            color: EPColors.appMainColor,
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            child: Image.asset(EPImages.appIcon),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            statusString(
-                                myProvider.transactionStatusModel?.status),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: statusColor(myProvider
-                                        .transactionStatusModel?.status)),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Actual credit time subject to recipient's bank.",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          rowView(
-                            "Recipient",
-                            myProvider.transactionStatusModel?.receiverName,
-                          ),
-                          rowView(
-                            "Recipient Bank",
-                            myProvider.transactionStatusModel?.receiverBank,
-                          ),
-                          rowView(
-                            "Recipient Account Number",
-                            myProvider
-                                .transactionStatusModel?.receiverAccountNo,
-                          ),
-                          rowView(
-                            "Transaction Amount",
-                            amountFormatter(myProvider
-                                .transactionStatusModel?.amount
-                                .toString()),
-                          ),
-                          rowView("Reference ID",
-                              myProvider.transactionStatusModel?.eRef ?? "",
-                              copy: true),
-                          rowView("Card Pan",
-                              myProvider.transactionStatusModel?.cardPan ?? "",
-                              copy: false),
-                          rowView("RRN",
-                              myProvider.transactionStatusModel?.rrn ?? "",
-                              copy: true),
-                          rowView(
-                            "Note",
-                            myProvider.transactionStatusModel?.note ?? "",
-                          ),
-                          rowView(
-                            "Date",
-                            TimeUtilAgo.format2(
-                                myProvider.transactionStatusModel!.date!),
-                          ),
-                          const SizedBox(
-                            height: 15,
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              model.message!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
+                                    height: 1.4,
+                                  ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                Text(
-                  myProvider.transactionStatusModel?.message ?? "",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
-                      fontWeight: FontWeight.w300, color: Colors.black87),
-                ),
-                EPButton(
-                  title: "Print",
-                  onTap: () async {
-                    UserData? userData = await LocalDataStorage.getUserData();
-                    Map map = {
-                      "title": widget.transactionTitle,
-                      "merchantName": userData?.terminalInfo?.merchantName
-                    };
-                    map["data"] = transactionMap(myProvider);
-                    EtopPosPlugin().reprint(map: map);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
-  }
-
-  String statusString(num? status) {
-    switch (status) {
-      case 0:
-        return "Pending";
-      case 1:
-        return "Successful";
-      case 3:
-        return "Reversed";
-      default:
-        return "Failed";
-    }
-  }
-
-  Color statusColor(num? status) {
-    switch (status) {
-      case 0:
-        return Colors.orange;
-      case 1:
-        return Colors.green;
-      case 4:
-        return Colors.orange;
-      default:
-        return Colors.red;
-    }
-  }
-
-  Map<String, dynamic> transactionMap(TransferStatusController myProvider) => {
-        "Card Pan": myProvider.transactionStatusModel?.cardPan ?? "",
-        "RRN": myProvider.transactionStatusModel?.rrn ?? "",
-        "Recipient": myProvider.transactionStatusModel?.receiverName ?? "",
-        "Recipient Bank": myProvider.transactionStatusModel?.receiverBank ?? "",
-        "Recipient Account Number":
-            myProvider.transactionStatusModel?.receiverAccountNo ?? "",
-        "Transaction Amount": amountFormatter(
-                myProvider.transactionStatusModel?.amount.toString()) ??
-            "",
-        "Date": myProvider.transactionStatusModel?.date != null
-            ? TimeUtilAgo.format2(myProvider.transactionStatusModel!.date!)
-            : "",
-        "Message": statusString(myProvider.transactionStatusModel?.status),
-      };
-
-  Widget rowView(String title, String? value, {bool copy = false}) {
-    if (isEmpty(value)) {
-      return Container();
-    }
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "$title:",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline1!
-                  .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value!,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        fontWeight: FontWeight.w200, color: Colors.black87),
-                  ),
-                ),
-                const Spacer(),
-                copy
-                    ? InkWell(
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: value ?? ""))
-                              .then((value) {
-                            snackBar(context, message: "copied");
-                          });
-                        },
-                        child: Row(
-                          children: const [
-                            SizedBox(
-                              width: 10,
+                  ],
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _shareReceipt,
+                          icon: const Icon(Icons.ios_share_rounded, size: 20),
+                          label: const Text('Share'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: EPColors.appMainColor,
+                            side: BorderSide(color: context.borderColor),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
                             ),
-                            FaIcon(FontAwesomeIcons.copy),
-                          ],
+                          ),
                         ),
-                      )
-                    : Container()
-              ],
-            )
-          ],
-        ),
-      ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 2,
+                        child: FilledButton.icon(
+                          onPressed: () => _printReceipt(provider),
+                          icon: const Icon(Icons.print_rounded, size: 20),
+                          label: const Text('Print'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: EPColors.appMainColor,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'Done',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
-  Future<void> saveImage(Uint8List imageBytes) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/Receipt.png');
-    // final file = File('${directory.path}/${generateRandomString(10)}.png');
-    await file.writeAsBytes(imageBytes);
-    this.file = XFile(file.path);
+  List<ReceiptDetailRow> _buildDetails(TransactionStatusModel model) {
+    final rows = <ReceiptDetailRow>[];
+
+    void add(String label, String? value,
+        {bool copy = false, IconData? icon}) {
+      if (isNotEmpty(value)) {
+        rows.add(ReceiptDetailRow(
+          label: label,
+          value: value!,
+          copyable: copy,
+          icon: icon,
+        ));
+      }
+    }
+
+    add('Recipient name', model.receiverName, icon: Icons.person_outline_rounded);
+    add('Bank name', model.receiverBank, icon: Icons.account_balance_rounded);
+    add(
+      'Account number',
+      model.receiverAccountNo,
+      icon: Icons.numbers_rounded,
+      copy: true,
+    );
+    add('Reference', model.eRef, copy: true, icon: Icons.tag_rounded);
+    add('Card PAN', model.cardPan, icon: Icons.credit_card_rounded);
+    add('RRN', model.rrn, copy: true, icon: Icons.receipt_long_rounded);
+    add('Note', model.note, icon: Icons.notes_rounded);
+
+    return rows;
+  }
+
+  Future<void> _shareReceipt() async {
+    try {
+      final bytes = await _screenshotController.capture(pixelRatio: 3);
+      if (bytes == null || !mounted) return;
+      final dir = await getTemporaryDirectory();
+      final path = '${dir.path}/transfer_receipt.png';
+      await File(path).writeAsBytes(bytes);
+      await Share.shareXFiles([XFile(path)], text: 'Transaction receipt');
+    } catch (_) {
+      if (mounted) {
+        snackBar(context, message: 'Could not share receipt');
+      }
+    }
+  }
+
+  Future<void> _printReceipt(TransferStatusController provider) async {
+    final userData = await LocalDataStorage.getUserData();
+    final map = <String, dynamic>{
+      'title': widget.transactionTitle,
+      'merchantName': userData?.terminalInfo?.merchantName,
+      'data': _transactionPrintMap(provider),
+    };
+    EtopPosPlugin().reprint(map: map);
+  }
+
+  Map<String, dynamic> _transactionPrintMap(TransferStatusController provider) {
+    final m = provider.transactionStatusModel;
+    return {
+      'Card Pan': m?.cardPan ?? '',
+      'RRN': m?.rrn ?? '',
+      'Recipient': m?.receiverName ?? '',
+      'Recipient Bank': m?.receiverBank ?? '',
+      'Recipient Account Number': m?.receiverAccountNo ?? '',
+      'Transaction Amount': amountFormatter(m?.amount?.toString()) ?? '',
+      'Date': m?.date != null ? TimeUtilAgo.format2(m!.date!) : '',
+      'Message': TransactionStatusUi.label(m?.status),
+    };
   }
 }

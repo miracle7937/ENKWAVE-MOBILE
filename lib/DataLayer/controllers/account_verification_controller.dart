@@ -125,13 +125,13 @@ class AccountVerificationController with ChangeNotifier {
   }
 }
 
-abstract class VerificationView {
+abstract mixin class VerificationView {
   onFormVerify();
   onSuccess(String message);
   onError(String message);
 }
 
-abstract class IdentityView {
+abstract mixin class IdentityView {
   onSuccess(String message);
   onError(String message);
 }

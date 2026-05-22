@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/DataLayer/controllers/branding_controller.dart';
+import 'package:enk_pay_project/DataLayer/controllers/theme_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/cash_out_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/transfer_controller.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
@@ -28,6 +30,7 @@ import 'DataLayer/controllers/electric_company_controller.dart';
 import 'DataLayer/controllers/email_phone_verification_controller.dart';
 import 'DataLayer/controllers/in_app_transfer_controller.dart';
 import 'DataLayer/controllers/manage_terminal_controller.dart';
+import 'DataLayer/controllers/terminal_config_controller.dart';
 import 'DataLayer/controllers/mobile_data_controller.dart';
 import 'DataLayer/controllers/network_data_controller.dart';
 import 'DataLayer/controllers/pin_controller.dart';
@@ -46,12 +49,15 @@ import 'UILayer/utils/account_creation_dialog.dart';
 import 'UILayer/utils/key_pad.dart';
 import 'UILayer/utils/loader_widget.dart';
 import 'UILayer/utils/location_controller.dart';
-import 'UILayer/utils/primary_swatch_color.dart';
 import 'services/navigation_service.dart';
+
+late final BrandingController appBrandingController;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  appBrandingController = BrandingController();
+  await appBrandingController.bootstrap();
   await DeviceServiceInit.initialize();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
@@ -64,16 +70,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Set the fit size (Find your UI design, look at the dimensions of the device screen and fill it in,unit in dp)
-    return MediaQuery(
-      //Setting font does not change with system font size
-      data: const MediaQueryData(
-        size: Size(100, 700),
-      ),
-      child: ScreenUtilInit(
-          designSize: const Size(360, 690),
-          minTextAdapt: true,
-          splitScreenMode: true,
-          builder: (context, w) => const ThemeWidget()),
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, w) => const ThemeWidget(),
     );
   }
   // // This widget is the root of your application.
@@ -95,6 +96,10 @@ class ThemeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<BrandingController>.value(
+            value: appBrandingController),
+        ChangeNotifierProvider<ThemeController>(
+            create: (_) => ThemeController()),
         ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
         ChangeNotifierProvider<TransferController>(
             create: (_) => TransferController()),
@@ -135,6 +140,9 @@ class ThemeWidget extends StatelessWidget {
             create: (_) => EmailPhoneVerificationController()),
         ChangeNotifierProvider<TransferStatusController>(
             create: (_) => TransferStatusController()),
+        ChangeNotifierProvider<TerminalConfigController>(
+          create: (_) => TerminalConfigController(),
+        ),
         ChangeNotifierProvider<ManageTerminalController>(
             create: (_) => ManageTerminalController()),
         ChangeNotifierProvider<VCardController>(
@@ -142,35 +150,34 @@ class ThemeWidget extends StatelessWidget {
         ChangeNotifierProvider<BeneficiaryController>(
             create: (_) => BeneficiaryController()),
       ],
-      child: MaterialApp(
-        navigatorKey: NavigationService.navigatorKey,
-        routes: {
-          '/signInScreen': (context) => const SignInScreen(),
-          '/pinSignIn': (context) => const PinCodeWidget(),
+      child: Consumer2<ThemeController, BrandingController>(
+        builder: (context, themeController, branding, _) {
+          return MaterialApp(
+            navigatorKey: NavigationService.navigatorKey,
+            routes: {
+              '/signInScreen': (context) => const SignInScreen(),
+              '/pinSignIn': (context) => const PinCodeWidget(),
+            },
+            builder: (context, widget) {
+              ScreenUtil.init(context);
+              final mq = MediaQuery.of(context);
+              return MediaQuery(
+                data: mq.copyWith(
+                  textScaler: mq.textScaler.clamp(
+                    minScaleFactor: 0.92,
+                    maxScaleFactor: 1.08,
+                  ),
+                ),
+                child: widget!,
+              );
+            },
+            title: branding.appTitle,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: themeController.themeMode,
+            home: const SplashScreen(),
+          );
         },
-        builder: (context, widget) {
-          ScreenUtil.init(context);
-          return widget!;
-        },
-        title: 'EnkPay',
-        theme: ThemeData(
-          fontFamily: "Effra",
-          appBarTheme: AppBarTheme(color: EPColors.appMainColor),
-          elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) {
-              // If the button is pressed, return green, otherwise blue
-              if (states.contains(MaterialState.pressed)) {
-                return EPColors.appGreyColor;
-              }
-              return EPColors.appMainColor;
-            }),
-          )),
-          primarySwatch: PrimarySwatchColor.get(),
-          textTheme: getTextTheme(),
-          toggleableActiveColor: EPColors.appMainColor,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: const SplashScreen(),
       ),
     );
   }
@@ -208,11 +215,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   firesBaseSetUp() async {
-    if (Platform.isAndroid) {
-      if (DeviceServiceInit.androidInfo?.model ==
-          DeviceServiceInit.telpoDevice) {
-        return;
-      }
+    if (DeviceServiceInit.isTelpoDevice) {
+      return;
     }
     var token = await FirebaseMessaging.instance.getToken();
     log("Firebase Token $token");
@@ -252,56 +256,4 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         });
   }
-}
-
-TextTheme getTextTheme() {
-  return TextTheme(
-    headline1: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 14.sp,
-    ),
-    headline2: TextStyle(
-      fontWeight: FontWeight.w700,
-      fontSize: 26.sp,
-    ),
-    headline3: TextStyle(
-      fontSize: 12.sp,
-      fontWeight: FontWeight.bold,
-    ),
-    headline4: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 10.sp,
-    ),
-    headline5: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 18.sp,
-    ),
-    headline6: TextStyle(
-      fontSize: 16.sp,
-      fontWeight: FontWeight.bold,
-    ),
-    subtitle1: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 20.sp,
-    ),
-    subtitle2: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 7.sp,
-    ),
-    bodyText2: TextStyle(
-      fontSize: 30.sp,
-    ),
-    bodyText1: TextStyle(
-      fontSize: 12.sp,
-    ),
-    caption: TextStyle(
-      fontSize: 50.sp,
-    ),
-    overline: TextStyle(
-      fontSize: 45.sp,
-    ),
-    button: const TextStyle(
-      fontSize: 14,
-    ),
-  );
 }

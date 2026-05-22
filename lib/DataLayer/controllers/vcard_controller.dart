@@ -269,23 +269,23 @@ class VCardController extends ChangeNotifier {
   }
 }
 
-abstract class OnVCardVerification {
+abstract mixin class OnVCardVerification {
   onSuccess(String message);
   onError(String message);
 }
 
-abstract class OnGetVCardDetails {
+abstract mixin class OnGetVCardDetails {
   onSuccess(String message);
   noCard(String message);
   onError(String message);
 }
 
-abstract class OnCreateVCard {
+abstract mixin class OnCreateVCard {
   onSuccess(String message);
   onError(String message);
 }
 
-abstract class OnVCardView {
+abstract mixin class OnVCardView {
   onSuccess(String message);
   onError(String message);
 }

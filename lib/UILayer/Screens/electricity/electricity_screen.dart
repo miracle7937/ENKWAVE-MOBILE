@@ -1,25 +1,26 @@
-import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/Constant/string_values.dart';
+import 'package:enk_pay_project/DataLayer/controllers/electric_company_controller.dart';
+import 'package:enk_pay_project/DataLayer/model/electricity_model/electric_company_model.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
+import 'package:enk_pay_project/UILayer/Screens/bill_payment/bill_payment_ui.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/pin_verification_dialog.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_form_section.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_ui.dart';
+import 'package:enk_pay_project/UILayer/Screens/transfers/widget/transfer_wallet_picker.dart';
+import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../../Constant/colors.dart';
-import '../../../Constant/string_values.dart';
-import '../../../DataLayer/controllers/electric_company_controller.dart';
-import '../../../DataLayer/model/electricity_model/electric_company_model.dart';
-import '../../CustomWidget/ReUseableWidget/bottom_dialog.dart';
-import '../../CustomWidget/ReUseableWidget/custom_drop_down/ka_dropdown.dart';
-import '../../CustomWidget/ReUseableWidget/custom_form.dart';
-import '../../CustomWidget/ReUseableWidget/ep_button.dart';
-import '../../CustomWidget/ScaffoldsWidget/ep_appbar.dart';
-import '../../CustomWidget/ScaffoldsWidget/page_state.dart';
-import '../../utils/loader_widget.dart';
-import '../../utils/money_formatter.dart';
-import '../transfers/widget/pin_verification_dialog.dart';
-
 class ElectricityScreen extends StatefulWidget {
-  const ElectricityScreen({Key? key}) : super(key: key);
+  const ElectricityScreen({super.key});
 
   @override
   State<ElectricityScreen> createState() => _ElectricityScreenState();
@@ -27,249 +28,178 @@ class ElectricityScreen extends StatefulWidget {
 
 class _ElectricityScreenState extends State<ElectricityScreen>
     with ElectricView {
-  ElectricCompanyController? electricCompanyController;
+  ElectricCompanyController? _controller;
+  String _meterType = 'prepaid';
 
   @override
   void dispose() {
+    _controller?.clear();
     super.dispose();
-    electricCompanyController?.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return EPScaffold(
-      appBar: EPAppBar(
-        title: const Text(
-          "Electricity Payment",
-        ),
-      ),
+      appBar: EPAppBar(title: const Text('Electricity Payment')),
       builder: (_) => FutureBuilder<void>(
-          future: Provider.of<ElectricCompanyController>(context, listen: false)
-              .fetchElectricCompany(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoaderWidget();
-            }
-            return Consumer<ElectricCompanyController>(
-                builder: (context, myProvider, child) {
-              electricCompanyController = myProvider;
-              myProvider.setView(this);
+        future: Provider.of<ElectricCompanyController>(context, listen: false)
+            .fetchElectricCompany(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoaderWidget(message: 'Loading providers…');
+          }
+          return Consumer<ElectricCompanyController>(
+            builder: (context, provider, _) {
+              _controller = provider..setView(this);
               return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(
-                      height: 20,
+                    const BillPaymentInfoBanner(
+                      icon: Icons.bolt_rounded,
+                      message:
+                          'Pay prepaid or postpaid electricity bills instantly',
                     ),
-                    Text(
-                      "Pay for Electricity",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: EPColors.appBlackColor),
+                    const SizedBox(height: 20),
+                    const TransferSectionHeader(step: 1, title: 'Pay from'),
+                    TransferWalletPicker(
+                      wallets: provider.userWallet ?? [],
+                      selected: provider.setWallet,
+                      onSelected: (w) {
+                        provider.selectedWallet = w;
+                        setState(() {});
+                      },
                     ),
-                    EPDropdownButton<UserWallet>(
-                        itemsListTitle: "Select Account",
-                        iconSize: 22,
-                        value: myProvider.setWallet,
-                        hint: const Text(""),
-                        isExpanded: true,
-                        underline: const Divider(),
-                        searchMatcher: (item, text) {
-                          return item.title!
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        },
-                        onChanged: (v) {
-                          myProvider.selectedWallet = v;
-                          setState(() {});
-                        },
-                        items: (myProvider.userWallet ?? [])
-                            .map(
-                              (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.title.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      EPColors.appBlackColor)),
-                                      const Spacer(),
-                                      Text(amountFormatter(e.amount.toString()),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      EPColors.appBlackColor)),
-                                    ],
-                                  )),
-                            )
-                            .toList()),
-                    const SizedBox(
-                      height: 20,
+                    const SizedBox(height: 20),
+                    const TransferSectionHeader(
+                      step: 2,
+                      title: 'Discos & meter',
+                      subtitle: 'Provider, meter number and plan type',
                     ),
-                    EPDropdownButton<ElectricCompanyData>(
-                        itemsListTitle: "Select Provider",
-                        iconSize: 22,
-                        value: myProvider.selectedElectricCompany,
-                        hint: const Text(""),
-                        isExpanded: true,
-                        underline: const Divider(),
-                        searchMatcher: (item, text) {
-                          return item.name!
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        },
-                        onChanged: (v) {
-                          myProvider.setElectricCompany = v;
-                        },
-                        items: (myProvider.electricCompany ?? [])
-                            .map(
-                              (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.name.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      EPColors.appBlackColor)),
-                                      const Spacer(),
-                                    ],
-                                  )),
-                            )
-                            .toList()),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: EPForm(
-                            hintText: "Meter number",
-                            enabledBorderColor: EPColors.appGreyColor,
-                            keyboardType: TextInputType.number,
-                            onChange: (v) {
-                              myProvider.selectMeterNO = v;
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: EPButton(
-                            title: "Verify",
-                            onTap: () {
-                              myProvider.bankMeterNoVerification();
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                    isNotEmpty(myProvider.meterAccountName)
-                        ? ContainButton(
-                            bgColor: EPColors.appMainColor,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 10),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    (myProvider.meterAccountName ?? ""),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                  ),
-                                ],
+                    TransferFormCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('Electricity provider',
+                              style: billPaymentFieldLabel(context)),
+                          const SizedBox(height: 6),
+                          _ProviderDropdown(provider: provider),
+                          const SizedBox(height: 16),
+                          Text('Meter number',
+                              style: billPaymentFieldLabel(context)),
+                          const SizedBox(height: 6),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TransferInputField(
+                                  hintText: 'Enter meter number',
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onChanged: (v) =>
+                                      provider.selectMeterNO = v,
+                                ),
                               ),
+                              const SizedBox(width: 8),
+                              _MeterVerifyButton(
+                                loading: provider.pageState ==
+                                    PageState.loading,
+                                enabled:
+                                    provider.selectedElectricCompany != null,
+                                onTap: provider.bankMeterNoVerification,
+                              ),
+                            ],
+                          ),
+                          if (isNotEmpty(provider.meterAccountName)) ...[
+                            const SizedBox(height: 12),
+                            BillPaymentVerifiedBanner(
+                              name: provider.meterAccountName!,
                             ),
-                          )
-                        : Column(),
-                    EPDropdownButton<String>(
-                        itemsListTitle: "Select type",
-                        iconSize: 22,
-                        value: myProvider.buyElectricityModel.variationCode,
-                        hint: const Text(""),
-                        isExpanded: true,
-                        underline: const Divider(),
-                        searchMatcher: (item, text) {
-                          return item
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        },
-                        onChanged: (v) {
-                          myProvider.setProductType = v;
-                          setState(() {});
-                        },
-                        items: ["prepaid", "postpaid"]
-                            .map(
-                              (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.toString().toUpperCase(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      EPColors.appBlackColor)),
-                                      const Spacer(),
-                                    ],
-                                  )),
-                            )
-                            .toList()),
-                    EPForm(
-                      hintText: "Enter amount",
-                      enabledBorderColor: EPColors.appGreyColor,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChange: (v) {
-                        myProvider.setAmount = v;
-                      },
+                          ],
+                          const SizedBox(height: 16),
+                          Text('Meter type',
+                              style: billPaymentFieldLabel(context)),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: BillPaymentPlanChip(
+                                  label: 'Prepaid',
+                                  selected: _meterType == 'prepaid',
+                                  onTap: () {
+                                    provider.setProductType = 'prepaid';
+                                    setState(() => _meterType = 'prepaid');
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: BillPaymentPlanChip(
+                                  label: 'Postpaid',
+                                  selected: _meterType == 'postpaid',
+                                  onTap: () {
+                                    provider.setProductType = 'postpaid';
+                                    setState(() => _meterType = 'postpaid');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text('Amount (₦)',
+                              style: billPaymentFieldLabel(context)),
+                          const SizedBox(height: 6),
+                          TransferInputField(
+                            hintText: 'Enter amount',
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: (v) => provider.setAmount = v,
+                          ),
+                          const SizedBox(height: 16),
+                          Text('Phone number',
+                              style: billPaymentFieldLabel(context)),
+                          const SizedBox(height: 6),
+                          TransferInputField(
+                            hintText: '08012345678',
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: (v) => provider.phoneNumber = v,
+                          ),
+                        ],
+                      ),
                     ),
-                    EPForm(
-                      hintText: "Enter  phone number",
-                      enabledBorderColor: EPColors.appGreyColor,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChange: (v) {
-                        myProvider.phoneNumber = v;
-                      },
-                    ),
+                    const SizedBox(height: 28),
                     EPButton(
-                      loading: PageState.loading == myProvider.pageState,
-                      title: "Continue",
-                      onTap: () {
-                        myProvider.onStartTransaction();
-                      },
-                    )
+                      loading: provider.pageState == PageState.loading,
+                      title: 'Continue',
+                      onTap: () => provider.onStartTransaction(),
+                    ),
                   ],
                 ),
               );
-            });
-          }),
+            },
+          );
+        },
+      ),
     );
   }
 
   @override
-  onError(String message) {
+  void onError(String message) {
     showEPStatusDialog(context, success: false, message: message, callback: () {
       Navigator.pop(context);
     });
   }
 
   @override
-  onPinVerification() {
+  void onPinVerification() {
     showPinDialog(context, onVerification: (status, message, pin) async {
       Navigator.pop(context);
       if (status == true) {
@@ -283,7 +213,7 @@ class _ElectricityScreenState extends State<ElectricityScreen>
   }
 
   @override
-  onSuccess(String message) {
+  void onSuccess(String message) {
     showEPStatusDialog(context, success: true, message: message, callback: () {
       Navigator.pop(context);
       Navigator.pop(context);
@@ -291,7 +221,102 @@ class _ElectricityScreenState extends State<ElectricityScreen>
   }
 
   @override
-  onBuyPower() {
-    electricCompanyController?.buyPower();
+  void onBuyPower() {
+    _controller?.buyPower();
+  }
+}
+
+class _MeterVerifyButton extends StatelessWidget {
+  final bool loading;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _MeterVerifyButton({
+    required this.loading,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final active = enabled && !loading;
+
+    return Semantics(
+      button: true,
+      enabled: active,
+      label: 'Verify meter number',
+      child: Material(
+        color: active
+            ? EPColors.appMainColor
+            : EPColors.appMainColor.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: active ? onTap : null,
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: loading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.verified_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProviderDropdown extends StatelessWidget {
+  final ElectricCompanyController provider;
+
+  const _ProviderDropdown({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.inputFill,
+      borderRadius: BorderRadius.circular(12),
+      child: EPDropdownButton<ElectricCompanyData>(
+        itemsListTitle: 'Select provider',
+        iconSize: 22,
+        value: provider.selectedElectricCompany,
+        hint: Text(
+          'Choose disco',
+          style: TextStyle(color: context.mutedText, fontSize: 13),
+        ),
+        isExpanded: true,
+        underline: const SizedBox.shrink(),
+        searchMatcher: (item, text) =>
+            (item.name ?? '').toLowerCase().contains(text.toLowerCase()),
+        onChanged: (v) => provider.setElectricCompany = v,
+        items: (provider.electricCompany ?? [])
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(
+                  e.name ?? '',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 }

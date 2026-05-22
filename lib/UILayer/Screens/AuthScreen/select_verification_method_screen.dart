@@ -1,4 +1,6 @@
 import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/widget/auth_ui.dart';
+import 'package:enk_pay_project/UILayer/Screens/whitelabel/org_select_screen.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/user_registration_personal.dart';
@@ -68,6 +70,7 @@ class _SelectVerificationMethodScreenState
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
+                    const OrganizationContextBanner(),
                     const SizedBox(
                       height: 10,
                     ),
@@ -131,13 +134,21 @@ class _SelectVerificationMethodScreenState
 
   @override
   void onFormValid() {
+    if (authController?.hasOrganizationSelected(context) != true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const OrgSelectScreen()),
+      );
+      return;
+    }
+    authController?.applyOrganizationFromContext(context);
     if (authController!.isSelectPhoneVerification == true) {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (_) => const RegistrationScreenPersonalInfo()));
     } else {
-      authController?.sendOTP();
+      authController?.sendOTP(context);
     }
     //when phone otp is done it can now be change  to only authController?.sendOTP(); for both phone and email
   }

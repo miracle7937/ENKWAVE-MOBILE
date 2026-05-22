@@ -90,7 +90,7 @@ class CashOutController extends ChangeNotifier {
   }
 }
 
-abstract class CashOutView {
+abstract mixin class CashOutView {
   onSuccess(String message);
   onError(String message);
   onPinVerify();

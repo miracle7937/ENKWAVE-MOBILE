@@ -13,6 +13,9 @@ class RegistrationModel {
   String? state;
   String? street;
   String? dob;
+  String? businessId;
+  String? registerUnderId;
+  String? organizationSlug;
 
   RegistrationModel(
       {this.lastName,
@@ -63,6 +66,14 @@ class RegistrationModel {
     data['lga'] = lga;
     data['pin'] = pin;
     data['dob'] = dob;
+    if (businessId != null && businessId!.isNotEmpty) {
+      data['business_id'] = businessId;
+      data['register_under_id'] = registerUnderId ?? businessId;
+      data['organization_business_id'] = businessId;
+    }
+    if (organizationSlug != null && organizationSlug!.isNotEmpty) {
+      data['organization_slug'] = organizationSlug;
+    }
     return data;
   }
 }

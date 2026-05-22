@@ -3,10 +3,11 @@ import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/DataLayer/model/bank_list_response.dart';
 import 'package:enk_pay_project/DataLayer/model/mobile_data_product_model/base_package.dart';
+import 'package:enk_pay_project/UILayer/Screens/data_screen/mobile_data_plan_sheet.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/selection_listBottom_sheet.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -47,11 +48,10 @@ _createDialogWidget(
                 width: 100,
                 height: 100,
                 child: isNotEmpty(flareAsset)
-                    ? FlareActor(
-                        flareAsset,
-                        animation: "Animation",
-                        alignment: Alignment.center,
+                    ? Lottie.asset(
+                        flareAsset!,
                         fit: BoxFit.contain,
+                        repeat: false,
                       )
                     : Image.asset(
                         image!,
@@ -231,48 +231,11 @@ Future<T?>? showIVBottomSheetList<T>({
 
 void showListOFDataPackage(BuildContext context, List<BasePackage>? recipients,
     ValueChanged<BasePackage> valueChanged) {
-  showIVBottomSheetList<BasePackage>(
-    hasSearch: true,
-    searchMatcher: (BasePackage recipient, String b) {
-      return [
-        recipient.getAmount,
-        recipient.getDesc,
-      ].any((String? it) => it!.contains(b));
-    },
-    title: "Mobile Data",
-    context: context,
-    items: recipients!,
-    itemBuilder: (BasePackage r) {
-      //${r.phones.first.number.toString()}
-      return DropdownMenuItem(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 4,
-              child: Text(
-                "${r.getDesc} ",
-                style: Theme.of(context).textTheme.headline4,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  amountFormatterWithoutDecimal(r.getAmount),
-                  style: Theme.of(context).textTheme.button,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    },
-    onItemSelected: valueChanged,
+  if (recipients == null || recipients.isEmpty) return;
+  showMobileDataPlanSheet(
+    context,
+    packages: recipients,
+    onSelected: valueChanged,
   );
 }
 
@@ -506,11 +469,10 @@ showChangeDeviceIdDialog(BuildContext context,
                 child: SizedBox(
                     width: 100,
                     height: 100,
-                    child: FlareActor(
+                    child: Lottie.asset(
                       EPImages.errorAnimation,
-                      animation: "Animation",
-                      alignment: Alignment.center,
                       fit: BoxFit.contain,
+                      repeat: false,
                     )),
               ),
               Center(

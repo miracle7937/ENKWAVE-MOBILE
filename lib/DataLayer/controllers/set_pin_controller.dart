@@ -72,18 +72,18 @@ class PinController with ChangeNotifier {
   }
 }
 
-abstract class OnSetPin {
+abstract mixin class OnSetPin {
   void onEnterPin();
   void onSuccess();
 }
 
-abstract class OnConfirmPinView {
+abstract mixin class OnConfirmPinView {
   void onEnterConfirmPin();
   void onPinNotConfirmed(String message);
   void onSuccess();
 }
 
-abstract class VerifyPinView {
+abstract mixin class VerifyPinView {
   void onSuccess(String message);
   void onError(String message);
 }

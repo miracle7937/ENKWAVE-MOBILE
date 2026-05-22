@@ -7,3 +7,8 @@ Future pushToNextScreen(BuildContext context, Widget widget) async {
 
   // return data;
 }
+
+/// Pops every route above the home shell (e.g. after bank transfer success).
+void popToHome(BuildContext context) {
+  Navigator.of(context).popUntil((route) => route.isFirst);
+}

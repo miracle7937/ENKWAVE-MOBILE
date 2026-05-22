@@ -3,6 +3,7 @@ import 'package:enk_pay_project/DataLayer/model/generic_model_response.dart';
 import 'package:enk_pay_project/DataLayer/model/login_response_model.dart';
 
 import '../model/bank_list_response.dart';
+import '../model/dispute_model.dart';
 import '../model/history_model.dart';
 import '../model/wallet_charge_model.dart';
 import '../request.dart';
@@ -55,6 +56,74 @@ class DashboardRepository {
   Future<GenericResponse> cashOut(Map map) async {
     var responseData =
         await ServerRequest().postData(path: AppRoute.cashOutRout, body: map);
+    return GenericResponse.fromJson(responseData.data);
+  }
+
+  Future<Map<String, dynamic>> createStaticVirtualAccount({
+    required String provider,
+  }) async {
+    final responseData = await ServerRequest().postData(
+      path: AppRoute.createStaticVirtualAccount,
+      body: {'provider': provider},
+    );
+    final data = responseData.data;
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    return Map<String, dynamic>.from(data as Map);
+  }
+
+  Future<DisputesListResponse> fetchMyDisputes() async {
+    final responseData =
+        await ServerRequest().getData(path: AppRoute.myDisputes);
+    final data = responseData.data;
+    if (data is Map<String, dynamic>) {
+      return DisputesListResponse.fromJson(data);
+    }
+    return DisputesListResponse.fromJson(Map<String, dynamic>.from(data as Map));
+  }
+
+  Future<DisputeDetailResponse> fetchDisputeDetail(int disputeId) async {
+    final responseData = await ServerRequest().getData(
+      path: AppRoute.myDisputeDetail(disputeId),
+    );
+    final data = responseData.data;
+    if (data is Map<String, dynamic>) {
+      return DisputeDetailResponse.fromJson(data);
+    }
+    return DisputeDetailResponse.fromJson(
+      Map<String, dynamic>.from(data as Map),
+    );
+  }
+
+  Future<DisputeDetailResponse> replyToDispute({
+    required int disputeId,
+    required String body,
+  }) async {
+    final responseData = await ServerRequest().postData(
+      path: AppRoute.myDisputeReply(disputeId),
+      body: {'body': body},
+    );
+    final data = responseData.data;
+    if (data is Map<String, dynamic>) {
+      return DisputeDetailResponse.fromJson(data);
+    }
+    return DisputeDetailResponse.fromJson(
+      Map<String, dynamic>.from(data as Map),
+    );
+  }
+
+  Future<GenericResponse> logDispute({
+    required int transactionId,
+    required String reason,
+  }) async {
+    final responseData = await ServerRequest().postData(
+      path: AppRoute.logDispute,
+      body: {
+        'transaction_id': transactionId,
+        'reason': reason,
+      },
+    );
     return GenericResponse.fromJson(responseData.data);
   }
 }

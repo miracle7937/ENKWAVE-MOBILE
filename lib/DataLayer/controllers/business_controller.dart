@@ -42,7 +42,7 @@ class BusinessController extends ChangeNotifier {
   }
 }
 
-abstract class BusinessView {
+abstract mixin class BusinessView {
   onSuccess(String massage);
   onError(String massage);
 }

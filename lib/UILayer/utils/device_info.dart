@@ -1,26 +1,26 @@
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceInfo {
   static Future<String?> getDeviceID() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
-      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+      final iosDeviceInfo = await deviceInfo.iosInfo;
       return iosDeviceInfo.identifierForVendor;
     } else {
-      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.androidId;
+      final androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.id;
     }
   }
 
   static Future<String> getDeviceName() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
-      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.name;
+      final iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.name ?? '';
     } else {
-      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+      final androidDeviceInfo = await deviceInfo.androidInfo;
       return androidDeviceInfo.model;
     }
   }

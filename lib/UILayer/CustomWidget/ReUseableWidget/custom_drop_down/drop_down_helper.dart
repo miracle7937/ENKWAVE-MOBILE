@@ -73,7 +73,7 @@ Future<T?> showIVModalBottomSheet<T>({
     bounce: bounce,
     duration: duration,
     closeProgressThreshold: closeProgressThreshold,
-    backgroundColor: Colors.white,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     topRadius: topRadius,
     builder: (context) {
       return Material(

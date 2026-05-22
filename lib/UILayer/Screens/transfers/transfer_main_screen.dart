@@ -1,6 +1,5 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
-import 'package:enk_pay_project/Constant/image.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/cards/cards_view.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_appbar.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
 import 'package:enk_pay_project/UILayer/Screens/transfers/transfer_in_app.dart';
@@ -9,48 +8,116 @@ import 'package:enk_pay_project/UILayer/utils/screen_navigation.dart';
 import 'package:flutter/material.dart';
 
 class TransfersMainScreen extends StatelessWidget {
-  const TransfersMainScreen({Key? key}) : super(key: key);
+  const TransfersMainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return EPScaffold(
-      appBar: EPAppBar(
-        title: const Text(
-          "Transfer",
-        ),
-      ),
+      appBar: EPAppBar(title: const Text('Transfer')),
       builder: (_) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           children: [
-            const SizedBox(
-              height: 20,
-            ),
             Text(
-              "What will you like to do?",
-              style: Theme.of(context).textTheme.headline1!.copyWith(
-                  fontWeight: FontWeight.w500, color: EPColors.appBlackColor),
+              'Choose transfer type',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
-            const SizedBox(
-              height: 15,
+            const SizedBox(height: 6),
+            Text(
+              'Send to any bank or to another app user',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: context.mutedText,
+                  ),
             ),
-            CardSelectCard(
-              image: EPImages.bankTransfer,
-              title: "Transfer to other banks",
-              onTap: () async {
-                await pushToNextScreen(context, const TransferToOtherBank());
-              },
+            const SizedBox(height: 20),
+            _TransferOptionTile(
+              icon: Icons.account_balance_rounded,
+              title: 'Bank transfer',
+              subtitle: 'Send to any Nigerian bank account',
+              onTap: () => pushToNextScreen(context, const TransferToOtherBank()),
             ),
-            CardSelectCard(
-              image: EPImages.inAppTransfer,
-              title: "Transfer to Enkpay users",
-              onTap: () async {
-                await pushToNextScreen(context, const TransferInApp());
-              },
+            const SizedBox(height: 12),
+            _TransferOptionTile(
+              icon: Icons.people_alt_rounded,
+              title: 'Inapp transfer',
+              subtitle: 'Transfer to another app user',
+              onTap: () => pushToNextScreen(context, const TransferInApp()),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _TransferOptionTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _TransferOptionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.cardFill,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: context.borderColor),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: EPColors.appMainColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: EPColors.appMainColor),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: context.mutedText,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right_rounded, color: context.mutedText),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

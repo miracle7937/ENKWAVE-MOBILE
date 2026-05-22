@@ -1,4 +1,4 @@
-abstract class InternalTransferView {
+abstract mixin class InternalTransferView {
   onSuccess(String message);
   onError(String message);
   onPinVerification();

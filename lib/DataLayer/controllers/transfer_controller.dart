@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../Constant/string_values.dart';
+import '../utils/amount_utils.dart';
 import '../../UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 
 class TransferController with ChangeNotifier {
@@ -14,6 +15,7 @@ class TransferController with ChangeNotifier {
   BankTransferModel bankTransferModel = BankTransferModel();
   Bank? selectedBank;
   String? accountNumber, accountName;
+  String? lastTransferRefId;
   String? _transferCharge;
   Position? position;
   bool? beneficiary;
@@ -22,6 +24,8 @@ class TransferController with ChangeNotifier {
 
   UserWallet? selectedUserWallet;
   PageState? pageState;
+  bool isVerifyingAccount = false;
+  String? verifyError;
   late OnBankTransfer _onBankTransfer;
 
   disposeAll() {
@@ -29,6 +33,7 @@ class TransferController with ChangeNotifier {
     selectedUserWallet = null;
     selectedBank = null;
     accountName = null;
+    lastTransferRefId = null;
     pageState = null;
     listOfBank.clear();
     userWallet.clear();
@@ -60,6 +65,7 @@ class TransferController with ChangeNotifier {
     selectedBank = bank;
     bankTransferModel.bankCode = bank.bankCbnCode;
     bankTransferModel.receiverBank = bank.bankName;
+    notifyListeners();
   }
 
   set selectWallet(UserWallet value) {
@@ -70,10 +76,18 @@ class TransferController with ChangeNotifier {
 
   set selectAccount(String account) {
     bankTransferModel.accountNumber = account;
+    notifyListeners();
+  }
+
+  void clearVerifyFeedback() {
+    verifyError = null;
+    accountName = null;
+    bankTransferModel.customerName = null;
+    notifyListeners();
   }
 
   set selectAmount(String amount) {
-    bankTransferModel.amount = amount;
+    bankTransferModel.amount = parseAmountDigits(amount);
     notifyListeners();
   }
 
@@ -82,40 +96,52 @@ class TransferController with ChangeNotifier {
   }
 
   String? getTotal() {
-    if (isNotEmpty(bankTransferModel.amount)) {
-      int total = int.parse(bankTransferModel.amount!) + getTransferCharge();
-      return total.toString();
+    final raw = bankTransferModel.amount;
+    if (isNotEmpty(raw)) {
+      final amount = int.tryParse(raw!);
+      if (amount == null || amount <= 0) return null;
+      return (amount + getTransferCharge()).toString();
     }
     return null;
   }
 
-  bankAccountVerification() {
+  bankAccountVerification({bool showDialogOnError = false}) {
     if (isNotEmpty(bankTransferModel.bankCode) &&
         isNotEmpty(bankTransferModel.accountNumber)) {
-      //clear the initial bankname
       accountName = null;
-      pageState = PageState.loading;
+      verifyError = null;
+      isVerifyingAccount = true;
       notifyListeners();
       var map = <String, dynamic>{};
       map["account_number"] = bankTransferModel.accountNumber;
       map["bank_code"] = bankTransferModel.bankCode;
       TransferRepository.verifyBankAccount(map).then((value) {
         if (value.status == true) {
-          // _onBankTransfer.onSuccess(value.message ?? "");
           accountName = value.accountName;
           bankTransferModel.customerName = value.accountName;
+          verifyError = null;
         } else {
-          _onBankTransfer.onError(value.message ?? "");
+          verifyError = value.message ?? 'Could not verify account';
+          if (showDialogOnError) {
+            _onBankTransfer.onError(verifyError!);
+          }
         }
-        pageState = PageState.loaded;
+        isVerifyingAccount = false;
         notifyListeners();
       }).catchError((onError) {
-        pageState = PageState.loaded;
+        isVerifyingAccount = false;
+        verifyError = onError.toString().replaceFirst('Exception: ', '');
         notifyListeners();
-        _onBankTransfer.onError(onError.toString());
+        if (showDialogOnError) {
+          _onBankTransfer.onError(verifyError!);
+        }
       });
     } else {
-      _onBankTransfer.onError("Ensure no empty field(s) ");
+      verifyError = 'Select a bank and enter account number';
+      notifyListeners();
+      if (showDialogOnError) {
+        _onBankTransfer.onError(verifyError!);
+      }
     }
   }
 
@@ -125,9 +151,12 @@ class TransferController with ChangeNotifier {
       TransferRepository().fetchTransferProperties().then((value) {
         if (value.data != null) {
           listOfBank = value.data!;
-          userWallet = value.userWallets!;
+          userWallet = value.userWallets ?? [];
           _transferCharge = value.transferCharge;
-          getBeneficary = value.beneficiary!;
+          getBeneficary = value.beneficiary ?? [];
+          if (selectedUserWallet == null && userWallet.isNotEmpty) {
+            selectWallet = userWallet.first;
+          }
         } else {
           _onBankTransfer.onError("Fetching banks fails");
         }
@@ -151,6 +180,7 @@ class TransferController with ChangeNotifier {
       notifyListeners();
       TransferRepository().bankTransfer(bankTransferModel).then((value) {
         if (value.status == true) {
+          lastTransferRefId = value.refTransId ?? value.eRef;
           _onBankTransfer.onTransferSuccess(value.message ?? "");
         } else {
           _onBankTransfer.onError(value.message ?? "");
@@ -169,12 +199,21 @@ class TransferController with ChangeNotifier {
 
   validateTransferForm() {
     print(bankTransferModel.toJson());
+    if (isEmpty(bankTransferModel.wallet)) {
+      _onBankTransfer.onError('Please select a wallet to pay from');
+      return;
+    }
     if (isEmpty(bankTransferModel.bankCode)) {
       _onBankTransfer.onError("Please select bank");
       return;
     }
     if (isEmpty(bankTransferModel.accountNumber)) {
       _onBankTransfer.onError("Please input  Beneficiary account number");
+      return;
+    }
+
+    if (isEmpty(accountName) || isEmpty(bankTransferModel.customerName)) {
+      _onBankTransfer.onError('Please verify the account number first');
       return;
     }
 
@@ -186,7 +225,7 @@ class TransferController with ChangeNotifier {
   }
 }
 
-abstract class OnBankTransfer {
+abstract mixin class OnBankTransfer {
   onSuccess(String message);
   onPreview(String message);
   onError(String message);
@@ -195,7 +234,7 @@ abstract class OnBankTransfer {
   onTransfer();
 }
 
-abstract class OnInAppTransfer {
+abstract mixin class OnInAppTransfer {
   onSuccess(String message);
   onError(String message);
 }

@@ -1,60 +1,79 @@
+import 'package:enk_pay_project/Constant/app_theme.dart';
+import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_enum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../Constant/colors.dart';
 
 class HistorySelectable extends StatefulWidget {
   final Function(TransactionEnum)? onSelect;
-  const HistorySelectable({Key? key, this.onSelect}) : super(key: key);
+
+  const HistorySelectable({super.key, this.onSelect});
 
   @override
   State<HistorySelectable> createState() => _HistorySelectableState();
 }
 
 class _HistorySelectableState extends State<HistorySelectable> {
-  TransactionEnum? selectedValue;
+  TransactionEnum selectedValue = TransactionEnum.all;
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return ListView.separated(
       scrollDirection: Axis.horizontal,
-      children: TransactionEnum.values.map((e) => selectableView(e)).toList(),
+      itemCount: TransactionEnum.values.length,
+      separatorBuilder: (_, __) => const SizedBox(width: 8),
+      itemBuilder: (_, index) => _FilterChip(
+        label: getEnumName(TransactionEnum.values[index]),
+        selected: selectedValue == TransactionEnum.values[index],
+        onTap: () {
+          final value = TransactionEnum.values[index];
+          widget.onSelect?.call(value);
+          setState(() => selectedValue = value);
+        },
+      ),
     );
   }
+}
 
-  Widget selectableView(TransactionEnum value) {
-    return InkWell(
-      onTap: () {
-        widget.onSelect!(value);
-        setState(() {
-          selectedValue = value;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? EPColors.appMainColor : context.cardFill,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
         child: Container(
-          child: Center(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 15),
-            child: Text(
-              getEnumName(value),
-              style: Theme.of(context).textTheme.headline6!.copyWith(
-                  color: selectedValue == value
-                      ? EPColors.appWhiteColor
-                      : EPColors.appBlackColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400),
-            ),
-          )),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-              color: selectedValue == value
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: selected
                   ? EPColors.appMainColor
-                  : EPColors.appWhiteColor,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                width: 0.5,
-                color: Colors.black,
-              )),
+                  : context.borderColor,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+              color: selected
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
         ),
       ),
     );

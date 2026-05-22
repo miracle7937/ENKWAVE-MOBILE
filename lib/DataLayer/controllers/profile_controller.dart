@@ -40,7 +40,7 @@ class ProfileController extends ChangeNotifier {
   }
 }
 
-abstract class ForgetPinView {
+abstract mixin class ForgetPinView {
   onSuccess(String massage);
   onError(String massage);
 }

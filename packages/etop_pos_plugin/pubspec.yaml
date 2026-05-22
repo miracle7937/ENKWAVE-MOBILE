@@ -1,0 +1,11 @@
+name: etop_pos_plugin
+description: Local stub for Horizon Pay POS integration. Replace with the git dependency when GitHub SSH access is configured.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

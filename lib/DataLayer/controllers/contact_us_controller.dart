@@ -33,7 +33,7 @@ class ContactUsController extends ChangeNotifier {
   }
 }
 
-abstract class ContactUseView {
+abstract mixin class ContactUseView {
   onSuccess();
   onError(String message);
 }

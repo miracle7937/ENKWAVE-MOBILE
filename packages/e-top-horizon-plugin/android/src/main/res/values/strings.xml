@@ -1,0 +1,6 @@
+<resources>
+    <string name="processing_transaction">Processing transaction</string>
+    <string name="transaction_approved">Transaction Approved</string>
+    <string name="transaction_decline">Transaction Decline</string>
+    <string name="insert_card">Please Insert Your Card</string>
+</resources>

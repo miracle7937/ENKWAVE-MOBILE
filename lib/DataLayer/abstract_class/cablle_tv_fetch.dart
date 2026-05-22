@@ -5,7 +5,7 @@ import '../model/bank_list_response.dart';
 import '../model/cable_tv_model/showmax_response.dart';
 import '../model/cable_tv_model/startimes_response.dart';
 
-abstract class CableTVDataFetch {
+abstract mixin class CableTVDataFetch {
   List<GoTvResponseModel>? getGoTVProduct();
   List<DsTvResponseModel>? getDSTVProduct();
   List<StarTimesResponseModel>? getStarTimeProduct();

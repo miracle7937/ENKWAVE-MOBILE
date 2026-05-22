@@ -1,15 +1,27 @@
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceServiceInit {
   static AndroidDeviceInfo? androidInfo;
-  static String telpoDevice = "TPS900";
-  static initialize() async {
-    androidInfo = await DeviceInfoPlugin().androidInfo;
-    log("${androidInfo?.model} Device");
-    // if (androidInfo?.model == "TPS900") {
-    //   return;
-    // }
+  static String? deviceModel;
+  static const String telpoDevice = 'TPS900';
+
+  static bool get isTelpoDevice =>
+      Platform.isAndroid && deviceModel == telpoDevice;
+
+  static Future<void> initialize() async {
+    if (!Platform.isAndroid) {
+      log('DeviceServiceInit: skipped on ${Platform.operatingSystem}');
+      return;
+    }
+    try {
+      androidInfo = await DeviceInfoPlugin().androidInfo;
+      deviceModel = androidInfo?.model;
+      log('$deviceModel Device');
+    } catch (e, st) {
+      log('DeviceServiceInit failed: $e', stackTrace: st);
+    }
   }
 }

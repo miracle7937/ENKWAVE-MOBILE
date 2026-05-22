@@ -3,21 +3,20 @@ import 'package:flutter/material.dart';
 
 class PrimarySwatchColor {
   static MaterialColor get() {
-    MaterialColor customPrimaryColor = MaterialColor(
-      0XFF011142,
+    return MaterialColor(
+      0xFF6B21A8,
       <int, Color>{
-        50: EPColors.appMainColor,
-        100: EPColors.appMainColor,
-        200: EPColors.appMainColor,
-        300: EPColors.appMainColor,
-        400: EPColors.appMainColor,
-        500: EPColors.appMainColor,
-        600: EPColors.appMainColor,
+        50: const Color(0xFFFAF5FF),
+        100: const Color(0xFFF3E8FF),
+        200: const Color(0xFFE9D5FF),
+        300: const Color(0xFFD8B4FE),
+        400: const Color(0xFFC084FC),
+        500: EPColors.appMainLightColor,
+        600: const Color(0xFF7E22CE),
         700: EPColors.appMainColor,
-        800: EPColors.appMainColor,
-        900: EPColors.appMainColor,
+        800: EPColors.appMainDark,
+        900: const Color(0xFF3B0764),
       },
     );
-    return customPrimaryColor;
   }
 }

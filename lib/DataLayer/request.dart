@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../Constant/string_values.dart';
+import '../Constant/api_timeouts.dart';
 import 'LocalData/local_data_storage.dart';
 import 'logs/log_request.dart';
 
@@ -24,6 +25,12 @@ Future<Map<String, String>> getHeader() async {
 }
 
 const IS_PRODUCTION = kReleaseMode;
+
+void _debugApiLog(String message) {
+  if (kDebugMode) {
+    debugPrint('[API] $message');
+  }
+}
 
 class ServerRequest {
   String? deviceId;
@@ -55,12 +62,19 @@ class ServerRequest {
 
   Future<HttpResponse> getData({
     String? path,
+    Duration? timeout,
   }) async {
     var header = await getHeader();
     var url = Uri.parse(path!);
     var response;
     try {
-      response = await http.get(url, headers: header);
+      response = await http
+          .get(url, headers: header)
+          .timeout(
+            timeout ?? ApiTimeouts.standard,
+            onTimeout: () => throw TimeoutException('process time out'),
+          );
+      _debugApiLog('GET $path → ${response.statusCode}');
       var data = jsonDecode(response.body);
       log("$data  route: $path  status: ${response.statusCode}");
 
@@ -84,7 +98,14 @@ class ServerRequest {
       }
     } catch (e) {
       logToSlack(response, exception: e.toString());
-      debugPrint('exception post ${e.toString()}');
+      final status = response?.statusCode;
+      final bodyPreview = response?.body != null
+          ? response!.body.substring(
+              0,
+              response.body.length > 600 ? 600 : response.body.length,
+            )
+          : '(no response body)';
+      _debugApiLog('GET $path failed ($status): $e\nbody: $bodyPreview');
       if (e is HttpException) {
         throw HttpException({"message": e.toString(), "error": true});
       }
@@ -108,9 +129,13 @@ class ServerRequest {
     }
   }
 
-  Future<HttpResponse> postData(
-      {String? path, Map? body, List<Map>? bodyII}) async {
-    log("${path}    ${body.toString()}");
+  Future<HttpResponse> postData({
+    String? path,
+    Map? body,
+    List<Map>? bodyII,
+    Duration? timeout,
+  }) async {
+    _debugApiLog('POST $path body=${body ?? bodyII}');
     var header = await getHeader();
     var response;
     try {
@@ -123,14 +148,15 @@ class ServerRequest {
         headers: header,
       )
           .timeout(
-        const Duration(seconds: 20),
+        timeout ?? ApiTimeouts.standard,
         onTimeout: () {
           throw TimeoutException('process time out');
         },
       );
+      _debugApiLog('POST $path → ${response.statusCode}');
       var data = jsonDecode(response.body);
       log("${response.statusCode} status code");
-      log("${response.body}");
+      _debugApiLog('POST $path body: ${response.body}');
       if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)
             .pushNamedAndRemoveUntil(
@@ -152,9 +178,15 @@ class ServerRequest {
         });
       }
     } catch (e) {
-      logToSlack(null, exception: e.toString());
-
-      debugPrint('exception post ${e.toString()}');
+      logToSlack(response, exception: e.toString());
+      final status = response?.statusCode;
+      final bodyPreview = response?.body != null
+          ? response!.body.substring(
+              0,
+              response.body.length > 600 ? 600 : response.body.length,
+            )
+          : '(no response body)';
+      _debugApiLog('POST $path failed ($status): $e\nbody: $bodyPreview');
       if (e is HttpException) {
         throw HttpException({"message": e.toString(), "error": true});
       }

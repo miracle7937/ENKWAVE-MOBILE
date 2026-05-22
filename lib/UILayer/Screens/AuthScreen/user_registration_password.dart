@@ -132,6 +132,7 @@ class _PersonalRegistrationPasswordState
 
   @override
   void onRegister() {
+    authController.applyOrganizationFromContext(context);
     authController.register();
   }
 

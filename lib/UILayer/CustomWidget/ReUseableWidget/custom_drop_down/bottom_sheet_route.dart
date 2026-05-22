@@ -194,12 +194,12 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
       context: context,
       // removeTop: true,
       child: _ModalBottomSheet<T>(
-        closeProgressThreshold: closeProgressThreshold!,
+        closeProgressThreshold: closeProgressThreshold ?? 0.6,
         route: this,
         secondAnimationController: secondAnimationController,
-        expanded: expanded!,
-        bounce: bounce!,
-        enableDrag: enableDrag!,
+        expanded: expanded ?? false,
+        bounce: bounce ?? false,
+        enableDrag: enableDrag ?? true,
         animationCurve: animationCurve,
       ),
     );

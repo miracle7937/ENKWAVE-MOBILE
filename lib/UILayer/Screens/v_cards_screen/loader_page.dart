@@ -1,9 +1,7 @@
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-
-import '../../../Constant/image.dart';
 import '../../../DataLayer/controllers/vcard_controller.dart';
 
 class LoaderPage extends StatefulWidget {
@@ -31,17 +29,7 @@ class _LoaderPageState extends State<LoaderPage> with OnGetVCardDetails {
       ..setGetCardView(this);
 
     return EPScaffold(
-      builder: (_) => SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.width * 0.5,
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Lottie.asset(EPImages.loader),
-          ),
-        ),
-      ),
+      builder: (_) => const LoaderWidget(message: 'Loading card…'),
     );
   }
 

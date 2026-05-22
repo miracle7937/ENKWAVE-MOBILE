@@ -100,6 +100,8 @@ class UserData {
   String? cardHolderId;
   List<VirtualBank>? virtualBankList;
   TerminalInfo? terminalInfo;
+  String? businessId;
+  String? registerUnderId;
 
   UserData(
       {id,
@@ -152,7 +154,9 @@ class UserData {
       vBankName,
       cardHolderId,
       virtualBankList,
-      terminalInfo});
+      terminalInfo,
+      businessId,
+      registerUnderId});
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -214,7 +218,17 @@ class UserData {
     if (json['terminal_info'] != null) {
       terminalInfo = TerminalInfo.fromJson(json['terminal_info']);
     }
+    businessId = json['business_id']?.toString();
+    registerUnderId = json['register_under_id']?.toString();
   }
+
+  /// Whitelabel org key: prefer org business id from login, then register_under_id.
+  String? get organizationBusinessId =>
+      (businessId != null && businessId!.isNotEmpty)
+          ? businessId
+          : (registerUnderId != null && registerUnderId!.isNotEmpty
+              ? registerUnderId
+              : null);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -293,8 +307,18 @@ class UserData {
   }
 
   bool userHaveAccount() {
-    print("hhhhhhhhhhhhhh ${virtualBankList}");
-    return virtualBankList?.isNotEmpty ?? true;
+    return virtualBankList?.isNotEmpty ?? false;
+  }
+
+  bool hasCashInProvider(String provider) {
+    final list = virtualBankList ?? [];
+    if (provider == 'palmpay') {
+      return list.any((b) => b.isPalmPay);
+    }
+    if (provider == 'nomba') {
+      return list.any((b) => b.isNomba);
+    }
+    return false;
   }
 
   bool get isMale => gender?.toUpperCase() == "MALE";
@@ -386,20 +410,38 @@ class VirtualBank {
   String? bankName;
   String? accountNo;
   String? accountName;
+  String? provider;
 
-  VirtualBank({this.bankName, this.accountNo, this.accountName});
+  VirtualBank({
+    this.bankName,
+    this.accountNo,
+    this.accountName,
+    this.provider,
+  });
 
   VirtualBank.fromJson(Map<String, dynamic> json) {
     bankName = json['bank_name'];
-    accountNo = json['account_no'];
-    accountName = json['account_name'];
+    accountNo = json['account_no']?.toString() ?? json['account_number']?.toString();
+    accountName = json['account_name'] ??
+        json['v_account_name'] ??
+        json['accountName'] ??
+        json['customer_name'];
+    provider = json['provider']?.toString();
   }
+
+  bool get isPalmPay =>
+      provider == 'palmpay' ||
+      (bankName ?? '').toUpperCase().contains('PALMPAY');
+
+  bool get isNomba =>
+      provider == 'nomba' || (bankName ?? '').toUpperCase().contains('NOMBA');
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['bank_name'] = bankName;
     data['account_no'] = accountNo;
     data['account_name'] = accountName;
+    data['provider'] = provider;
     return data;
   }
 }
@@ -414,10 +456,11 @@ class TerminalInfo {
       {this.merchantNo, this.terminalNo, this.merchantName, this.deviceSN});
 
   TerminalInfo.fromJson(Map<String, dynamic> json) {
-    merchantNo = json['merchantNo'];
-    terminalNo = json['terminalNo'];
-    merchantName = json['merchantName'];
-    deviceSN = json['deviceSN'];
+    merchantNo = json['merchantNo']?.toString() ?? json['merchant_no']?.toString();
+    terminalNo = json['terminalNo']?.toString() ?? json['terminal_no']?.toString();
+    merchantName =
+        json['merchantName']?.toString() ?? json['merchant_name']?.toString();
+    deviceSN = json['deviceSN']?.toString() ?? json['device_sn']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -451,13 +494,13 @@ class TerminalConfig {
       showLoader});
 
   TerminalConfig.fromJson(Map<String, dynamic> json) {
-    ip = json['ip'];
-    port = json['port'];
-    ssl = json['ssl'];
-    compKey1 = json['compKey1'];
-    compKey2 = json['compKey2'];
-    baseUrl = json['baseUrl'];
-    logoUrl = json['logoUrl'];
+    ip = json['ip']?.toString();
+    port = json['port']?.toString();
+    ssl = json['ssl']?.toString();
+    compKey1 = json['compKey1']?.toString() ?? json['comp_key1']?.toString();
+    compKey2 = json['compKey2']?.toString() ?? json['comp_key2']?.toString();
+    baseUrl = json['baseUrl']?.toString() ?? json['base_url']?.toString();
+    logoUrl = json['logoUrl']?.toString() ?? json['logo_url']?.toString();
   }
 
   Map<String, String?> toJson() {

@@ -1,5 +1,8 @@
 import 'package:enk_pay_project/Constant/string_values.dart';
 import 'package:enk_pay_project/Constant/validation.dart';
+import 'package:enk_pay_project/DataLayer/controllers/branding_controller.dart';
+import 'package:enk_pay_project/core/whitelabel/organization_request_fields.dart';
+import 'package:provider/provider.dart';
 import 'package:enk_pay_project/DataLayer/model/login_response_model.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_model.dart';
 import 'package:enk_pay_project/DataLayer/model/registration_response.dart';
@@ -8,6 +11,7 @@ import 'package:enk_pay_project/DataLayer/request.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/page_state.dart';
 import 'package:enk_pay_project/UILayer/utils/format_phone_number.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../UILayer/utils/device_info.dart';
 import '../LocalData/local_data_storage.dart';
@@ -104,6 +108,20 @@ class AuthController extends ChangeNotifier with RegView {
     lgaData = null;
   }
 
+  void applyOrganizationFromContext(BuildContext context) {
+    if (!context.mounted) return;
+    final fields = organizationRequestFields(context.read<BrandingController>());
+    registrationModel.businessId = fields['business_id']?.toString();
+    registrationModel.registerUnderId = fields['register_under_id']?.toString();
+    registrationModel.organizationSlug = fields['organization_slug']?.toString();
+  }
+
+  bool hasOrganizationSelected(BuildContext context) {
+    final branding = context.read<BrandingController>();
+    final id = branding.branding?.businessId ?? '';
+    return branding.hasOrganization && id.isNotEmpty;
+  }
+
   getAllLGA(String state) async {
     try {
       pageState = PageState.loading;
@@ -146,7 +164,6 @@ class AuthController extends ChangeNotifier with RegView {
   }
 
   register() async {
-    print(registrationModel.toJson());
     try {
       pageState = PageState.loading;
       notifyListeners();
@@ -201,10 +218,12 @@ class AuthController extends ChangeNotifier with RegView {
     }
   }
 
-  sendOTP() async {
+  sendOTP(BuildContext context) async {
+    applyOrganizationFromContext(context);
     Map data = isSelectPhoneVerification
         ? {"phone_no": registrationModel.phone}
         : {"email": registrationModel.email};
+    data.addAll(organizationRequestFields(context.read<BrandingController>()));
 
     pageState = PageState.loading;
     notifyListeners();
@@ -360,39 +379,39 @@ class AuthController extends ChangeNotifier with RegView {
   }
 }
 
-abstract class AuthView {
+abstract mixin class AuthView {
   void onSuccess(RegistrationResponse? response);
   void onError(String message);
   void onValidate();
 }
 
-abstract class OTPView {
+abstract mixin class OTPView {
   void onSuccess(String message);
   void onError(String message);
   void onVerify(String message);
 }
 
-abstract class RequestOTPView {
+abstract mixin class RequestOTPView {
   void onSuccess(String message);
   void onError(String message);
   void onFormValid();
 }
 
-abstract class REGView {
+abstract mixin class REGView {
   void onError(String message);
   void onFormValid();
 }
 
-abstract class REGAddressView with REGView {}
+abstract mixin class REGAddressView implements REGView {}
 
-abstract class REGPersonalView extends REGView {}
+abstract mixin class REGPersonalView implements REGView {}
 
-abstract class REGPasswordView extends REGView {
+abstract mixin class REGPasswordView implements REGView {
   void onRegister();
   void onSuccess(String message);
 }
 
-class RegView {
+mixin class RegView {
   REGAddressView? regAddressView;
   REGPersonalView? regPersonalView;
   REGPasswordView? regPasswordView;

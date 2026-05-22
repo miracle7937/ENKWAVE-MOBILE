@@ -1,43 +1,53 @@
+import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
 import 'package:enk_pay_project/UILayer/Screens/history/widget/transaction_enum.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-class HistoryIcon extends StatefulWidget {
+class HistoryIcon extends StatelessWidget {
   final TransactionEnum transactionEnum;
-  const HistoryIcon({Key? key, required this.transactionEnum})
-      : super(key: key);
 
-  @override
-  State<HistoryIcon> createState() => _HistoryIconState();
-}
+  const HistoryIcon({super.key, required this.transactionEnum});
 
-class _HistoryIconState extends State<HistoryIcon> {
   @override
   Widget build(BuildContext context) {
-    return Image.asset(_getIcon(widget.transactionEnum));
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            EPColors.appMainColor.withValues(alpha: 0.18),
+            EPColors.appMainLightColor.withValues(alpha: 0.12),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: EPColors.appMainColor.withValues(alpha: 0.15),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Image.asset(
+          _iconAsset(transactionEnum),
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
   }
 
-  _getIcon(TransactionEnum transactionEnum) {
-    String image;
+  String _iconAsset(TransactionEnum transactionEnum) {
     switch (transactionEnum) {
       case TransactionEnum.cashOut:
-        image = EPImages.inwardTransaction;
-        break;
       case TransactionEnum.selfCashOutTransfer:
-        image = EPImages.inwardTransaction;
-        break;
-      case TransactionEnum.bankTransfer:
-        image = EPImages.outwardIcon;
-        break;
-      case TransactionEnum.enkPayTransfer:
-        image = EPImages.outwardIcon;
-        break;
       case TransactionEnum.virtualFundWallet:
-        image = EPImages.inwardTransaction;
-        break;
+        return EPImages.inwardTransaction;
+      case TransactionEnum.bankTransfer:
+      case TransactionEnum.enkPayTransfer:
+        return EPImages.outwardIcon;
       default:
-        image = EPImages.billsIcon;
+        return EPImages.billsIcon;
     }
-    return image;
   }
 }

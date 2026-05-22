@@ -1,4 +1,4 @@
-abstract class OnMobileDataView {
+abstract mixin class OnMobileDataView {
   onPInVerify();
   onBuyData();
   onSuccess(String message);

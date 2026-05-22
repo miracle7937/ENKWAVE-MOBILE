@@ -1,4 +1,5 @@
 import 'package:enk_pay_project/Constant/colors.dart';
+import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 
 class EPButton extends StatefulWidget {
@@ -55,18 +56,12 @@ class _DXButtonState extends State<EPButton> {
           height: 55,
           child: Center(
               child: (widget.loading ?? false)
-                  ? const CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-                    )
+                  ? const LoaderIndicator.small()
                   : Text(
                       widget.title ?? "",
                       style: Theme.of(context).textTheme.headline1!.copyWith(
                           fontWeight: FontWeight.bold, color: Colors.white),
                     )),
-          // decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(6.0),
-          //     color:),
         ),
       ),
     );
@@ -119,9 +114,10 @@ class _EPButtonWithBoarderState extends State<EPButtonWithBoarder> {
           height: 55,
           child: Center(
               child: (widget.loading ?? false)
-                  ? const CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                  ? LoaderIndicator(
+                      size: 24,
+                      color: EPColors.appMainColor,
+                      trackColor: const Color(0xFFE9D5FF),
                     )
                   : Text(
                       widget.title ?? "",

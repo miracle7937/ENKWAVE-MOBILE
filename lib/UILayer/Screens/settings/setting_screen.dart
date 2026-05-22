@@ -1,12 +1,11 @@
 import 'package:enk_pay_project/Constant/image.dart';
-import 'package:enk_pay_project/Constant/string_values.dart';
+import 'package:enk_pay_project/DataLayer/controllers/branding_controller.dart';
 import 'package:enk_pay_project/DataLayer/controllers/dashboard_controller.dart';
 import 'package:enk_pay_project/UILayer/Screens/request_device/request_device_main_page.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_bank_info/update_account_information.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/update_pin_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/settings/user_account_verification/verification_main_screen.dart';
-import 'package:enk_pay_project/UILayer/Screens/settings/widget/setting_tabs.dart';
-import 'package:enk_pay_project/UILayer/Screens/settings/widget/verification_widget.dart';
+import 'package:enk_pay_project/UILayer/Screens/settings/widget/settings_ui.dart';
 import 'package:enk_pay_project/UILayer/utils/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +17,12 @@ import '../../../DataLayer/model/login_response_model.dart';
 import '../../utils/show_alert_dialog.dart';
 import '../../utils/sync_keys.dart';
 import 'business_info_screen.dart';
+import 'change_organization_screen.dart';
 import 'customer_care_screen.dart';
+import 'disputes/my_disputes_screen.dart';
 import 'manage_beneficiary/beneficiaries_page.dart';
 import 'manage_terminals/manage_terminals_screen.dart';
+import 'terminal_config_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   final VoidCallback? onRefresh;
@@ -33,314 +35,273 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   bool isLogout = false;
   bool isDeleteAccount = false;
+
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        widget.onRefresh!();
-      },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            FutureBuilder<UserData?>(
-                future: LocalDataStorage.getUserData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: LoaderWidget(),
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: RefreshIndicator(
+        color: EPColors.appMainColor,
+        onRefresh: () async => widget.onRefresh?.call(),
+        child: FutureBuilder<UserData?>(
+          future: LocalDataStorage.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: LoaderWidget());
+            }
+
+            final user = snapshot.data;
+
+            return ListView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              padding: const EdgeInsets.only(bottom: 32),
+              children: [
+                SettingsProfileCard(user: user),
+                SettingsVerificationBanner(
+                  isVerified: user?.isStatusCompleted(),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const VerificationMainScreen(),
+                      ),
                     );
-                  }
-                  return RefreshIndicator(
-                    onRefresh: () async {},
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0, vertical: 15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          snapshot.data?.isMale == true
-                                              ? Image.asset(
-                                                  EPImages.userMale,
-                                                  width: 30,
-                                                )
-                                              : Image.asset(
-                                                  EPImages.female,
-                                                  width: 30,
-                                                ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "${snapshot.data?.firstName ?? ""}  ${snapshot.data?.lastName ?? ""} ",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline1!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize: 12,
-                                                        color: EPColors
-                                                            .appWhiteColor),
-                                              ),
-                                              snapshot.data?.addressLine1 !=
-                                                      null
-                                                  ? Text(
-                                                      snapshot.data
-                                                              ?.addressLine1 ??
-                                                          "",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline1!
-                                                          .copyWith(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: EPColors
-                                                                  .appWhiteColor),
-                                                    )
-                                                  : Container(),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    snapshot.data?.email ?? "",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline4!
-                                                        .copyWith(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: EPColors
-                                                                .appWhiteColor),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              isNotEmpty(
-                                                      snapshot.data?.serialNo)
-                                                  ? Text(
-                                                      "Terminal NO: ${snapshot.data?.serialNo ?? ""}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline4!
-                                                          .copyWith(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: EPColors
-                                                                  .appWhiteColor),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                    widget.onRefresh?.call();
+                    setState(() {});
+                  },
+                ),
+                const SettingsSectionLabel('Preferences'),
+                SettingsGroupCard(
+                  children: [
+                    Consumer<BrandingController>(
+                      builder: (context, branding, _) {
+                        return SettingsMenuTile(
+                          icon: Icons.business_outlined,
+                          title: 'Organization code',
+                          subtitle: branding.hasOrganization
+                              ? branding.orgSlug
+                              : 'Not set',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const ChangeOrganizationScreen(),
                             ),
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                        );
+                      },
+                    ),
+                    const SettingsThemeTile(),
+                  ],
+                ),
+                const SettingsSectionLabel('Security'),
+                SettingsGroupCard(
+                  children: [
+                    SettingsMenuTile(
+                      image: EPImages.changePinIcon,
+                      title: 'Change transfer PIN',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const UpdatePinScreen(),
+                        ),
+                      ),
+                    ),
+                    SettingsMenuTile(
+                      image: EPImages.syncKey,
+                      title: 'Sync terminal keys',
+                      onTap: () =>
+                          SyncKeys().init(context, showLoader: true),
+                    ),
+                    SettingsMenuTile(
+                      image: EPImages.manageTerminal,
+                      title: 'Terminal configuration',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TerminalConfigScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SettingsSectionLabel('Account'),
+                SettingsGroupCard(
+                  children: [
+                    SettingsMenuTile(
+                      image: EPImages.businessInfoIcon,
+                      title: 'Business information',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BusinessInfoScreen(),
+                        ),
+                      ),
+                    ),
+                    SettingsMenuTile(
+                      image: EPImages.updateBankAccount,
+                      title: 'Bank account details',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => UpdateAccountScreen(
+                            refresh: widget.onRefresh,
                           ),
                         ),
-                        VerificationWidget(
-                          isVerifyCompleted: snapshot.data?.isStatusCompleted(),
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const VerificationMainScreen()));
-                            widget.onRefresh!();
-                          },
-                        )
-                      ],
+                      ),
                     ),
-                  );
-                }),
-            SettingTabs(
-              image: EPImages.changePinIcon,
-              title: "Change transfer pin",
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const UpdatePinScreen())),
-            ),
-            SettingTabs(
-              image: EPImages.businessInfoIcon,
-              title: "Business information",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const BusinessInfoScreen())),
-            ),
-            SettingTabs(
-                image: EPImages.syncKey,
-                title: "Sync terminal keys",
-                onTap: () async {
-                  SyncKeys().init(context, showLoader: true);
-                }),
-            SettingTabs(
-              image: EPImages.requestDevice,
-              title: "Request for a new device",
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const RequestDevicePage())),
-            ),
-            SettingTabs(
-              image: EPImages.requestDevice,
-              title: "Manage Beneficiary",
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => BeneficiariesPage())),
-            ),
-            SettingTabs(
-              image: EPImages.updateBankAccount,
-              title: "Update Bank Account information",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => UpdateAccountScreen(
-                            refresh: widget.onRefresh,
-                          ))),
-            ),
-            SettingTabs(
-              image: EPImages.manageTerminal,
-              title: "Manage Terminals",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const ManageTerminalScreen())),
-            ),
-            SettingTabs(
-              image: EPImages.customerCare,
-              title: "Contact customer care",
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const CustomerCareScreen())),
-            ),
-            isLogout == false
-                ? SettingTabs(
-                    image: EPImages.logOut,
-                    title: "Log out",
-                    onTap: () {
-                      showAlertDialog(context,
-                          message: "Are You sure you want to logout?",
-                          onTap: () {
-                        Navigator.pop(context);
-                        setState(() => isLogout = true);
-                        SignInController().logOut().whenComplete(() {
-                          setState(() => isLogout = false);
-                          LocalDataStorage.clearUser();
-                          Navigator.pushNamed(context, "/");
-                          //dispose dashboard controller to clear a valeus
-                          Provider.of<DashBoardController>(context,
-                                  listen: false)
-                              .clearAll();
-                        }).onError((error, stackTrace) {
-                          setState(() => isLogout = false);
-                          Provider.of<DashBoardController>(context,
-                                  listen: false)
-                              .clearAll();
-                          LocalDataStorage.clearUser();
-                          Navigator.pushNamed(context, "/");
-                        });
-                      });
-                    },
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 18),
-                    child: Row(
-                      children: [
-                        CircularProgressIndicator(
-                          color: EPColors.appMainColor,
+                    SettingsMenuTile(
+                      image: EPImages.manageTerminal,
+                      title: 'Manage terminals',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ManageTerminalScreen(),
                         ),
-                        const Spacer(),
-                      ],
+                      ),
                     ),
-                  ),
-            isDeleteAccount == false
-                ? SettingTabs(
-                    image: EPImages.deleteAccount,
-                    title: "Delete Account",
-                    onTap: () {
-                      showAlertDialog(context,
-                          message:
-                              "Are You sure you want to delete your account?",
-                          onTap: () {
-                        Navigator.pop(context);
-                        setState(() => isDeleteAccount = true);
-                        SignInController().deleteAccount().then((value) {
-                          //if request is true delete account
-                          if (value == true) {
-                            setState(() => isDeleteAccount = false);
-                            LocalDataStorage.clearUser();
-                            Navigator.pushNamed(context, "/");
-                            Provider.of<DashBoardController>(context,
-                                    listen: false)
-                                .clearAll();
-                          }
-                        }).onError((error, stackTrace) {
-                          setState(() => isDeleteAccount = false);
-                          Provider.of<DashBoardController>(context,
-                                  listen: false)
-                              .clearAll();
-                          LocalDataStorage.clearUser();
-                          Navigator.pushNamed(context, "/");
-                        });
-                      });
-                    },
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 18),
-                    child: Row(
-                      children: [
-                        CircularProgressIndicator(
-                          color: EPColors.appMainColor,
+                    SettingsMenuTile(
+                      image: EPImages.requestDevice,
+                      title: 'Manage beneficiaries',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BeneficiariesPage(),
                         ),
-                        const Spacer(),
-                      ],
+                      ),
                     ),
-                  ),
-          ],
+                    SettingsMenuTile(
+                      image: EPImages.requestDevice,
+                      title: 'Request a new device',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RequestDevicePage(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SettingsSectionLabel('Support'),
+                SettingsGroupCard(
+                  children: [
+                    SettingsMenuTile(
+                      icon: Icons.gavel_rounded,
+                      title: 'Dispute management',
+                      subtitle: 'Track disputes you have raised',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyDisputesScreen(),
+                        ),
+                      ),
+                    ),
+                    SettingsMenuTile(
+                      image: EPImages.customerCare,
+                      title: 'Contact customer care',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CustomerCareScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SettingsSectionLabel('Session'),
+                SettingsGroupCard(
+                  children: [
+                    if (isLogout)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: LoaderIndicator(
+                            color: EPColors.appMainColor,
+                          ),
+                        ),
+                      )
+                    else
+                      SettingsMenuTile(
+                        image: EPImages.logOut,
+                        title: 'Log out',
+                        onTap: () => _confirmLogout(context),
+                      ),
+                    if (isDeleteAccount)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: EPColors.appDanger,
+                          ),
+                        ),
+                      )
+                    else
+                      SettingsMenuTile(
+                        image: EPImages.deleteAccount,
+                        title: 'Delete account',
+                        destructive: true,
+                        onTap: () => _confirmDelete(context),
+                      ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ),
+    );
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showAlertDialog(
+      context,
+      message: 'Are you sure you want to log out?',
+      onTap: () {
+        Navigator.pop(context);
+        setState(() => isLogout = true);
+        SignInController().logOut().whenComplete(() {
+          if (!mounted) return;
+          setState(() => isLogout = false);
+          LocalDataStorage.clearUser();
+          Provider.of<DashBoardController>(context, listen: false).clearAll();
+          Navigator.pushNamed(context, '/');
+        }).onError((_, __) {
+          if (!mounted) return;
+          setState(() => isLogout = false);
+          Provider.of<DashBoardController>(context, listen: false).clearAll();
+          LocalDataStorage.clearUser();
+          Navigator.pushNamed(context, '/');
+        });
+      },
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showAlertDialog(
+      context,
+      message: 'Are you sure you want to delete your account?',
+      onTap: () {
+        Navigator.pop(context);
+        setState(() => isDeleteAccount = true);
+        SignInController().deleteAccount().then((value) {
+          if (!mounted) return;
+          setState(() => isDeleteAccount = false);
+          if (value == true) {
+            LocalDataStorage.clearUser();
+            Provider.of<DashBoardController>(context, listen: false)
+                .clearAll();
+            Navigator.pushNamed(context, '/');
+          }
+        }).onError((_, __) {
+          if (!mounted) return;
+          setState(() => isDeleteAccount = false);
+          Provider.of<DashBoardController>(context, listen: false).clearAll();
+          LocalDataStorage.clearUser();
+          Navigator.pushNamed(context, '/');
+        });
+      },
     );
   }
 }

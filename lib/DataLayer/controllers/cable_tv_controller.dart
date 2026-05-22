@@ -32,6 +32,7 @@ class CableTVController extends ProductController with CableTVDataFetch {
   }
 
   setDecoderNumber(String number) {
+    decoderNumber = number;
     _lookData.billerCode = number;
     notifyListeners();
   }
@@ -75,7 +76,7 @@ class CableTVController extends ProductController with CableTVDataFetch {
   }
 
   payment() {
-    validateForm();
+    if (!validateForm()) return;
     CableTvRepository()
         .processCablePayment(
             getCableEnum, basePackage!.code!, decoderNumber!, phoneNumber!)
@@ -90,20 +91,32 @@ class CableTVController extends ProductController with CableTVDataFetch {
     });
   }
 
-  void validateForm() {
+  bool validateForm() {
     if (getCableEnum == null) {
-      _onCableTV!.onError("Please Select the cable type");
-      return;
-    } else if (basePackage == null) {
-      _onCableTV!.onError("Your select package");
-      return;
-    } else if (isEmpty(decoderNumber)) {
-      _onCableTV!.onError("Please Enter device number");
-      return;
-    } else if (isEmpty(phoneNumber) || phoneNumber!.length < 9) {
-      _onCableTV!.onError("Please Enter a valid phone number");
-      return;
+      _onCableTV!.onError('Please select a cable provider');
+      return false;
     }
+    if (basePackage == null) {
+      _onCableTV!.onError('Please select a package');
+      return false;
+    }
+    if (isEmpty(decoderNumber)) {
+      _onCableTV!.onError('Please enter decoder number');
+      return false;
+    }
+    if (isEmpty(customerName)) {
+      _onCableTV!.onError('Please verify your decoder number');
+      return false;
+    }
+    if (isEmpty(phoneNumber) || phoneNumber!.length < 9) {
+      _onCableTV!.onError('Please enter a valid phone number');
+      return false;
+    }
+    if (selectedUserWallet == null) {
+      _onCableTV!.onError('Please select an account to pay from');
+      return false;
+    }
+    return true;
   }
 
   clearData() {

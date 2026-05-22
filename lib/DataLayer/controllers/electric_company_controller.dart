@@ -168,7 +168,7 @@ class ElectricCompanyController with ChangeNotifier {
   }
 }
 
-abstract class ElectricView {
+abstract mixin class ElectricView {
   onSuccess(String message);
   onError(String message);
   onPinVerification();

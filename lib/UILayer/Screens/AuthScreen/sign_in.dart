@@ -1,25 +1,24 @@
 import 'dart:io';
 
+import 'package:enk_pay_project/Constant/app_theme.dart';
 import 'package:enk_pay_project/Constant/colors.dart';
 import 'package:enk_pay_project/Constant/image.dart';
+import 'package:enk_pay_project/Constant/package_info.dart';
+import 'package:enk_pay_project/DataLayer/LocalData/local_data_storage.dart';
 import 'package:enk_pay_project/DataLayer/controllers/biomertic_controller.dart';
+import 'package:enk_pay_project/DataLayer/controllers/branding_controller.dart';
+import 'package:enk_pay_project/DataLayer/controllers/signin_controller.dart';
 import 'package:enk_pay_project/DataLayer/model/user_credential_model.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/bottom_dialog.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/custom_form.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/ep_button.dart';
-import 'package:enk_pay_project/UILayer/CustomWidget/ReUseableWidget/text_button.dart';
 import 'package:enk_pay_project/UILayer/CustomWidget/ScaffoldsWidget/ep_scaffold.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/device_reg/change_device_otp.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/forget_password_screen.dart';
 import 'package:enk_pay_project/UILayer/Screens/AuthScreen/select_verification_method_screen.dart';
+import 'package:enk_pay_project/UILayer/Screens/AuthScreen/widget/auth_ui.dart';
+import 'package:enk_pay_project/UILayer/Screens/main_screens/nav_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
-import '../../../Constant/package_info.dart';
-import '../../../DataLayer/LocalData/local_data_storage.dart';
-import '../../../DataLayer/controllers/signin_controller.dart';
-import '../main_screens/nav_ui.dart';
-import 'device_reg/change_device_otp.dart';
-import 'forget_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -46,222 +45,201 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
     });
   }
 
-  credentialInit() async {
-    UserCredentialModel? _credentialModel =
-        await LocalDataStorage.getUserCredential();
-    if (_credentialModel != null) {
-      onSetUserCredential(_credentialModel);
+  Future<void> credentialInit() async {
+    final credential = await LocalDataStorage.getUserCredential();
+    if (credential != null) {
+      onSetUserCredential(credential);
     }
   }
 
-  checkBiometric() async {
+  Future<void> checkBiometric() async {
     isBiometricEnable = await BiometricController.isBiometricEnable();
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     authController = Provider.of<SignInController>(context)..view = this;
+    final usePhone = authController.loginWithPhoneNumber;
+    final scheme = Theme.of(context).colorScheme;
+
     return EPScaffold(
-        backgroundColor: Colors.white,
-        state: AppState(pageState: authController.pageState),
-        scaffoldKey: _scaffoldKey,
-        builder: (context) {
-          return SingleChildScrollView(
+      backgroundColor: EPColors.appMainDark,
+      state: AppState(pageState: authController.pageState),
+      scaffoldKey: _scaffoldKey,
+      padding: EdgeInsets.zero,
+      builder: (context) {
+        return MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ColoredBox(
+            color: scheme.surface,
             child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const AuthHeroHeader(
+              title: 'Welcome back',
+              subtitle: 'Sign in to manage your agency banking and POS.',
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const OrganizationContextBanner(),
+                    const SizedBox(height: 12),
+                    AuthFormCard(
                       children: [
-                        const SizedBox(
-                          height: 40,
+                        if (usePhone)
+                          AuthTextField(
+                            label: 'Phone number',
+                            hintText: 'Enter phone number',
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            prefixIcon: Icon(
+                              Icons.phone_outlined,
+                              color: context.mutedText,
+                              size: 20,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: authController.setPhone,
+                          )
+                        else
+                          AuthTextField(
+                            label: 'Email',
+                            hintText: 'you@example.com',
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            prefixIcon: Icon(
+                              Icons.mail_outline_rounded,
+                              color: context.mutedText,
+                              size: 20,
+                            ),
+                            onChanged: authController.setEmail,
+                          ),
+                        AuthTextField(
+                          label: 'Password',
+                          hintText: 'Enter password',
+                          controller: _passwordController,
+                          obscureText: true,
+                          prefixIcon: Icon(
+                            Icons.lock_outline_rounded,
+                            color: context.mutedText,
+                            size: 20,
+                          ),
+                          onChanged: authController.setPassword,
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .6,
-                          child: Text(
-                            "Welcome back,",
-                            maxLines: 2,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const ForgetPasswordScreen(),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              'Forgot password?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                                color: EPColors.appMainColor,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Please sign in.",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(fontWeight: FontWeight.w500),
+                        const SizedBox(height: 8),
+                        AuthPrimaryButton(
+                          title: 'Sign in',
+                          onTap: authController.validateSIGNInForm,
                         ),
                       ],
                     ),
-                  ],
-                ),
-                // MyForm(),
-                const SizedBox(
-                  height: 35,
-                ),
-                authController.loginWithPhoneNumber
-                    ? EPForm(
-                        controller: _phoneController,
-                        enabledBorderColor: EPColors.appGreyColor,
-                        hintText: "Enter phone number",
-                        onChange: (v) {
-                          authController.setPhone(v);
-                        },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.phone,
-                      )
-                    : Row(
-                        children: [
-                          Expanded(
-                              child: EPForm(
-                            controller: _emailController,
-                            enabledBorderColor: EPColors.appGreyColor,
-                            hintText: "Enter email e.g. enkwave@email.com",
-                            onChange: (v) {
-                              authController.setEmail(v);
-                            },
-                          )),
-                        ],
-                      ),
-                EPForm(
-                  controller: _passwordController,
-                  hintText: "Enter password",
-                  enabledBorderColor: EPColors.appGreyColor,
-                  forPassword: true,
-                  onChange: (v) {
-                    authController.setPassword(v);
-                  },
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    TextClickButton(
-                      title: "Forget Password",
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: EPColors.appMainColor),
+                    const AuthDividerLabel(),
+                    AuthOutlineButton(
+                      title: usePhone
+                          ? 'Use email instead'
+                          : 'Use phone number instead',
+                      icon: usePhone
+                          ? Icons.alternate_email_rounded
+                          : Icons.phone_android_rounded,
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const ForgetPasswordScreen()));
+                        credentialInit();
+                        authController.setLoginType(!usePhone);
                       },
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                EPButton(
-                  title: "LOG IN",
-                  onTap: () async {
-                    authController.validateSIGNInForm();
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      EPButtonWithBoarder(
-                        title: authController.loginWithPhoneNumber
-                            ? "Login with email"
-                            : "Login with phone number",
-                        onTap: () {
-                          credentialInit();
-                          authController.setLoginType(
-                              !authController.loginWithPhoneNumber);
-                        },
+                    if (isBiometricEnable) ...[
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              'Quick sign in',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: context.mutedText,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            AuthBiometricButton(
+                              onTap: authController.biometricLogin,
+                              icon: Image.asset(
+                                Platform.isAndroid
+                                    ? EPImages.fingerPrint
+                                    : EPImages.faceID,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      isBiometricEnable
-                          ? InkWell(
-                              splashColor: EPColors.appMainColor,
-                              onTap: () async {
-                                // final fcmToken = await FirebaseMessaging.instance.getToken();
-                                //
-                                // debugPrint(fcmToken);
-                                authController.biometricLogin();
-                              },
-                              child: Image.asset(Platform.isAndroid
-                                  ? EPImages.fingerPrint
-                                  : EPImages.faceID))
-                          : Container(),
                     ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextClickButton(
-                      title: "No Account Yet? ",
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(
-                              color: EPColors.appGreyColor,
-                              fontWeight: FontWeight.w500),
-                      onTap: () {},
-                    ),
-                    TextClickButton(
-                      title: "Create your account",
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: EPColors.appMainColor),
-                      onTap: () {
+                    const SizedBox(height: 28),
+                    AuthLinkRow(
+                      prefix: 'No account yet? ',
+                      action: 'Create account',
+                      onAction: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    const SelectVerificationMethodScreen()));
-
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (_) => const RegistrationScreen()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const SelectVerificationMethodScreen(),
+                          ),
+                        );
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Text(
+                        'Version ${PackageInfo().getVersion()}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.mutedText,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
-                Text(
-                  "Version  ${PackageInfo().getVersion()}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3!
-                      .copyWith(fontWeight: FontWeight.w500),
-                ),
-              ],
+              ),
             ),
-          );
-        });
+          ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -282,6 +260,12 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
 
   @override
   void onValidate() {
+    final branding = context.read<BrandingController>();
+    final orgId = branding.branding?.businessId ?? '';
+    if (!branding.hasOrganization || orgId.isEmpty) {
+      onError('Select your organization code first (tap Choose on the banner).');
+      return;
+    }
     authController.logIn();
   }
 
@@ -289,15 +273,17 @@ class _SignInScreenState extends State<SignInScreen> with LOGINView {
   void onNewDevice(String message) {
     showChangeDeviceIdDialog(context, message: message, onTap: () {
       Navigator.pop(context);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const ChangeDeviceOTPScreen()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ChangeDeviceOTPScreen()),
+      );
     });
   }
 
   @override
   void onSetUserCredential(UserCredentialModel userCredentialModel) {
-    _emailController.text = userCredentialModel.email ?? "";
-    _phoneController.text = userCredentialModel.phone ?? "";
+    _emailController.text = userCredentialModel.email ?? '';
+    _phoneController.text = userCredentialModel.phone ?? '';
     setState(() {});
   }
 }

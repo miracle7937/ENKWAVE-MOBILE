@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.etop_pos_plugin.activity.TransactionStatusActivity">
+    <TextView
+        android:id="@+id/statusTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/processing_transaction"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_marginTop="30dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/statusTitle"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/success"
+        app:lottie_loop="false" />
+
+
+    <TextView
+        android:id="@+id/messageText"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_below="@id/animation_view"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="@string/processing_transaction"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/statusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_below="@id/messageText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/processing_transaction"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/amountText"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@id/statusMessage"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/reprint"
+            android:background="@drawable/app_white_button_style"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_width="match_parent"
+            android:height="40dp"
+            android:layout_marginBottom="15dp"
+            android:text="Reprint Receipt"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            android:layout_above="@id/continue_button"
+            tools:ignore="HardcodedText" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continue_button"
+        android:background="@drawable/app_button_style"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_width="match_parent"
+        android:height="40dp"
+        android:layout_marginBottom="15dp"
+        android:text="Home"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        tools:ignore="HardcodedText" />
+
+</RelativeLayout>
